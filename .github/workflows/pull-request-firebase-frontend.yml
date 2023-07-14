@@ -1,9 +1,6 @@
 name: Deploy Frontend to Firebase Hosting on PR
 on:
-  pull_request:
-  push:
-    paths:
-      - 'frontend/**'
+  - pull_request
 
 defaults:
   run:
@@ -26,7 +23,7 @@ jobs:
         uses: actions/download-artifact@v3.0.2
         with:
           name: dist
-          path: './dist/'
+          path: './frontend/dist/'
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'

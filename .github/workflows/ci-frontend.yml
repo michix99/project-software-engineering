@@ -22,7 +22,7 @@ jobs:
         uses: actions/upload-artifact@v3.1.2
         with:
           name: dist
-          path: dist
+          path: frontend/dist
           retention-days: 5
 
   lint:

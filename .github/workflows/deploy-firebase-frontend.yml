@@ -3,8 +3,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'frontend/**'
 
 defaults:
   run:
@@ -26,7 +24,7 @@ jobs:
         uses: actions/download-artifact@v3.0.2
         with:
           name: dist
-          path: './dist/'
+          path: './frontend/dist/'
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: '${{ secrets.GITHUB_TOKEN }}'
