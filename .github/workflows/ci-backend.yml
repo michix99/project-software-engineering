@@ -1,0 +1,52 @@
+name: Continuous Integration Backend
+
+on:
+  - workflow_call
+  - pull_request
+
+defaults:
+  run:
+    working-directory: backend
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3.1.0
+      - name: Restore dependencies
+        run: pip install -r ./test/requirements.txt
+      - name: Run linter
+        run: pylint backend
+
+  audit:
+    name: Audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3.1.0
+      - name: Install
+        run: python -m pip install .
+      - name: Run audit
+        uses: pypa/gh-action-pip-audit@v1.0.8
+        with:
+          inputs: requirements.txt
+          require-hashes: true
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3.1.0
+      - name: Restore dependencies
+        run: pip install -r ./test/requirements.txt
+      - name: Run unit test
+        run: pytest --cov-report html --cov-report term --cov=backend
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: coverage
+          path: htmlcov
+          retention-days: 5

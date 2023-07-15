@@ -1,0 +1,47 @@
+name: Deploy Backend to Cloud Function Hosting on merge
+on:
+  push:
+    branches:
+      - main
+
+defaults:
+  run:
+    working-directory: bakcned
+
+jobs:
+  ci:
+    name: Continuous Integration Backend
+    uses: ./.github/workflows/ci-backend.yml
+    secrets: inherit
+
+  deploy:
+    name: Deploy Backend to Cloud Function
+    runs-on: ubuntu-latest
+    needs: [ci]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3.1.0
+      - name: Install gcloud CLI
+        run: |
+          echo "deb [signed-by=/usr/share/keyrings/cloud.google.gpg] http://packages.cloud.google.com/apt cloud-sdk main" \
+          | tee -a /etc/apt/sources.list.d/google-cloud-sdk.list \
+          && curl https://packages.cloud.google.com/apt/doc/apt-key.gpg \
+          | apt-key --keyring /usr/share/keyrings/cloud.google.gpg  add - \
+          && apt-get update -y && apt-get install google-cloud-cli -y
+      - name: Write key file for login
+        env:
+          KEY_SECRET: ${{secrets.GCLOUD_SERVICE_ACCOUNT_KEY}}
+        shell: bash
+        run: echo "$KEY_SECRET" >> key.json
+      - name: Login to gcloud
+        run: gcloud auth activate-service-account ${{ secrets.GCLOUD_SERVICE_ACCOUNT_NAME }} --key-file=key.json --project=${{ secrets.GCLOUD_PROJECT_ID }}
+      - name: Deploy to gcloud
+        run: |
+          gcloud functions deploy project-software-engineering-rest \
+          --gen2 \
+          --runtime=python311 \
+          --region=europe-west3 \
+          --source=. \
+          --entry-point=hello_get \
+          --trigger-http \
+          --allow-unauthenticated
