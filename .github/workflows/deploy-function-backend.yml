@@ -37,8 +37,6 @@ jobs:
         run: echo "$KEY_SECRET" >> key.json
       - name: Login to gcloud
         run: gcloud auth activate-service-account '${{ secrets.GCLOUD_SERVICE_ACCOUNT_NAME }}' --key-file=key.json --project=${{ secrets.GCLOUD_PROJECT_ID }}
-      - name: Check Authenticated
-        run: gcloud auth list
       - name: Deploy to gcloud
         run: |
           gcloud functions deploy project-software-engineering-rest \
@@ -47,5 +45,4 @@ jobs:
           --region=europe-west3 \
           --source=. \
           --entry-point=hello_get \
-          --trigger-http \
-          --allow-unauthenticated
+          --trigger-http
