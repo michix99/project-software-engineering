@@ -1,6 +1,9 @@
 #!/usr/bin/env python
+"""
+    Project setup file.
+"""
 
-from distutils.core import setup
+from setuptools import setup
 
 setup(
     name="project-software-engineering",

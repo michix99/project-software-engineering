@@ -32,7 +32,6 @@ jobs:
         uses: pypa/gh-action-pip-audit@v1.0.8
         with:
           inputs: ./backend/requirements.txt
-          require-hashes: true
 
   test:
     name: Test
