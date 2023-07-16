@@ -1,0 +1,33 @@
+name: Deploy Frontend to Firebase Hosting on PR
+on:
+  - pull_request
+
+defaults:
+  run:
+    working-directory: frontend
+
+jobs:
+  ci:
+    name: Continuous Integration Frontend
+    uses: ./.github/workflows/ci-frontend.yml
+    secrets: inherit
+
+  preview:
+    name: Deploy Frontend Preview to Firebase
+    if: '${{ github.event.pull_request.head.repo.full_name == github.repository }}'
+    runs-on: ubuntu-latest
+    needs: [ci]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3.1.0
+      - name: Download artifacts
+        uses: actions/download-artifact@v3.0.2
+        with:
+          name: dist
+          path: './frontend/dist/'
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_PROJEKT_SOFTWARE_ENGINEERING }}'
+          projectId: projekt-software-engineering
+          entryPoint: './frontend'
