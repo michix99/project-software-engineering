@@ -1,7 +1,17 @@
 """
     Main entry point for the Cloud Function.
 """
+import logging
+from os import getenv
 import functions_framework
+from firebase_admin import auth, initialize_app
+from version import __version__
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+logger.info("Running with version: %s", __version__)
+initialize_app()
+
 
 @functions_framework.http
 def hello_get(request):
@@ -18,11 +28,48 @@ def hello_get(request):
         Functions, see the `Writing HTTP functions` page.
         <https://cloud.google.com/functions/docs/writing/http#http_frameworks>
     """
+
+    allowed_origins = "https://projekt-software-engineering.web.app"
+    if getenv("LOCAL_TESTING", "false").lower() in ("1", "true"):
+        allowed_origins = "*"
+
+    if request.method == "OPTIONS":
+        # Allows GET requests from any origin with the Content-Type
+        # header and caches preflight response for an 3600s
+        headers = {
+            "Access-Control-Allow-Origin": allowed_origins,
+            "Access-Control-Allow-Methods": "GET",
+            "Access-Control-Allow-Headers": "Content-Type, Authorization",
+        }
+
+        return ("", 204, headers)
+
+    # Set CORS headers for the main request
+    headers = {"Access-Control-Allow-Origin": allowed_origins}
+
+    bearer = request.headers.get("Authorization")
+    if not bearer:
+        return ("No Authorization header provided!", 401, headers)
+    id_token = bearer.split()[1]
+
+    try:
+        decoded_token = auth.verify_id_token(id_token)
+        uid = decoded_token["uid"]
+        print(uid)
+    except Exception as error:  # pylint: disable=W0718
+        return (f"Invalid Token: {str(error)}", 403, headers)
+
     content_type = request.headers.get("content-type")
     if content_type == "application/json":
         request_json = request.get_json(silent=True)
-        return f"The json body: {request_json}"
-    return f"Method: {request.method} Path: {request.path} Args: {request.args.to_dict()}"
+        return (f"The json body: {request_json}", 200, headers)
+    return (
+        "Successfully Authenticated! Method: "
+        + f"{request.method} Path: {request.path} Args: {request.args.to_dict()}",
+        200,
+        headers,
+    )
+
 
 @functions_framework.http
 def cors_enabled_function(request):
@@ -56,6 +103,7 @@ def cors_enabled_function(request):
     headers = {"Access-Control-Allow-Origin": "*"}
 
     return ("Hello World!", 200, headers)
+
 
 @functions_framework.http
 def cors_enabled_function_auth(request):

@@ -40,3 +40,6 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# As the environment contains secrets, they cannot be checked in
+/src/environments/**
