@@ -43,3 +43,4 @@ Thumbs.db
 
 # As the environment contains secrets, they cannot be checked in
 /src/environments/**
+.firebase/
