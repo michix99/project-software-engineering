@@ -30,7 +30,6 @@
     "devextreme-schematics": "^1.6.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^5.0.0",
-    "firebase": "^10.1.0",
     "prettier-eslint": "^15.0.1",
     "rxjs": "~7.8.0",
     "save-dev": "^0.0.1-security",
