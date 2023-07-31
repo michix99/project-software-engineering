@@ -9,9 +9,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "test:ci": "ng test --watch=false --browsers=ChromeHeadless",
-    "lint": "ng lint --fix",
-    "build-themes": "devextreme build",
-    "postinstall": "npm run build-themes"
+    "lint": "ng lint --fix"
   },
   "private": true,
   "dependencies": {
@@ -48,7 +46,6 @@
     "@typescript-eslint/eslint-plugin": "5.62.0",
     "@typescript-eslint/parser": "5.62.0",
     "devextreme-cli": "latest",
-    "devextreme-themebuilder": "^23.1.4",
     "eslint": "^8.44.0",
     "jasmine-core": "~4.6.0",
     "karma": "~6.4.2",

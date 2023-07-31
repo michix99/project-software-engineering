@@ -15,7 +15,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3.1.0
       - name: Restore dependencies
-        run: npm ci --legacy-peer-deps
+        run: npm ci
       - name: Setup node.js
         uses: actions/setup-node@v3
         with:
@@ -40,7 +40,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3.1.0
       - name: Restore dependencies
-        run: npm ci --legacy-peer-deps
+        run: npm ci
       - name: Run linter
         run: npm run lint
 
@@ -51,7 +51,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3.1.0
       - name: Restore dependencies
-        run: npm ci --legacy-peer-deps
+        run: npm ci
       - name: Run audit
         run: npm audit --omit=dev
 
@@ -62,7 +62,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3.1.0
       - name: Restore dependencies
-        run: npm ci --legacy-peer-deps
+        run: npm ci
       - name: Run unit test
         run: npm run test:ci
       - name: Upload artifacts
