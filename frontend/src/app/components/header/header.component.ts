@@ -14,6 +14,7 @@ import { DxButtonModule } from 'devextreme-angular/ui/button';
 import { DxToolbarModule } from 'devextreme-angular/ui/toolbar';
 
 import { Router } from '@angular/router';
+import { User } from '@angular/fire/auth';
 @Component({
   selector: 'app-header',
   templateUrl: 'header.component.html',
@@ -29,7 +30,7 @@ export class HeaderComponent implements OnInit {
   @Input()
   title!: string;
 
-  user: firebase.default.User | null = { email: '' } as firebase.default.User;
+  user: User | null = null;
 
   userMenuItems = [
     {

@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { DxListModule } from 'devextreme-angular/ui/list';
 import { DxContextMenuModule } from 'devextreme-angular/ui/context-menu';
 import { Item } from 'devextreme/ui/list';
+import { User } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-user-panel',
@@ -18,7 +19,7 @@ export class UserPanelComponent {
   menuMode!: string;
 
   @Input()
-  user!: firebase.default.User | null;
+  user!: User | null;
 }
 
 @NgModule({

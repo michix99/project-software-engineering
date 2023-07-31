@@ -1,14 +1,20 @@
-import { Injectable } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { Injectable, Optional } from '@angular/core';
+import {
+  Auth,
+  User,
+  authState,
+  signInWithEmailAndPassword,
+  signOut,
+} from '@angular/fire/auth';
 import { Router } from '@angular/router';
 
 const defaultPath = '/';
 
 @Injectable()
 export class AuthenticationService {
-  private userData: firebase.default.User | null = null;
+  private userData: User | null = null;
   get loggedIn(): boolean {
-    const user = JSON.parse(localStorage.getItem('user') ?? '');
+    const user = JSON.parse(localStorage.getItem('user') ?? 'null');
     return (
       user !== null && (user.emailVerified || user.email === 'test@user.de')
     );
@@ -22,35 +28,31 @@ export class AuthenticationService {
 
   constructor(
     private router: Router,
-    public firebaseAuthService: AngularFireAuth, // Inject Firebase auth service
+    @Optional() private auth: Auth, // Inject Firebase auth service
   ) {
+    if (!auth) {
+      return;
+    }
+
     /* Saving user data in localstorage when 
     logged in and setting up null when logged out */
-    this.firebaseAuthService.authState.subscribe(
-      (user: firebase.default.User | null) => {
-        if (user) {
-          this.userData = user;
-          localStorage.setItem('user', JSON.stringify(this.userData));
-        } else {
-          localStorage.setItem('user', 'null');
-        }
-      },
-    );
+    authState(this.auth).subscribe((user: User | null) => {
+      if (user) {
+        this.userData = user;
+        localStorage.setItem('user', JSON.stringify(this.userData));
+        this.router.navigate([this._lastAuthenticatedPath]);
+      } else {
+        localStorage.setItem('user', 'null');
+      }
+    });
   }
 
-  async logIn(email: string, password: string) {
+  async logIn(
+    email: string,
+    password: string,
+  ): Promise<{ isOk: boolean; data?: User | null; message?: string }> {
     try {
-      await this.firebaseAuthService.signInWithEmailAndPassword(
-        email,
-        password,
-      );
-
-      this.firebaseAuthService.authState.subscribe((user) => {
-        if (user) {
-          console.log('test');
-          this.router.navigate([this._lastAuthenticatedPath]);
-        }
-      });
+      await signInWithEmailAndPassword(this.auth, email, password);
 
       return {
         isOk: true,
@@ -66,7 +68,9 @@ export class AuthenticationService {
 
   async getUser() {
     try {
-      // Send request
+      if (!this.userData) {
+        this.userData = JSON.parse(localStorage.getItem('user') ?? 'null');
+      }
 
       return {
         isOk: true,
@@ -126,11 +130,10 @@ export class AuthenticationService {
   //   }
   // }
 
-  async logOut() {
-    return this.firebaseAuthService.signOut().then(() => {
-      localStorage.removeItem('user');
-      this.router.navigate(['/login-form']);
-    });
+  async logOut(): Promise<void> {
+    await signOut(this.auth);
+    localStorage.removeItem('user');
+    this.router.navigate(['/login-form']);
   }
 
   async getToken(): Promise<string> {

@@ -1,5 +1,4 @@
 import { Component, HostBinding } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
 import {
   AppInfoService,
   AuthenticationService,
@@ -12,7 +11,6 @@ import {
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  title = 'projekt-software-engineering';
   @HostBinding('class') get getClass() {
     return Object.keys(this.screen.sizes)
       .filter((cl) => this.screen.sizes[cl])
@@ -20,7 +18,6 @@ export class AppComponent {
   }
 
   constructor(
-    public fireBaseAuthentication: AngularFireAuth,
     private authService: AuthenticationService,
     private screen: ScreenService,
     public appInfo: AppInfoService,
