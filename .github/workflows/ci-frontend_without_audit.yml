@@ -1,0 +1,62 @@
+name: Continuous Integration Frontend
+
+on:
+  - workflow_call
+
+defaults:
+  run:
+    working-directory: frontend
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3.1.0
+      - name: Restore dependencies
+        run: npm ci
+      - name: Setup node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: lts/Hydrogen
+      - name: Create environment files
+        run: node write-environment.js
+        env:
+          ENVIRONMENT_PROD: '${{ secrets.ENVIRONMENT_PROD }}'
+      - name: Build for production
+        run: npm run build:prod
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: dist
+          path: frontend/dist
+          retention-days: 5
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3.1.0
+      - name: Restore dependencies
+        run: npm ci
+      - name: Run linter
+        run: npm run lint
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3.1.0
+      - name: Restore dependencies
+        run: npm ci
+      - name: Run unit test
+        run: npm run test:ci
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v3.1.2
+        with:
+          name: coverage
+          path: coverage
+          retention-days: 5
