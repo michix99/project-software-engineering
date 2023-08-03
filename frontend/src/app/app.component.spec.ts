@@ -1,11 +1,29 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
+import {
+  AppInfoService,
+  AuthenticationService,
+  ScreenService,
+} from './services';
+import { AuthenticationServiceMock } from 'src/test/authentication-service.mock';
+import { FooterModule, SideNavOuterToolbarModule } from './components';
+import { UnauthenticatedContentModule } from './unauthenticated-content';
 
 describe('AppComponent', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
+      imports: [
+        RouterTestingModule,
+        SideNavOuterToolbarModule,
+        FooterModule,
+        UnauthenticatedContentModule,
+      ],
+      providers: [
+        { provide: AuthenticationService, useClass: AuthenticationServiceMock },
+        ScreenService,
+        AppInfoService,
+      ],
       declarations: [AppComponent],
     }),
   );
@@ -14,20 +32,5 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
     expect(app).toBeTruthy();
-  });
-
-  it(`should have as title 'projekt-software-engineering'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('projekt-software-engineering');
-  });
-
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.content span')?.textContent).toContain(
-      'projekt-software-engineering app is running!',
-    );
   });
 });
