@@ -43,5 +43,5 @@ jobs:
           --runtime=python311 \
           --region=europe-west3 \
           --source=. \
-          --entry-point=hello_get \
+          --entry-point=request_handler \
           --trigger-http

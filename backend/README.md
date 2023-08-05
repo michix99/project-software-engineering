@@ -16,7 +16,8 @@ Run `pip install -r requirements.txt` in the backend folder _after_ activating y
 
 ## Development server
 
-Run `functions-framework --target <function name (ex: hello_get)> --debug` for a dev server. Run requests against `http://localhost:8080/`.
+Run `functions-framework --target <function name (ex: request_handler)> --debug` for a dev server. Run requests against `http://localhost:8080/`.
+For local testing you can disable the authentication by setting the environment variable `DISABLE_AUTH` to true. You should also set the environment variable `LOCAL_TESTING` to true while testing locally.
 
 ## Install dependencies for lint and testing
 
