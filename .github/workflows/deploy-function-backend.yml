@@ -1,4 +1,4 @@
-name: Deploy Backend to Cloud Function Hosting on merge
+name: CI/CD Backend to Cloud Function Hosting on merge
 on:
   push:
     branches:

@@ -1,4 +1,4 @@
-name: Deploy Frontend to Firebase Hosting on PR
+name: CI/CD Frontend on PR
 on:
   - pull_request
 

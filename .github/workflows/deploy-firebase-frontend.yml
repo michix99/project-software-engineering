@@ -1,4 +1,4 @@
-name: Deploy Frontend to Firebase Hosting on merge
+name: CI/CD Frontend to Firebase Hosting on merge
 on:
   push:
     branches:
