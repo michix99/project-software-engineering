@@ -37,7 +37,7 @@ def request_handler(request: Request):  # pylint: disable=R0911
 
     is_local_testing = getenv("LOCAL_TESTING", "false").lower() in ("1", "true")
     allowed_origins = (
-        "https://projekt-software-engineering.web.app" if is_local_testing else "*"
+        "*" if is_local_testing else "https://projekt-software-engineering.web.app"
     )
 
     if request.method == "OPTIONS":
