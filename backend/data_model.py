@@ -1,4 +1,5 @@
-from dataclasses import dataclass, fields
+"""The models for the db entities."""
+from dataclasses import dataclass
 
 
 @dataclass

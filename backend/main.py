@@ -3,22 +3,23 @@
 """
 from os import getenv
 import json
+from dataclasses import fields
 import functions_framework
 from firebase_admin import initialize_app
-from version import __version__
+from google.cloud.firestore_v1.base_query import FieldFilter
+from flask import Request
 from logger_utils import Logger
 from auth_utils import is_authenticated
-from db_utils import create, read, read_all, delete, update
-from data_modell import Course
-from google.cloud.firestore_v1.base_query import FieldFilter
-from dataclasses import fields
+from db_operator import DatabaseOperator
+from data_model import Course
+from version import __version__
 
 initialize_app()
 logger = Logger(component="main")
 
 
 @functions_framework.http
-def request_handler(request):
+def request_handler(request: Request):  # pylint: disable=R0911
     """HTTP Cloud Function.
     Args:
         request (flask.Request): The request object.
@@ -34,9 +35,10 @@ def request_handler(request):
     """
     logger.info(f"Running with version: {__version__}")
 
-    allowed_origins = "https://projekt-software-engineering.web.app"
-    if getenv("LOCAL_TESTING", "false").lower() in ("1", "true"):
-        allowed_origins = "*"
+    is_local_testing = getenv("LOCAL_TESTING", "false").lower() in ("1", "true")
+    allowed_origins = (
+        "https://projekt-software-engineering.web.app" if is_local_testing else "*"
+    )
 
     if request.method == "OPTIONS":
         # Allows GET requests from any origin with the Content-Type
@@ -45,8 +47,8 @@ def request_handler(request):
             "Access-Control-Allow-Origin": allowed_origins,
             "Access-Control-Allow-Methods": "GET",
             "Access-Control-Allow-Headers": "Content-Type, Authorization",
-            "Access-Control-Max-Age": "3600",
             "Access-Control-Allow-Credentials": "true",
+            "Access-Control-Max-Age": "3600",
         }
 
         return ("", 204, headers)
@@ -69,10 +71,11 @@ def request_handler(request):
     if not valid_path_segments:
         return ("Invalid Request", 400, headers)
 
+    # For Requests against an entity, schema: https://<api>/<entity>
     if len(valid_path_segments) == 1:
         match valid_path_segments[0]:
             case "course" if request.method == "GET":
-                response_code, response_message = read_all("course")
+                response_code, response_message = DatabaseOperator().read_all("course")
                 if response_code == 200:
                     return (json.dumps(response_message), response_code, headers)
                 return (response_message, response_code, headers)
@@ -91,7 +94,7 @@ def request_handler(request):
                     key: body[key] for key in get_field_names(Course) if key in body
                 }
                 duplication_filters = get_field_filters(only_relevant_attr)
-                response_code, response_message = create(
+                response_code, response_message = DatabaseOperator().create(
                     "course",
                     Course(
                         course_abbreviation=body["course_abbreviation"],
@@ -104,10 +107,13 @@ def request_handler(request):
                     return (response_message, response_code, headers)
                 return (json.dumps({"id": response_message}), response_code, headers)
 
+    # For Requests against specific elements, schema: https://<api>/<entity>/<id>
     elif len(valid_path_segments) == 2:
         match valid_path_segments[0]:
             case "course" if request.method == "GET":
-                response_code, response_message = read("course", valid_path_segments[1])
+                response_code, response_message = DatabaseOperator().read(
+                    "course", valid_path_segments[1]
+                )
                 if response_code == 200:
                     return (json.dumps(response_message), response_code, headers)
                 return (response_message, response_code, headers)
@@ -127,7 +133,7 @@ def request_handler(request):
                 }
                 duplication_filters = get_field_filters(only_relevant_attr)
 
-                response_code, response_message = update(
+                response_code, response_message = DatabaseOperator().update(
                     "course",
                     only_relevant_attr,
                     valid_path_segments[1],
@@ -141,7 +147,7 @@ def request_handler(request):
                     )
                 return (response_message, response_code, headers)
             case "course" if request.method == "DELETE":
-                response_code, response_message = delete(
+                response_code, response_message = DatabaseOperator().delete(
                     "course", valid_path_segments[1]
                 )
                 if response_code == 204:
@@ -150,23 +156,14 @@ def request_handler(request):
 
     return ("Invalid Request", 400, headers)
 
-    # create(
-    #     "course",
-    #     Course(course_abbreviation="ISEF01", name="Projekt Software Engineering"),
-    # )
 
-    # delete("course", "9ced3577-721e-4c5b-8f68-39781c00c4c2")
-
-    # update("course", {"name": "neu"}, "0a4d21f7-e432-4fd4-9a13-076709f543dd")
-    # update("course", Course(None, "neu"), "0a4d21f7-e432-4fd4-9a13-076709f543dd") # Caution: this will reset the abbreviation field
-
-    # print(read("course", "189d0d9f-9dbb-437a-ab5f-a4b5a67d948c"))
-    # print(find_all("course", FieldFilter("course_abbreviation", "==", "ISEF01")))
-
-    # print(read_all("course"))
-
-
-def get_body(request) -> dict:
+def get_body(request: Request) -> dict:
+    """Parses the request body to a dict.
+    Args:
+        request -- The HTTP request body.
+    Returns:
+        The parsed body as dict.
+    """
     content_type = request.headers.get("content-type")
     if not content_type == "application/json":
         logger.error(f"Expected JSON body but was: {content_type}", content_type)
@@ -176,11 +173,23 @@ def get_body(request) -> dict:
     return request_json
 
 
-def get_field_names(class_type) -> list[str]:
+def get_field_names(class_type: type) -> list[str]:
+    """Gets the name of the attributes for a given class.
+    Args:
+        class_type -- The dataclass type to get the field names from.
+    Returns:
+        A list of field names.
+    """
     field_elems = fields(class_type)
     return [x.name for x in field_elems]
 
 
-def get_field_filters(fields: dict) -> list[FieldFilter]:
-    conditions = [(key, "==", fields[key]) for key in fields]
+def get_field_filters(fields_to_filter: dict) -> list[FieldFilter]:
+    """Creates eq filters for given entity fields. Can be used in queries.
+    Args:
+        fields -- The fields to create filters for.
+    Returns:
+        A list with equality filters.
+    """
+    conditions = [(key, "==", fields_to_filter[key]) for key in fields_to_filter]
     return [FieldFilter(*_c) for _c in conditions]

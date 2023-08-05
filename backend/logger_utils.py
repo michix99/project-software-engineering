@@ -8,6 +8,8 @@ from enum import IntEnum
 
 
 class LogLevel(IntEnum):
+    """Enum containing all the possible log levels."""
+
     DEBUG = 1
     INFO = 2
     WARN = 3
@@ -26,73 +28,68 @@ class Logger:
         severity: LogLevel,
         message: str,
         component: str = None,
-        additional_fields: dict = dict(),
+        additional_fields: dict = None,
     ) -> None:
-        """
-        Generic log method, that prints a JSON string to the console.
-
-        severity - The importance of the log message.
-        message - The text to log.
-        component - The component which reports the log message.
-        additional_fields - Optional extra fields inclued in the log message.
+        """Generic log method, that prints a JSON string to the console.
+        Args:
+            severity - The importance of the log message.
+            message - The text to log.
+            component - The component which reports the log message.
+            additional_fields - Optional extra fields inclued in the log message.
         """
         if severity.value < self.log_level:
             return
 
-        entry = dict(
-            time=datetime.now().isoformat(),
-            severity=severity.name,
-            message=message,
-            component=component if component else self.component,
-            **additional_fields
-        )
+        entry = {
+            "time": datetime.now().isoformat(),
+            "severity": severity.name,
+            "message": message,
+            "component": component if component else self.component,
+            **(additional_fields if additional_fields else {}),
+        }
 
         print(json.dumps(entry))
 
     def debug(
-        self, message: str, component: str = None, additional_fields: dict = dict()
+        self, message: str, component: str = None, additional_fields: dict = None
     ) -> None:
-        """
-        Generic log method for severity DEBUG.
-
-        message - The text to log.
-        component - The component which reports the log message.
-        additional_fields - Optional extra fields inclued in the log message.
+        """Generic log method for severity DEBUG.
+        Args:
+            message - The text to log.
+            component - The component which reports the log message.
+            additional_fields - Optional extra fields inclued in the log message.
         """
         self.log(LogLevel.DEBUG, message, component, additional_fields)
 
     def info(
-        self, message: str, component: str = None, additional_fields: dict = dict()
+        self, message: str, component: str = None, additional_fields: dict = None
     ) -> None:
-        """
-        Generic log method for severity INFO.
-
-        message - The text to log.
-        component - The component which reports the log message.
-        additional_fields - Optional extra fields inclued in the log message.
+        """Generic log method for severity INFO.
+        Args:
+            message - The text to log.
+            component - The component which reports the log message.
+            additional_fields - Optional extra fields inclued in the log message.
         """
         self.log(LogLevel.INFO, message, component, additional_fields)
 
     def warn(
-        self, message: str, component: str = None, additional_fields: dict = dict()
+        self, message: str, component: str = None, additional_fields: dict = None
     ) -> None:
-        """
-        Generic log method for severity WARN.
-
-        message - The text to log.
-        component - The component which reports the log message.
-        additional_fields - Optional extra fields inclued in the log message.
+        """Generic log method for severity WARN.
+        Args:
+            message - The text to log.
+            component - The component which reports the log message.
+            additional_fields - Optional extra fields inclued in the log message.
         """
         self.log(LogLevel.WARN, message, component, additional_fields)
 
     def error(
-        self, message: str, component: str = None, additional_fields: dict = dict()
+        self, message: str, component: str = None, additional_fields: dict = None
     ) -> None:
-        """
-        Generic log method for severity ERROR.
-
-        message - The text to log.
-        component - The component which reports the log message.
-        additional_fields - Optional extra fields inclued in the log message.
+        """Generic log method for severity ERROR.
+        Args:
+            message - The text to log.
+            component - The component which reports the log message.
+            additional_fields - Optional extra fields inclued in the log message.
         """
         self.log(LogLevel.ERROR, message, component, additional_fields)
