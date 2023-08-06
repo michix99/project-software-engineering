@@ -166,7 +166,7 @@ def get_body(request: Request) -> dict:
     """
     content_type = request.headers.get("content-type")
     if not content_type == "application/json":
-        logger.error(f"Expected JSON body but was: {content_type}", content_type)
+        logger.error(f"Expected JSON body but was: {content_type}")
         return None
     request_json = request.get_json(silent=True)
     logger.info(f"Sucessfully loaded json body: {request_json}")

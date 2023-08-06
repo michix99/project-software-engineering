@@ -57,11 +57,14 @@ class DatabaseOperator:
             )
 
         if duplication_filters:
-            successful, duplicates = self.find(self, collection, duplication_filters)
+            successful, duplicates = self.find(collection, duplication_filters)
             if not successful:
                 return 500, "Could not check for duplicates!"
             duplicate_ids = [doc.id for doc in duplicates]
             if duplicate_ids:
+                logger.info(
+                    f"Found duplicate in '{collection}' with ID: {duplicate_ids[0]}"
+                )
                 return 409, duplicate_ids[0]
 
         new_data = asdict(data) if is_dataclass(data) else data
@@ -99,11 +102,14 @@ class DatabaseOperator:
         elem_ref = self.db_client.collection(collection).document(document_id)
 
         if duplication_filters:
-            successful, duplicates = self.find(self, collection, duplication_filters)
+            successful, duplicates = self.find(collection, duplication_filters)
             if not successful:
                 return 500, "Could not check for duplicates!"
             duplicate_ids = [doc.id for doc in duplicates]
             if duplicate_ids and not duplicate_ids[0] == document_id:
+                logger.info(
+                    f"Found duplicate in '{collection}' with ID: {duplicate_ids[0]}"
+                )
                 return 409, duplicate_ids[0]
 
         update_data = asdict(update_data) if is_dataclass(update_data) else update_data
