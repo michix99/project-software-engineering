@@ -1,4 +1,4 @@
-name: Deploy Backend to Cloud Function Hosting on merge
+name: CI/CD Backend to Cloud Function Hosting on merge
 on:
   push:
     branches:
@@ -43,5 +43,5 @@ jobs:
           --runtime=python311 \
           --region=europe-west3 \
           --source=. \
-          --entry-point=hello_get \
+          --entry-point=request_handler \
           --trigger-http
