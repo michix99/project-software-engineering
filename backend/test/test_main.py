@@ -20,8 +20,8 @@ class TestMain:  # pylint: disable=R0904
     @pytest.fixture(scope="session", name="_init_db")
     def fixture_init_db(self):
         """Mocks the firebase init."""
-        with mock.patch("db_operator.DatabaseOperator") as db_mock:
-            return db_mock
+        with mock.patch("firebase_admin.firestore.client") as client_mock:
+            return client_mock
 
     def test_cors_enabled_function_auth_preflight(self, app, _init_app) -> None:
         """Tests if the cors headers added correctly for a OPTION request."""
