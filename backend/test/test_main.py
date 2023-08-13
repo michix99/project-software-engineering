@@ -4,13 +4,26 @@
 import os
 from unittest import mock
 import flask
+import pytest
 import main
 
 
-class TestMain:
+class TestMain:  # pylint: disable=R0904
     """Contains tests for the main request handler."""
 
-    def test_cors_enabled_function_auth_preflight(self, app) -> None:
+    @pytest.fixture(scope="session", name="_init_app")
+    def fixture_init_app(self):
+        """Mocks the firebase init."""
+        with mock.patch("firebase_admin.initialize_app") as init_mock:
+            return init_mock
+
+    @pytest.fixture(scope="session", name="_init_db")
+    def fixture_init_db(self):
+        """Mocks the firebase init."""
+        with mock.patch("db_operator.DatabaseOperator") as db_mock:
+            return db_mock
+
+    def test_cors_enabled_function_auth_preflight(self, app, _init_app) -> None:
         """Tests if the cors headers added correctly for a OPTION request."""
         with app.test_request_context(method="OPTIONS"):
             res = main.request_handler(flask.request)
@@ -27,7 +40,7 @@ class TestMain:
             assert res[2].get("Access-Control-Allow-Credentials") == "true"
 
     def test_cors_enabled_function_auth_preflight_local_testing(
-        self, app, _environment_variables
+        self, app, _environment_variables, _init_app
     ) -> None:
         """Tests if the cors headers added correctly for a OPTION request (local testing)."""
         with app.test_request_context(method="OPTIONS"):
@@ -41,7 +54,7 @@ class TestMain:
             assert res[2].get("Access-Control-Max-Age") == "3600"
             assert res[2].get("Access-Control-Allow-Credentials") == "true"
 
-    def test_invalid_request(self, app, _environment_variables) -> None:
+    def test_invalid_request(self, app, _environment_variables, _init_app) -> None:
         """Tests that invalid request paths should be handled."""
         with app.test_request_context("/", method="GET"):
             res = main.request_handler(flask.request)
@@ -57,7 +70,7 @@ class TestMain:
             assert res[2].get("Access-Control-Allow-Origin") == "*"
             assert res[2].get("Access-Control-Allow-Credentials") == "true"
 
-    def test_unauthorized_request(self, app) -> None:
+    def test_unauthorized_request(self, app, _init_app) -> None:
         """Tests that unauthorized requests should be handled."""
         with app.test_request_context(method="GET"), mock.patch.dict(
             os.environ, {"DISABLE_AUTH": "False"}
@@ -68,7 +81,9 @@ class TestMain:
             assert res[2].get("Access-Control-Allow-Origin") == "*"
             assert res[2].get("Access-Control-Allow-Credentials") == "true"
 
-    def test_get_course_successful(self, app, _environment_variables) -> None:
+    def test_get_course_successful(
+        self, app, _environment_variables, _init_app, _init_db
+    ) -> None:
         """Tests a successful GET request to get all course elements."""
         with app.test_request_context("/course", method="GET"), mock.patch(
             "db_operator.DatabaseOperator.read_all"
@@ -83,7 +98,9 @@ class TestMain:
             assert res[2].get("Access-Control-Allow-Origin") == "*"
             assert res[2].get("Access-Control-Allow-Credentials") == "true"
 
-    def test_get_course_failing(self, app, _environment_variables) -> None:
+    def test_get_course_failing(
+        self, app, _environment_variables, _init_app, _init_db
+    ) -> None:
         """Tests that a failing GET request should properly return the error."""
         with app.test_request_context("/course", method="GET"), mock.patch(
             "db_operator.DatabaseOperator.read_all"
@@ -95,7 +112,9 @@ class TestMain:
             assert res[2].get("Access-Control-Allow-Origin") == "*"
             assert res[2].get("Access-Control-Allow-Credentials") == "true"
 
-    def test_post_course_successful(self, app, _environment_variables) -> None:
+    def test_post_course_successful(
+        self, app, _environment_variables, _init_app, _init_db
+    ) -> None:
         """Tests a successful POST request to create a new course entry."""
         with app.test_request_context(
             "/course",
@@ -109,7 +128,9 @@ class TestMain:
             assert res[2].get("Access-Control-Allow-Origin") == "*"
             assert res[2].get("Access-Control-Allow-Credentials") == "true"
 
-    def test_post_course_failing_conflict(self, app, _environment_variables) -> None:
+    def test_post_course_failing_conflict(
+        self, app, _environment_variables, _init_app, _init_db
+    ) -> None:
         """Tests that duplicated element as POST request should return a conflict."""
         with app.test_request_context(
             "/course",
@@ -124,7 +145,7 @@ class TestMain:
             assert res[2].get("Access-Control-Allow-Credentials") == "true"
 
     def test_post_course_failing_missing_fields(
-        self, app, _environment_variables
+        self, app, _environment_variables, _init_app, _init_db
     ) -> None:
         """Tests that a POST request with missing fields should return a bad request."""
         with app.test_request_context(
@@ -142,7 +163,9 @@ class TestMain:
             assert res[2].get("Access-Control-Allow-Origin") == "*"
             assert res[2].get("Access-Control-Allow-Credentials") == "true"
 
-    def test_post_course_failing(self, app, _environment_variables) -> None:
+    def test_post_course_failing(
+        self, app, _environment_variables, _init_app, _init_db
+    ) -> None:
         """Tests that a failing POST request should properly return the error."""
         with app.test_request_context(
             "/course",
@@ -156,7 +179,9 @@ class TestMain:
             assert res[2].get("Access-Control-Allow-Origin") == "*"
             assert res[2].get("Access-Control-Allow-Credentials") == "true"
 
-    def test_get_one_course_successful(self, app, _environment_variables) -> None:
+    def test_get_one_course_successful(
+        self, app, _environment_variables, _init_app, _init_db
+    ) -> None:
         """Tests a successful GET request to get a course element."""
         with app.test_request_context("/course/dummy_id", method="GET"), mock.patch(
             "db_operator.DatabaseOperator.read"
@@ -168,7 +193,9 @@ class TestMain:
             assert res[2].get("Access-Control-Allow-Origin") == "*"
             assert res[2].get("Access-Control-Allow-Credentials") == "true"
 
-    def test_get_one_course_failing(self, app, _environment_variables) -> None:
+    def test_get_one_course_failing(
+        self, app, _environment_variables, _init_app, _init_db
+    ) -> None:
         """Tests that a failing GET request for one element should properly return the error."""
         with app.test_request_context("/course/dummy_id", method="GET"), mock.patch(
             "db_operator.DatabaseOperator.read"
@@ -180,7 +207,9 @@ class TestMain:
             assert res[2].get("Access-Control-Allow-Origin") == "*"
             assert res[2].get("Access-Control-Allow-Credentials") == "true"
 
-    def test_put_course_successful(self, app, _environment_variables) -> None:
+    def test_put_course_successful(
+        self, app, _environment_variables, _init_app, _init_db
+    ) -> None:
         """Tests a successful PUT request to update an existing course entry."""
         with app.test_request_context(
             "/course/dummy_id",
@@ -194,7 +223,9 @@ class TestMain:
             assert res[2].get("Access-Control-Allow-Origin") == "*"
             assert res[2].get("Access-Control-Allow-Credentials") == "true"
 
-    def test_put_course_failing_conflict(self, app, _environment_variables) -> None:
+    def test_put_course_failing_conflict(
+        self, app, _environment_variables, _init_app, _init_db
+    ) -> None:
         """Tests that a duplicated element as PUT request body should return a conflict."""
         with app.test_request_context(
             "/course/dummy_id",
@@ -209,7 +240,7 @@ class TestMain:
             assert res[2].get("Access-Control-Allow-Credentials") == "true"
 
     def test_put_course_failing_missing_fields(
-        self, app, _environment_variables
+        self, app, _environment_variables, _init_app, _init_db
     ) -> None:
         """Tests that a PUT request with missing fields should return a bad request."""
         with app.test_request_context(
@@ -227,7 +258,9 @@ class TestMain:
             assert res[2].get("Access-Control-Allow-Origin") == "*"
             assert res[2].get("Access-Control-Allow-Credentials") == "true"
 
-    def test_put_course_failing(self, app, _environment_variables) -> None:
+    def test_put_course_failing(
+        self, app, _environment_variables, _init_app, _init_db
+    ) -> None:
         """Tests that a failing PUT request should properly return the error."""
         with app.test_request_context(
             "/course/dummy_id",
@@ -241,7 +274,9 @@ class TestMain:
             assert res[2].get("Access-Control-Allow-Origin") == "*"
             assert res[2].get("Access-Control-Allow-Credentials") == "true"
 
-    def test_delete_course_successful(self, app, _environment_variables) -> None:
+    def test_delete_course_successful(
+        self, app, _environment_variables, _init_app, _init_db
+    ) -> None:
         """Test a successful DELETE request to remove a given course entry."""
         with app.test_request_context("/course/dummy_id", method="DELETE"), mock.patch(
             "db_operator.DatabaseOperator.delete"
@@ -253,7 +288,9 @@ class TestMain:
             assert res[2].get("Access-Control-Allow-Origin") == "*"
             assert res[2].get("Access-Control-Allow-Credentials") == "true"
 
-    def test_delete_course_failing(self, app, _environment_variables) -> None:
+    def test_delete_course_failing(
+        self, app, _environment_variables, _init_app, _init_db
+    ) -> None:
         """Tests that a failing DELETE request should properly return the error."""
         with app.test_request_context("/course/dummy_id", method="DELETE"), mock.patch(
             "db_operator.DatabaseOperator.delete"
@@ -265,7 +302,7 @@ class TestMain:
             assert res[2].get("Access-Control-Allow-Origin") == "*"
             assert res[2].get("Access-Control-Allow-Credentials") == "true"
 
-    def test_get_body_wrong_content_type(self, app) -> None:
+    def test_get_body_wrong_content_type(self, app, _init_app) -> None:
         """When a bad content type was given, the parser should return nothing as body."""
         with app.test_request_context(
             method="GET", environ_base={"HTTP_CONTENT-TYPE": "wrong"}
