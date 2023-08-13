@@ -42,7 +42,7 @@ jobs:
       - name: Restore dependencies
         run: pip install -r ./test/requirements_test.txt
       - name: Run unit test
-        run: pytest --cov-report html --cov-report term --cov=backend
+        run: pytest --cov-report html --cov-report term --cov=.
       - name: Upload artifacts
         uses: actions/upload-artifact@v3.1.2
         with:
