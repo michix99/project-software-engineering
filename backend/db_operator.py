@@ -205,7 +205,7 @@ class DatabaseOperator:
             return False, None
         except (TimeoutError, RetryError) as error:
             error_message = (
-                f"Timed out while trying to create entry in {collection}: {str(error)}"
+                f"Timed out while searching entry in {collection}: {str(error)}"
             )
             logger.error(error_message)
             return False, None

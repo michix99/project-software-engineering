@@ -82,7 +82,9 @@ def request_handler(request: Request):  # pylint: disable=R0911
             case "course" if request.method == "POST":
                 body = get_body(request)
                 course_field_names = get_field_names(Course)
-                if not all(field_name in body for field_name in course_field_names):
+                if not body or not all(
+                    field_name in body for field_name in course_field_names
+                ):
                     error_message = (
                         "Not all required fields are provided! Required fields are: "
                         + ", ".join(course_field_names)
@@ -120,7 +122,9 @@ def request_handler(request: Request):  # pylint: disable=R0911
             case "course" if request.method == "PUT":
                 body = get_body(request)
                 course_field_names = get_field_names(Course)
-                if not all(field_name in body for field_name in course_field_names):
+                if not body or not all(
+                    field_name in body for field_name in course_field_names
+                ):
                     error_message = (
                         "Not all required fields are provided! Required fields are: "
                         + ", ".join(course_field_names)
