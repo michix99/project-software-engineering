@@ -11,25 +11,7 @@ class Course:
 
 
 @dataclass
-class professor:
-    """Class to describe a professor of the IU."""
-
-    email: str
-    name_first: str
-    name_last: str
-
-
-@dataclass
-class student:
-    """Class to describe a student of the IU."""
-
-    email: str
-    name_first: str
-    name_last: str
-
-
-@dataclass
-class admin:
+class Admin:
     """Class to describe an admin of the IU."""
 
     email: str
@@ -38,9 +20,30 @@ class admin:
 
 
 @dataclass
-class ticket:
+class User:
+    """Class to describe an user of the IU."""
+
+    email: str
+    name_first: str
+    name_last: str
+    is_professor: None
+    is_student: None
+
+
+@dataclass
+class Ticket:
     """Class to describe a ticket."""
 
     description: str
-    course_abbreviation: str
+    course_id: str
     title: str
+    author: str
+
+
+@dataclass
+class Comment:
+    """Class to describe a comment."""
+
+    author: str
+    contents: str
+    ticket_id: str
