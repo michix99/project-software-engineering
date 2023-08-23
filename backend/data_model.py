@@ -3,7 +3,14 @@ from dataclasses import dataclass
 from enum import Enum
 
 
+class Enties(Enum):
+    """enum witch all the classes"""
 
+    COURSE = auto()
+    ROLE = auto()
+    USER = auto()
+    TICKET = auto()
+    COMMENT = auto()
 
 
 @dataclass
@@ -48,22 +55,3 @@ class Comment:
     author: str
     contents: str
     ticket_id: str
-
-class Entities(Enum):
-    """Enum with all the classes"""
-
-    COURSE = auto()
-    ROLE = auto()
-    USER = auto()
-    TICKET = auto()
-    COMMENT = auto()
-
-entity_mapping = {
-    """connecting the enum values to the classes"""
-    
-    Entities.COURSE: Course,
-    Entities.ROLE: Role,
-    Entities.USER: User,
-    Entities.TICKET: Ticket,
-    Entities.COMMENT: Comment,
-}
