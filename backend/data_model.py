@@ -1,5 +1,16 @@
 """The models for the db entities."""
 from dataclasses import dataclass
+from enum import Enum
+
+
+class Enties(Enum):
+    """enum witch all the classes"""
+
+    COURSE = auto()
+    ROLE = auto()
+    USER = auto()
+    TICKET = auto()
+    COMMENT = auto()
 
 
 @dataclass
@@ -11,12 +22,10 @@ class Course:
 
 
 @dataclass
-class Admin:
-    """Class to describe an admin of the IU."""
+class Role:
+    """Class to describe a role of an User"""
 
-    email: str
-    name_first: str
-    name_last: str
+    role: str
 
 
 @dataclass
@@ -26,8 +35,7 @@ class User:
     email: str
     name_first: str
     name_last: str
-    is_professor: None
-    is_student: None
+    role: str
 
 
 @dataclass
@@ -42,7 +50,7 @@ class Ticket:
 
 @dataclass
 class Comment:
-    """Class to describe a comment."""
+    """Class to describe a comment for a ticket."""
 
     author: str
     contents: str
