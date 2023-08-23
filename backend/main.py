@@ -11,8 +11,8 @@ from flask import Request
 from logger_utils import Logger
 from auth_utils import is_authenticated
 from db_operator import DatabaseOperator
-from data_model import Course
 from version import __version__
+from data_model import Entities, entity_mapping, Course, Role, User, Ticket, Comment
 
 initialize_app()
 logger = Logger(component="main")
@@ -73,15 +73,18 @@ def request_handler(request: Request):  # pylint: disable=R0911
 
     # For Requests against an entity, schema: https://<api>/<entity>
     if len(valid_path_segments) == 1:
-        match valid_path_segments[0]:
-            case "course" if request.method == "GET":
-                response_code, response_message = DatabaseOperator().read_all("course")
+        entity_type = valid_path_segments[0]:
+
+        entity_class = entity_mapping[entity_type]
+
+        if request.method == "GET":
+                response_code, response_message = DatabaseOperator().read_all(entity_type)
                 if response_code == 200:
                     return (json.dumps(response_message), response_code, headers)
                 return (response_message, response_code, headers)
-            case "course" if request.method == "POST":
+        elif request.method == "POST":
                 body = get_body(request)
-                course_field_names = get_field_names(Course)
+                course_field_names = get_field_names(entity_class)
                 if not all(field_name in body for field_name in course_field_names):
                     error_message = (
                         "Not all required fields are provided! Required fields are: "
@@ -91,14 +94,13 @@ def request_handler(request: Request):  # pylint: disable=R0911
                     return (error_message, 400, headers)
 
                 only_relevant_attr = {
-                    key: body[key] for key in get_field_names(Course) if key in body
+                    key: body[key] for key in get_field_names(entity_class) if key in body
                 }
                 duplication_filters = get_field_filters(only_relevant_attr)
                 response_code, response_message = DatabaseOperator().create(
-                    "course",
-                    Course(
-                        course_abbreviation=body["course_abbreviation"],
-                        name=body["name"],
+                    entity_type,
+                    entity_class(
+                        only_relevant_attr,
                     ),
                     duplication_filters=duplication_filters,
                 )
@@ -109,17 +111,25 @@ def request_handler(request: Request):  # pylint: disable=R0911
 
     # For Requests against specific elements, schema: https://<api>/<entity>/<id>
     elif len(valid_path_segments) == 2:
-        match valid_path_segments[0]:
-            case "course" if request.method == "GET":
+        entity_type = valid_path_segments[0]
+        # Extract entity ID from URL
+        entity_id = valid_path_segments[1]
+        
+        if entity_type not in entity_mapping:
+            return ("Invalid Entity Type", 400, headers)
+        
+        entity_class = entity_mapping[entity_type]
+
+        if request.method == "GET":
                 response_code, response_message = DatabaseOperator().read(
-                    "course", valid_path_segments[1]
+                    entity_type, entity_id
                 )
                 if response_code == 200:
                     return (json.dumps(response_message), response_code, headers)
                 return (response_message, response_code, headers)
-            case "course" if request.method == "PUT":
+        elif request.method == "PUT":
                 body = get_body(request)
-                course_field_names = get_field_names(Course)
+                course_field_names = get_field_names(entity_class)
                 if not all(field_name in body for field_name in course_field_names):
                     error_message = (
                         "Not all required fields are provided! Required fields are: "
@@ -134,7 +144,7 @@ def request_handler(request: Request):  # pylint: disable=R0911
                 duplication_filters = get_field_filters(only_relevant_attr)
 
                 response_code, response_message = DatabaseOperator().update(
-                    "course",
+                    entity_type,
                     only_relevant_attr,
                     valid_path_segments[1],
                     duplication_filters,
@@ -146,9 +156,9 @@ def request_handler(request: Request):  # pylint: disable=R0911
                         headers,
                     )
                 return (response_message, response_code, headers)
-            case "course" if request.method == "DELETE":
+        elif request.method == "DELETE":
                 response_code, response_message = DatabaseOperator().delete(
-                    "course", valid_path_segments[1]
+                    entity_type, valid_path_segments[1]
                 )
                 if response_code == 204:
                     return ("", response_code, headers)
