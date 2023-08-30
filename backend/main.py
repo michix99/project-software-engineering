@@ -12,7 +12,7 @@ from logger_utils import Logger
 from auth_utils import is_authenticated
 from db_operator import DatabaseOperator
 from version import __version__
-from data_model import Entities, entity_mapping, Course, Role, User, Ticket, Comment
+from data_model import Entities, entity_mapping, Course, Role, Comment, User, Ticket
 
 initialize_app()
 logger = Logger(component="main")
@@ -85,7 +85,7 @@ def request_handler(request: Request):  # pylint: disable=R0911
             if response_code == 200:
                 return (json.dumps(response_message), response_code, headers)
             return (response_message, response_code, headers)
-        elif request.method == "POST":
+        if request.method == "POST":
             body = get_body(request)
             course_field_names = get_field_names(entity_class)
             if not all(field_name in body for field_name in course_field_names):
@@ -130,7 +130,7 @@ def request_handler(request: Request):  # pylint: disable=R0911
             if response_code == 200:
                 return (json.dumps(response_message), response_code, headers)
             return (response_message, response_code, headers)
-        elif request.method == "PUT":
+        if request.method == "PUT":
             body = get_body(request)
             course_field_names = get_field_names(entity_class)
             if not all(field_name in body for field_name in course_field_names):
@@ -159,7 +159,7 @@ def request_handler(request: Request):  # pylint: disable=R0911
                     headers,
                 )
             return (response_message, response_code, headers)
-        elif request.method == "DELETE":
+        if request.method == "DELETE":
             response_code, response_message = DatabaseOperator().delete(
                 entity_type, valid_path_segments[1]
             )

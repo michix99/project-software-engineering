@@ -1,9 +1,6 @@
 """The models for the db entities."""
 from dataclasses import dataclass
-from enum import Enum, auto
-
-
-
+from enum import Enum
 
 
 @dataclass
@@ -49,6 +46,7 @@ class Comment:
     contents: str
     ticket_id: str
 
+
 class Entities(Enum):
     """Enum with all the classes"""
 
@@ -56,14 +54,15 @@ class Entities(Enum):
     ROLE = Role
     USER = User
     TICKET = Ticket
-    COMMENT = Comment9
+    COMMENT = Comment
+
 
 entity_mapping = {
-    """connecting the enum values to the classes"""
-    
+
     Entities.COURSE: Course,
     Entities.ROLE: Role,
     Entities.USER: User,
     Entities.TICKET: Ticket,
     Entities.COMMENT: Comment,
-    }
+}
+
