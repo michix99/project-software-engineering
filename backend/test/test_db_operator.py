@@ -17,9 +17,9 @@ class MockDocReference:  # pylint: disable=R0903
     id: str
     name: str
 
-    def __init__(self, exists, id=None, name=None) -> None:
+    def __init__(self, exists, identifier=None, name=None) -> None:
         self.exists = exists
-        self.id = id
+        self.id = identifier  # pylint: disable=C0103
         self.name = name
 
     def to_dict(self) -> dict:
