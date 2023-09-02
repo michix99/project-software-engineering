@@ -1,10 +1,9 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import 'devextreme/data/odata/store';
 import { AuthenticationService } from '../../services';
 import { environment } from 'src/environments/environment';
 import { Course, courseFromJson } from 'src/app/models';
 import notify from 'devextreme/ui/notify';
-import { timeout } from 'rxjs';
 
 @Component({
   templateUrl: 'tasks.component.html',

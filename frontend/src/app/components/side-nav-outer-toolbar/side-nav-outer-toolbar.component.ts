@@ -5,6 +5,8 @@ import {
   Input,
   ViewChild,
   ElementRef,
+  AfterViewInit,
+  OnDestroy,
 } from '@angular/core';
 import { HeaderModule } from '..';
 import { AuthenticationGuardService, ScreenService } from '../../services';
@@ -29,7 +31,9 @@ import { navigation } from './navigation';
   templateUrl: './side-nav-outer-toolbar.component.html',
   styleUrls: ['./side-nav-outer-toolbar.component.scss'],
 })
-export class SideNavOuterToolbarComponent implements OnInit {
+export class SideNavOuterToolbarComponent
+  implements OnInit, AfterViewInit, OnDestroy
+{
   @ViewChild(DxScrollViewComponent, { static: true })
   scrollView!: DxScrollViewComponent;
 
@@ -69,7 +73,7 @@ export class SideNavOuterToolbarComponent implements OnInit {
         if (item.requiredRole && !this.authGuard.hasRole(item.requiredRole))
           break;
 
-        let children = item.items ?? [];
+        const children = item.items ?? [];
         item.items = [];
         for (const child of children) {
           if (child.requiredRole && !this.authGuard.hasRole(child.requiredRole))
@@ -117,7 +121,7 @@ export class SideNavOuterToolbarComponent implements OnInit {
     events.on(
       this.elementRef.nativeElement.querySelector('#treeView'),
       'dxclick',
-      (_: Event) => {
+      () => {
         this.navigationClick();
       },
     );
