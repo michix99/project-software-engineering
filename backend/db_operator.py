@@ -166,7 +166,9 @@ class DatabaseOperator:
         """
         try:
             all_element_refs = self.db_client.collection(collection).stream(timeout=10)
-            all_elements = [element.to_dict() for element in all_element_refs]
+            all_elements = [
+                {**element.to_dict(), "id": element.id} for element in all_element_refs
+            ]
         except (TimeoutError, RetryError) as error:
             error_message = (
                 f"Timed out while trying to read all entries for {collection}: "

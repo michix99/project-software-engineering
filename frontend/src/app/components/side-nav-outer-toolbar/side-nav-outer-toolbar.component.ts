@@ -1,7 +1,17 @@
-import { Component, OnInit, NgModule, Input, ViewChild } from '@angular/core';
-import { SideNavigationMenuModule, HeaderModule } from '..';
-import { ScreenService } from '../../services';
-import { DxTreeViewTypes } from 'devextreme-angular/ui/tree-view';
+import {
+  Component,
+  OnInit,
+  NgModule,
+  Input,
+  ViewChild,
+  ElementRef,
+} from '@angular/core';
+import { HeaderModule } from '..';
+import { AuthenticationGuardService, ScreenService } from '../../services';
+import {
+  DxTreeViewModule,
+  DxTreeViewTypes,
+} from 'devextreme-angular/ui/tree-view';
 import { DxDrawerModule } from 'devextreme-angular/ui/drawer';
 import {
   DxScrollViewModule,
@@ -10,6 +20,9 @@ import {
 import { CommonModule } from '@angular/common';
 
 import { Router, NavigationEnd } from '@angular/router';
+import dxTreeView from 'devextreme/ui/tree_view';
+import * as events from 'devextreme/events';
+import { navigation } from './navigation';
 
 @Component({
   selector: 'app-side-nav-outer-toolbar',
@@ -19,9 +32,26 @@ import { Router, NavigationEnd } from '@angular/router';
 export class SideNavOuterToolbarComponent implements OnInit {
   @ViewChild(DxScrollViewComponent, { static: true })
   scrollView!: DxScrollViewComponent;
+
+  menu!: dxTreeView;
   selectedRoute = '';
 
-  menuOpened!: boolean;
+  private _menuOpened!: boolean;
+  get menuOpened(): boolean {
+    return this._menuOpened;
+  }
+  set menuOpened(val: boolean) {
+    this._menuOpened = val;
+
+    if (!this.menu) return;
+
+    if (val) {
+      this.menu.expandItem(this.selectedRoute);
+      this.navigationClick();
+    } else {
+      this.menu.collapseAll();
+    }
+  }
   temporaryMenuOpened = false;
 
   @Input()
@@ -32,23 +62,72 @@ export class SideNavOuterToolbarComponent implements OnInit {
   minMenuSize = 0;
   shaderEnabled = false;
 
+  private _items: Record<string, unknown>[] = [];
+  get items() {
+    if (this._items.length === 0) {
+      for (const item of navigation) {
+        if (item.requiredRole && !this.authGuard.hasRole(item.requiredRole))
+          break;
+
+        let children = item.items ?? [];
+        item.items = [];
+        for (const child of children) {
+          if (child.requiredRole && !this.authGuard.hasRole(child.requiredRole))
+            break;
+
+          item.items.push(child);
+        }
+
+        this._items.push({ ...item, expanded: this.menuOpened });
+      }
+    }
+
+    return this._items;
+  }
+
   constructor(
     private screen: ScreenService,
     private router: Router,
+    private elementRef: ElementRef,
+    private authGuard: AuthenticationGuardService,
   ) {}
 
   ngOnInit() {
     this.menuOpened = this.screen.sizes['screen-large'];
 
     this.router.events.subscribe((val) => {
-      if (val instanceof NavigationEnd) {
-        this.selectedRoute = val.urlAfterRedirects.split('?')[0];
+      if (!(val instanceof NavigationEnd)) return;
+
+      const newRoute = val.urlAfterRedirects.split('?')[0];
+
+      if (this.menu.selectItem(newRoute)) {
+        this.selectedRoute = newRoute;
+        return;
       }
+      this.selectedRoute = '';
+      this.menu.unselectAll();
     });
 
     this.screen.changed.subscribe(() => this.updateDrawer());
 
     this.updateDrawer();
+  }
+
+  ngAfterViewInit() {
+    events.on(
+      this.elementRef.nativeElement.querySelector('#treeView'),
+      'dxclick',
+      (_: Event) => {
+        this.navigationClick();
+      },
+    );
+  }
+
+  ngOnDestroy() {
+    events.off(
+      this.elementRef.nativeElement.querySelector('#treeView'),
+      'dxclick',
+    );
   }
 
   updateDrawer() {
@@ -97,14 +176,21 @@ export class SideNavOuterToolbarComponent implements OnInit {
       this.menuOpened = true;
     }
   }
+
+  onTreeViewInitialized(event: DxTreeViewTypes.InitializedEvent) {
+    if (!event.component) {
+      return;
+    }
+    this.menu = event.component;
+  }
 }
 
 @NgModule({
   imports: [
-    SideNavigationMenuModule,
     DxDrawerModule,
     HeaderModule,
     DxScrollViewModule,
+    DxTreeViewModule,
     CommonModule,
   ],
   exports: [SideNavOuterToolbarComponent],

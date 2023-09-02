@@ -5,7 +5,16 @@
   height: 100%;
 }
 
+.page-name {
+  text-align: center;
+  margin-bottom: 0;
+}
+
 .single-card {
+  @media (max-width:599px) {
+    background-color: #fff;
+  }
+
   .dx-card {
     width: 330px;
     margin: auto auto;

@@ -15,10 +15,7 @@ export class LoginFormComponent {
   loading = false;
   formData: { password: string; email: string } = { password: '', email: '' };
 
-  constructor(
-    private authService: AuthenticationService,
-    private router: Router,
-  ) {}
+  constructor(private authService: AuthenticationService) {}
 
   async onSubmit(e: Event) {
     e.preventDefault();
@@ -31,10 +28,6 @@ export class LoginFormComponent {
       notify(result.message, 'error', 2000);
     }
   }
-
-  onCreateAccountClick = () => {
-    this.router.navigate(['/create-account']);
-  };
 }
 @NgModule({
   imports: [CommonModule, RouterModule, DxFormModule, DxLoadIndicatorModule],

@@ -1,38 +1,52 @@
-import { Component } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import 'devextreme/data/odata/store';
+import { AuthenticationService } from '../../services';
+import { environment } from 'src/environments/environment';
+import { Course, courseFromJson } from 'src/app/models';
+import notify from 'devextreme/ui/notify';
+import { timeout } from 'rxjs';
 
 @Component({
   templateUrl: 'tasks.component.html',
 })
-export class TasksComponent {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  dataSource: any;
-  priority: { name: string; value: number }[];
+export class TasksComponent implements OnInit {
+  dataSource: Course[] = [];
+  isLoading = false;
 
-  constructor() {
-    this.dataSource = {
-      store: {
-        type: 'odata',
-        key: 'Task_ID',
-        url: 'https://js.devexpress.com/Demos/DevAV/odata/Tasks',
-      },
-      expand: 'ResponsibleEmployee',
-      select: [
-        'Task_ID',
-        'Task_Subject',
-        'Task_Start_Date',
-        'Task_Due_Date',
-        'Task_Status',
-        'Task_Priority',
-        'Task_Completion',
-        'ResponsibleEmployee/Employee_Full_Name',
-      ],
-    };
-    this.priority = [
-      { name: 'High', value: 4 },
-      { name: 'Urgent', value: 3 },
-      { name: 'Normal', value: 2 },
-      { name: 'Low', value: 1 },
-    ];
+  constructor(private authService: AuthenticationService) {}
+
+  ngOnInit() {
+    this.isLoading = true;
+    this.authService.authState.subscribe((user) => {
+      if (user) {
+        this.getCourses()
+          .catch((error) => {
+            console.log('Error:', error);
+          })
+          .finally(() => {
+            this.isLoading = false;
+          });
+      }
+    });
+  }
+
+  async getCourses() {
+    try {
+      console.log('loading');
+      const token = await this.authService.getToken();
+      const coursesResponse = await fetch(`${environment.apiUrl}/course`, {
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const jsonResponse = (await coursesResponse.json()) as unknown as Array<
+        Record<string, unknown>
+      >;
+      this.dataSource = jsonResponse.map((e) => courseFromJson(e));
+    } catch (error) {
+      notify(`Failed to load courses: ${error}`, 'error', 2000);
+    }
   }
 }
