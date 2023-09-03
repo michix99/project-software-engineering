@@ -14,15 +14,17 @@ class MockDocReference:  # pylint: disable=R0903
     """Mock implementation of a document reference."""
 
     exists: bool
-    identifier: str
+    id: str
+    name: str
 
-    def __init__(self, exists, identifier=None) -> None:
+    def __init__(self, exists, identifier=None, name=None) -> None:
         self.exists = exists
-        self.identifier = identifier
+        self.id = identifier  # pylint: disable=C0103
+        self.name = name
 
     def to_dict(self) -> dict:
         """Parses the element to a dictionary."""
-        return {"id": self.identifier}
+        return {"name": self.name}
 
 
 class TestDbOperator:  # pylint: disable=R0904
@@ -249,12 +251,12 @@ class TestDbOperator:  # pylint: disable=R0904
             collection_mock.return_value = collection_return_mock = mock.Mock()
             collection_return_mock.document.return_value = element_mock = mock.Mock()
 
-            element_mock.get.return_value = MockDocReference(True, "dummy_id")
+            element_mock.get.return_value = MockDocReference(True, name="dummy_id")
 
             return_code, return_message = db_operator.read("test", "dummy_id")
 
             assert return_code == 200
-            assert return_message == {"id": "dummy_id"}
+            assert return_message == {"name": "dummy_id"}
 
     def test_read_failing_not_found(self, db_operator) -> None:
         """Tests reading a database entity failing, as the element was not found."""
@@ -290,14 +292,17 @@ class TestDbOperator:  # pylint: disable=R0904
         with mock.patch.object(db_operator.db_client, "collection") as collection_mock:
             collection_mock.return_value = collection_return_mock = mock.Mock()
             collection_return_mock.stream.return_value = [
-                MockDocReference(True, "dummy_id"),
-                MockDocReference(True, "another_dummy_id"),
+                MockDocReference(True, "dummy_id", "name"),
+                MockDocReference(True, "another_dummy_id", "another_name"),
             ]
 
             return_code, return_message = db_operator.read_all("test")
 
             assert return_code == 200
-            assert return_message == [{"id": "dummy_id"}, {"id": "another_dummy_id"}]
+            assert return_message == [
+                {"id": "dummy_id", "name": "name"},
+                {"id": "another_dummy_id", "name": "another_name"},
+            ]
 
     def test_read_all_failing_with_timeout(self, db_operator) -> None:
         """Tests reading a database collection failing, as the query timed out."""
@@ -363,8 +368,8 @@ class TestDbOperator:  # pylint: disable=R0904
             collection_mock.return_value = collection_return_mock = mock.Mock()
             collection_return_mock.where.return_value = filtered_mock = mock.Mock()
             filtered_mock.stream.return_value = [
-                MockDocReference(True, "dummy_id"),
-                MockDocReference(True, "another_dummy_id"),
+                MockDocReference(True, name="dummy_id"),
+                MockDocReference(True, name="another_dummy_id"),
             ]
 
             found_successful, return_message = db_operator.find_all(
@@ -372,7 +377,10 @@ class TestDbOperator:  # pylint: disable=R0904
             )
 
             assert found_successful is True
-            assert return_message == [{"id": "dummy_id"}, {"id": "another_dummy_id"}]
+            assert return_message == [
+                {"name": "dummy_id"},
+                {"name": "another_dummy_id"},
+            ]
 
     def test_find_all_failing_with_filter_field_unknown(self, db_operator) -> None:
         """Tests querying a database collection failing, as the filters are invalid."""

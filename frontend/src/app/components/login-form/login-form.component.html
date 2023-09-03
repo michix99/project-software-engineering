@@ -36,17 +36,6 @@
       <dxo-label [visible]="false"></dxo-label>
     </dxi-item>
 
-    <dxi-item
-      dataField="rememberMe"
-      editorType="dxCheckBox"
-      [editorOptions]="{
-        text: 'Remember me',
-        elementAttr: { class: 'form-text' }
-      }"
-    >
-      <dxo-label [visible]="false"></dxo-label>
-    </dxi-item>
-
     <dxi-item itemType="button">
       <dxo-button-options
         width="100%"
@@ -61,14 +50,6 @@
       <div class="link">
         <a routerLink="/reset-password">Forgot password?</a>
       </div>
-    </dxi-item>
-
-    <dxi-item itemType="button">
-      <dxo-button-options
-        text="Create an account"
-        width="100%"
-        [onClick]="onCreateAccountClick"
-      ></dxo-button-options>
     </dxi-item>
 
     <ng-container *dxTemplate="let item of 'signInTemplate'">

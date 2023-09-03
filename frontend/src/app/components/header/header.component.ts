@@ -47,6 +47,13 @@ export class HeaderComponent implements OnInit {
         this.authService.logOut();
       },
     },
+    {
+      text: 'Change Password',
+      icon: 'refresh',
+      onClick: () => {
+        this.router.navigate(['/change-password']);
+      },
+    },
   ];
 
   constructor(
@@ -55,7 +62,7 @@ export class HeaderComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.authService.getUser().then((e) => (this.user = e.data));
+    this.user = this.authService.getUser().data ?? null;
   }
 
   toggleMenu = () => {

@@ -1,7 +1,22 @@
+@import "../themes/generated/variables.base.scss";
+
 :host {
   @import "../themes/generated/variables.base.scss";
   background-color: darken($base-bg, 5.00);
   display: flex;
+  height: 100%;
+  width: 100%;
+}
+
+.footer-wrapper {
+  display: block;
+  color: rgba($base-text-color, alpha($base-text-color) * 0.7);
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  padding-top: 20px;
+  padding-bottom: 24px;
+}
+
+.unauthenticated-content {
   height: 100%;
   width: 100%;
 }

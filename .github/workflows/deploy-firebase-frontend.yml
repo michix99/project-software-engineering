@@ -11,7 +11,7 @@ defaults:
 jobs:
   ci:
     name: Continuous Integration Frontend
-    uses: ./.github/workflows/ci-frontend_without_audit.yml
+    uses: ./.github/workflows/ci-frontend.yml
     secrets: inherit
 
   deploy:
