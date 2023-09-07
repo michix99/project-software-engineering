@@ -7,14 +7,14 @@ from enum import Enum
 class Course:
     """Class to describe a course of the IU."""
 
-    course_abbreviation: str
-    name: str
+    course_abbreviation: str = ""
+    name: str = ""
 
 
 @dataclass
 class Role:
     """Class to describe a role of an User"""
-
+    
     role: str
 
 
@@ -47,6 +47,13 @@ class Comment:
     ticket_id: str
 
 
+@dataclass
+class Status:
+    """Class to describe a Status of a ticket"""
+
+    status: str
+
+
 class Entities(Enum):
     """Enum with all the classes"""
 
@@ -55,14 +62,14 @@ class Entities(Enum):
     USER = User
     TICKET = Ticket
     COMMENT = Comment
+    STATUS = Status
 
 
 entity_mapping = {
-
-    Entities.COURSE: Course,
-    Entities.ROLE: Role,
-    Entities.USER: User,
-    Entities.TICKET: Ticket,
-    Entities.COMMENT: Comment,
+    "course": Course,
+    "role": Role,
+    "user": User,
+    "ticket": Ticket,
+    "comment": Comment,
+    "status": Status,
 }
-

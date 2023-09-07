@@ -12,7 +12,8 @@ from logger_utils import Logger
 from auth_utils import is_authenticated
 from db_operator import DatabaseOperator
 from version import __version__
-from data_model import Entities, entity_mapping, Course, Role, Comment, User, Ticket
+from data_model import entity_mapping, Entities, Role, Comment, Course, User, Ticket
+
 
 initialize_app()
 logger = Logger(component="main")
@@ -71,15 +72,25 @@ def request_handler(request: Request):  # pylint: disable=R0911
     if not valid_path_segments:
         return ("Invalid Request", 400, headers)
 
+    # Debugging statements
+    print(f"Debug: request.path is '{request.path}'")
+    print(f"Debug: valid_path_segments is {valid_path_segments}")
+
     # For Requests against an entity, schema: https://<api>/<entity>
     if len(valid_path_segments) == 1:
         entity_type = valid_path_segments[0]
+        entity_type = entity_type.strip()
+        entity_type = entity_type.lower()
 
-        entity_class = entity_mapping[entity_type]
+        # Debbugging statments
+        print(f"Debug: entity_type is '{entity_type}'")
+        print("Debug: entity_mapping keys:", entity_mapping.keys())
 
         if entity_type not in entity_mapping:
             return ("Invalid Entity Type", 400, headers)
 
+        entity_class = entity_mapping[entity_type]
+        print("Debug: entity_class : ", entity_class)
         if request.method == "GET":
             response_code, response_message = DatabaseOperator().read_all(entity_type)
             if response_code == 200:
@@ -88,7 +99,9 @@ def request_handler(request: Request):  # pylint: disable=R0911
         if request.method == "POST":
             body = get_body(request)
             course_field_names = get_field_names(entity_class)
-            if not all(field_name in body for field_name in course_field_names):
+            print("Debug: course field names:", course_field_names)
+            print("Debug body:", body)
+            if not body or not all(field_name in body for field_name in course_field_names):
                 error_message = (
                     "Not all required fields are provided! Required fields are: "
                     + ", ".join(course_field_names)
@@ -99,11 +112,14 @@ def request_handler(request: Request):  # pylint: disable=R0911
             only_relevant_attr = {
                 key: body[key] for key in get_field_names(entity_class) if key in body
             }
+            print("Debug: only_relevant_attr:", only_relevant_attr)
             duplication_filters = get_field_filters(only_relevant_attr)
+            print("Debug: duplication_filters:", duplication_filters )
             response_code, response_message = DatabaseOperator().create(
                 entity_type,
                 entity_class(
                     only_relevant_attr,
+                    print("Debug: only_relevant_attr2.0:", only_relevant_attr)
                 ),
                 duplication_filters=duplication_filters,
             )
@@ -133,7 +149,9 @@ def request_handler(request: Request):  # pylint: disable=R0911
         if request.method == "PUT":
             body = get_body(request)
             course_field_names = get_field_names(entity_class)
-            if not all(field_name in body for field_name in course_field_names):
+            print("Debug: course field names:", course_field_names)
+            print("Debug body:", body)
+            if not body or all(field_name in body for field_name in course_field_names):
                 error_message = (
                     "Not all required fields are provided! Required fields are: "
                     + ", ".join(course_field_names)
