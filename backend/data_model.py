@@ -1,6 +1,5 @@
 """The models for the db entities."""
 from dataclasses import dataclass
-from enum import Enum
 
 
 @dataclass
@@ -14,8 +13,8 @@ class Course:
 @dataclass
 class Role:
     """Class to describe a role of an User"""
-    
-    role: str
+
+    name: str
 
 
 @dataclass
@@ -36,6 +35,7 @@ class Ticket:
     course_id: str
     title: str
     author: str
+    status: str
 
 
 @dataclass
@@ -43,33 +43,14 @@ class Comment:
     """Class to describe a comment for a ticket."""
 
     author: str
-    contents: str
+    content: str
     ticket_id: str
 
 
-@dataclass
-class Status:
-    """Class to describe a Status of a ticket"""
-
-    status: str
-
-
-class Entities(Enum):
-    """Enum with all the classes"""
-
-    COURSE = Course
-    ROLE = Role
-    USER = User
-    TICKET = Ticket
-    COMMENT = Comment
-    STATUS = Status
-
-
-entity_mapping = {
+ENTITY_MAPPINGS = {
     "course": Course,
     "role": Role,
     "user": User,
     "ticket": Ticket,
     "comment": Comment,
-    "status": Status,
 }
