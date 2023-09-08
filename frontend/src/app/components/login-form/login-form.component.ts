@@ -12,19 +12,25 @@ import { AuthenticationService } from '../../services';
   styleUrls: ['./login-form.component.scss'],
 })
 export class LoginFormComponent {
+  /** Indicates if the loading spinner should be shown. */
   loading = false;
+  /** The data used for login the user. */
   formData: { password: string; email: string } = { password: '', email: '' };
 
   constructor(private authService: AuthenticationService) {}
 
-  async onSubmit(e: Event) {
+  /**
+   * Submits the login reset.
+   * @param e The form submit event.
+   */
+  async onSubmit(e: Event): Promise<void> {
     e.preventDefault();
     const { email, password } = this.formData;
     this.loading = true;
 
     const result = await this.authService.logIn(email, password);
+    this.loading = false;
     if (!result.isOk) {
-      this.loading = false;
       notify(result.message, 'error', 2000);
     }
   }

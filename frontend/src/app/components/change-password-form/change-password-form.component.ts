@@ -13,12 +13,15 @@ import notify from 'devextreme/ui/notify';
   styleUrls: ['./change-password-form.component.scss'],
 })
 export class ChangePasswordFormComponent {
+  /** Indicates if the loading spinner should be shown. */
   loading = false;
+  /** The data fields for changing the password. */
   formData: { currentPassword: string; password: string } = {
     currentPassword: '',
     password: '',
   };
 
+  /** The reset code to confirm the password reset. */
   @Input()
   oobCode?: string;
 
@@ -27,7 +30,11 @@ export class ChangePasswordFormComponent {
     private router: Router,
   ) {}
 
-  async onSubmit(e: Event) {
+  /**
+   * Submits the password reset/ the password change.
+   * @param e The form submit event.
+   */
+  async onSubmit(e: Event): Promise<void> {
     e.preventDefault();
     const { currentPassword, password } = this.formData;
     this.loading = true;
@@ -60,6 +67,7 @@ export class ChangePasswordFormComponent {
     }
   }
 
+  /** Validates if the provided password and the confirm password value matches. */
   confirmPassword = (e: ValidationCallbackData) => {
     return e.value === this.formData.password;
   };
