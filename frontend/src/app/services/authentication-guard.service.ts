@@ -13,11 +13,18 @@ export class AuthenticationGuardService {
     private authService: AuthenticationService,
   ) {}
 
-  canActivate(route: ActivatedRouteSnapshot): boolean {
+  canActivate(route: ActivatedRouteSnapshot, requiredRole?: Role): boolean {
     const isLoggedIn = this.authService.loggedIn;
     const isAuthForm = ['login-form', 'reset-password'].includes(
       route.routeConfig?.path || this.defaultPath,
     );
+    const isAllowed = requiredRole ? this.hasRole(requiredRole) : true;
+
+    if (!isAllowed) {
+      this.router.navigate([this.defaultPath]);
+      notify('User is not allowed to access this ressource.', 'error', 2000);
+      return false;
+    }
 
     if (isLoggedIn && isAuthForm) {
       this.authService.lastAuthenticatedPath = this.defaultPath;
@@ -54,24 +61,13 @@ export class AuthenticationGuardService {
   hasRole(requiredRole: Role): boolean {
     const userRole = this.authService.authUserInfo.role;
 
-    let isAllowed = false;
     switch (requiredRole) {
       case Role.Admin:
-        isAllowed = userRole === Role.Admin;
-        break;
+        return userRole === Role.Admin;
       case Role.User:
-        isAllowed = [Role.Admin, Role.User].includes(userRole);
-        break;
+        return [Role.Admin, Role.User].includes(userRole);
       default:
-        isAllowed = requiredRole === userRole;
-        break;
+        return requiredRole === userRole;
     }
-
-    if (!isAllowed) {
-      this.router.navigate([this.defaultPath]);
-      notify('User is not allowed to access this ressource.', 'error', 2000);
-    }
-
-    return isAllowed;
   }
 }

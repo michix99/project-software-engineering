@@ -6,7 +6,6 @@ import { DxLoadIndicatorModule } from 'devextreme-angular/ui/load-indicator';
 
 import { AuthenticationService } from '../../services';
 import notify from 'devextreme/ui/notify';
-import { ValidationCallbackData } from 'devextreme/common';
 import { ChangePasswordFormModule } from '../change-password-form/change-password-form.component';
 
 @Component({

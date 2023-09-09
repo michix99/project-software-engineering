@@ -7,6 +7,7 @@ import {
   ElementRef,
   AfterViewInit,
   OnDestroy,
+  Inject,
 } from '@angular/core';
 import { HeaderModule } from '..';
 import { AuthenticationGuardService, ScreenService } from '../../services';
@@ -24,7 +25,8 @@ import { CommonModule } from '@angular/common';
 import { Router, NavigationEnd } from '@angular/router';
 import dxTreeView from 'devextreme/ui/tree_view';
 import * as events from 'devextreme/events';
-import { navigation } from './navigation';
+import { NavigationItem } from 'src/app/models';
+import { NAVIGATION_TOKEN } from './navigation';
 
 @Component({
   selector: 'app-side-nav-outer-toolbar',
@@ -75,16 +77,16 @@ export class SideNavOuterToolbarComponent
   private _items: Record<string, unknown>[] = [];
   get items() {
     if (this._items.length === 0) {
-      for (const item of navigation) {
+      for (const item of this.navigation) {
         // Checking if the user has the claim to see the item
         if (item.requiredRole && !this.authGuard.hasRole(item.requiredRole))
-          break;
+          continue;
 
         const children = item.items ?? [];
         item.items = [];
         for (const child of children) {
           if (child.requiredRole && !this.authGuard.hasRole(child.requiredRole))
-            break;
+            continue;
 
           item.items.push(child);
         }
@@ -111,6 +113,7 @@ export class SideNavOuterToolbarComponent
     private router: Router,
     private elementRef: ElementRef,
     private authGuard: AuthenticationGuardService,
+    @Inject(NAVIGATION_TOKEN) private navigation: NavigationItem[],
   ) {}
 
   ngOnInit(): void {

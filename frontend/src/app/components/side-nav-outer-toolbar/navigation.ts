@@ -1,6 +1,11 @@
+import { InjectionToken } from '@angular/core';
 import { NavigationItem, Role } from '../../models';
 
-export const navigation: NavigationItem[] = [
+export const NAVIGATION_TOKEN = new InjectionToken<NavigationItem[]>(
+  'navigation',
+);
+
+export const NAVIGATION: NavigationItem[] = [
   {
     text: 'Home',
     path: '/home',

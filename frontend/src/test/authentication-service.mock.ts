@@ -62,7 +62,7 @@ export class AuthenticationServiceMock extends AuthenticationService {
   }
 
   override reauthenticateUser(
-    _: string,
+    _: string, // eslint-disable-line @typescript-eslint/no-unused-vars
   ): Promise<{ isOk: boolean; message?: string | undefined }> {
     if (this.requestSuccess) {
       return Promise.resolve({
@@ -76,7 +76,7 @@ export class AuthenticationServiceMock extends AuthenticationService {
   }
 
   override changePassword(
-    _: string,
+    _: string, // eslint-disable-line @typescript-eslint/no-unused-vars
   ): Promise<
     { isOk: boolean; message?: undefined } | { isOk: boolean; message: string }
   > {

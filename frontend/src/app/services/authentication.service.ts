@@ -19,6 +19,16 @@ import { BehaviorSubject } from 'rxjs';
 
 const defaultPath = '/';
 
+export abstract class AngularFireWrapper {
+  static readonly authState = authState;
+  static readonly confirmPasswordReset = confirmPasswordReset;
+  static readonly reauthenticateWithCredential = reauthenticateWithCredential;
+  static readonly sendPasswordResetEmail = sendPasswordResetEmail;
+  static readonly signInWithEmailAndPassword = signInWithEmailAndPassword;
+  static readonly signOut = signOut;
+  static readonly updatePassword = updatePassword;
+}
+
 @Injectable()
 export class AuthenticationService {
   private userData: User | null = null;
@@ -55,7 +65,7 @@ export class AuthenticationService {
 
     /* Saving user data in localstorage when 
     logged in and setting up null when logged out */
-    authState(this.auth).subscribe((user: User | null) => {
+    AngularFireWrapper.authState(this.auth).subscribe((user: User | null) => {
       if (user) {
         this.userData = user;
         this.authState.next(this.userData);
@@ -74,7 +84,11 @@ export class AuthenticationService {
     password: string,
   ): Promise<{ isOk: boolean; data?: User | null; message?: string }> {
     try {
-      await signInWithEmailAndPassword(this.auth, email, password);
+      await AngularFireWrapper.signInWithEmailAndPassword(
+        this.auth,
+        email,
+        password,
+      );
 
       // Get role from backend
       // const response = await fetch(`${environment.apiUrl}/userInfo/${email}`);
@@ -109,7 +123,10 @@ export class AuthenticationService {
         this.auth.currentUser.email,
         password,
       );
-      await reauthenticateWithCredential(this.auth.currentUser, credential);
+      await AngularFireWrapper.reauthenticateWithCredential(
+        this.auth.currentUser,
+        credential,
+      );
 
       return {
         isOk: true,
@@ -147,7 +164,10 @@ export class AuthenticationService {
     try {
       if (!this.auth.currentUser)
         throw new FirebaseError('500', 'Could not load current user.');
-      await updatePassword(this.auth.currentUser, newPassword);
+      await AngularFireWrapper.updatePassword(
+        this.auth.currentUser,
+        newPassword,
+      );
 
       return {
         isOk: true,
@@ -164,7 +184,7 @@ export class AuthenticationService {
 
   async sendPasswordReset(email: string) {
     try {
-      await sendPasswordResetEmail(this.auth, email);
+      await AngularFireWrapper.sendPasswordResetEmail(this.auth, email);
 
       return {
         isOk: true,
@@ -181,7 +201,11 @@ export class AuthenticationService {
 
   async confirmPasswordReset(oobCode: string, password: string) {
     try {
-      await confirmPasswordReset(this.auth, oobCode, password);
+      await AngularFireWrapper.confirmPasswordReset(
+        this.auth,
+        oobCode,
+        password,
+      );
 
       return {
         isOk: true,
@@ -197,7 +221,7 @@ export class AuthenticationService {
   }
 
   async logOut(): Promise<void> {
-    await signOut(this.auth);
+    await AngularFireWrapper.signOut(this.auth);
     localStorage.removeItem('user');
     this.router.navigate(['/login-form']);
   }
