@@ -65,6 +65,13 @@ class TestMain:  # pylint: disable=R0904
 
         with app.test_request_context("/unknown-path", method="GET"):
             res = main.request_handler(flask.request)
+            assert res[0] == "Invalid Entity Type"
+            assert res[1] == 400
+            assert res[2].get("Access-Control-Allow-Origin") == "*"
+            assert res[2].get("Access-Control-Allow-Credentials") == "true"
+
+        with app.test_request_context("/course/id/unknown-path", method="GET"):
+            res = main.request_handler(flask.request)
             assert res[0] == "Invalid Request"
             assert res[1] == 400
             assert res[2].get("Access-Control-Allow-Origin") == "*"
