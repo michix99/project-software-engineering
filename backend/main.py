@@ -20,7 +20,7 @@ logger = Logger(component="main")
 
 
 @functions_framework.http
-def request_handler(request: Request):  # pylint: disable=R0911
+def request_handler(request: Request):  # pylint: disable=too-many-locals,too-many-return-statements,too-many-branches
     """HTTP Cloud Function.
     Args:
         request (flask.Request): The request object.
@@ -134,7 +134,7 @@ def request_handler(request: Request):  # pylint: disable=R0911
                 body = get_body(request)
                 course_field_names = get_field_names(ENTITY_MAPPINGS[entity_type])
 
-                if not body or all(
+                if not body or not all(
                     field_name in body for field_name in course_field_names
                 ):
                     error_message = (
