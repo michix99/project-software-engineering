@@ -1,12 +1,13 @@
 """Utilities related to authentication and authorization."""
 from os import getenv
 from firebase_admin import auth
+from flask import Request
 from logger_utils import Logger
 
 logger = Logger(component="auth_utils")
 
 
-def is_authenticated(request) -> tuple[bool, int, str]:
+def is_authenticated(request: Request) -> tuple[bool, int, str]:
     """Validates the provided token and returns if the requester is authenticated.
     Args:
         request - The http request object.
@@ -29,7 +30,7 @@ def is_authenticated(request) -> tuple[bool, int, str]:
         decoded_token = auth.verify_id_token(id_token)
         email = decoded_token["email"]
         logger.debug(f"Decoded JWT Token: {decoded_token}")
-    except Exception as error:  # pylint: disable=W0718
+    except ValueError as error:
         logger.error(f"Not able to authenticate user: {str(error)}")
         return False, 403, f"Invalid Token: {str(error)}"
 

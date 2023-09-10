@@ -1,4 +1,6 @@
-export const navigation = [
+import { NavigationItem, Role } from '../../models';
+
+export const navigation: NavigationItem[] = [
   {
     text: 'Home',
     path: '/home',
@@ -15,6 +17,7 @@ export const navigation = [
       {
         text: 'Tasks',
         path: '/tasks',
+        requiredRole: Role.Admin,
       },
     ],
   },

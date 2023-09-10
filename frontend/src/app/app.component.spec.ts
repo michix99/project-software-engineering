@@ -7,18 +7,12 @@ import {
   ScreenService,
 } from './services';
 import { AuthenticationServiceMock } from 'src/test/authentication-service.mock';
-import { FooterModule, SideNavOuterToolbarModule } from './components';
-import { UnauthenticatedContentModule } from './unauthenticated-content';
+import { SideNavOuterToolbarModule } from './components';
 
 describe('AppComponent', () => {
   beforeEach(() =>
     TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule,
-        SideNavOuterToolbarModule,
-        FooterModule,
-        UnauthenticatedContentModule,
-      ],
+      imports: [RouterTestingModule, SideNavOuterToolbarModule],
       providers: [
         { provide: AuthenticationService, useClass: AuthenticationServiceMock },
         ScreenService,

@@ -1,15 +1,22 @@
 <ng-container *ngIf="isAuthenticated(); else unauthenticated">
   <app-side-nav-outer-toolbar title="{{ appInfo.title }}">
     <router-outlet></router-outlet>
-    <app-footer>
-      Copyright © 2011-{{ appInfo.currentYear }} {{ appInfo.title }} Inc.
+    <footer class="footer-wrapper">
+      Copyright © {{ appInfo.currentYear }} {{ appInfo.title }}
       <br />
       All trademarks or registered trademarks are property of their respective
       owners.
-    </app-footer>
+    </footer>
   </app-side-nav-outer-toolbar>
 </ng-container>
 
 <ng-template #unauthenticated>
-  <app-unauthenticated-content></app-unauthenticated-content>
+  <div class="unauthenticated-content">
+    <app-single-card
+      [title]="unauthenticatedTitle"
+      [description]="unauthenticatedDescription"
+    >
+      <router-outlet></router-outlet>
+    </app-single-card>
+  </div>
 </ng-template>
