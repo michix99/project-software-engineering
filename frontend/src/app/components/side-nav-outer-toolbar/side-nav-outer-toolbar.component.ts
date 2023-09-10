@@ -7,6 +7,7 @@ import {
   ElementRef,
   AfterViewInit,
   OnDestroy,
+  Inject,
 } from '@angular/core';
 import { HeaderModule } from '..';
 import { AuthenticationGuardService, ScreenService } from '../../services';
@@ -24,7 +25,8 @@ import { CommonModule } from '@angular/common';
 import { Router, NavigationEnd } from '@angular/router';
 import dxTreeView from 'devextreme/ui/tree_view';
 import * as events from 'devextreme/events';
-import { navigation } from './navigation';
+import { NavigationItem } from 'src/app/models';
+import { NAVIGATION_TOKEN } from './navigation';
 
 @Component({
   selector: 'app-side-nav-outer-toolbar',
@@ -34,12 +36,14 @@ import { navigation } from './navigation';
 export class SideNavOuterToolbarComponent
   implements OnInit, AfterViewInit, OnDestroy
 {
+  /** The scroll view reference. */
   @ViewChild(DxScrollViewComponent, { static: true })
   scrollView!: DxScrollViewComponent;
-
+  /** The menu reference. */
   menu!: dxTreeView;
+  /** The selected element (route). */
   selectedRoute = '';
-
+  /** Indicates if the toolbar is opened or closed. */
   private _menuOpened!: boolean;
   get menuOpened(): boolean {
     return this._menuOpened;
@@ -56,28 +60,33 @@ export class SideNavOuterToolbarComponent
       this.menu.collapseAll();
     }
   }
+  /** Indicates if the overlay menu is opened. */
   temporaryMenuOpened = false;
-
+  /** The title of the application. */
   @Input()
   title!: string;
-
+  /** Depending on the screen size the menu mode is shrink or overlap. */
   menuMode = 'shrink';
+  /** Depending on the screen size the menu should be revealed with slide or expand. */
   menuRevealMode = 'expand';
+  /** Depending on the screen size the minimum menu size. */
   minMenuSize = 0;
+  /** Depending on the screen size the toolbar will be closed on outside click. */
   shaderEnabled = false;
-
+  /** The menu items shown in the toolbar. */
   private _items: Record<string, unknown>[] = [];
   get items() {
     if (this._items.length === 0) {
-      for (const item of navigation) {
+      for (const item of this.navigation) {
+        // Checking if the user has the claim to see the item
         if (item.requiredRole && !this.authGuard.hasRole(item.requiredRole))
-          break;
+          continue;
 
         const children = item.items ?? [];
         item.items = [];
         for (const child of children) {
           if (child.requiredRole && !this.authGuard.hasRole(child.requiredRole))
-            break;
+            continue;
 
           item.items.push(child);
         }
@@ -89,14 +98,25 @@ export class SideNavOuterToolbarComponent
     return this._items;
   }
 
+  /** Indicates if the menu should be hidden after navigating. */
+  get hideMenuAfterNavigation() {
+    return this.menuMode === 'overlap' || this.temporaryMenuOpened;
+  }
+
+  /** Indicates if the menu should be shown after selecting an item. */
+  get showMenuAfterClick() {
+    return !this.menuOpened;
+  }
+
   constructor(
     private screen: ScreenService,
     private router: Router,
     private elementRef: ElementRef,
     private authGuard: AuthenticationGuardService,
+    @Inject(NAVIGATION_TOKEN) private navigation: NavigationItem[],
   ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.menuOpened = this.screen.sizes['screen-large'];
 
     this.router.events.subscribe((val) => {
@@ -117,7 +137,7 @@ export class SideNavOuterToolbarComponent
     this.updateDrawer();
   }
 
-  ngAfterViewInit() {
+  ngAfterViewInit(): void {
     events.on(
       this.elementRef.nativeElement.querySelector('#treeView'),
       'dxclick',
@@ -127,14 +147,17 @@ export class SideNavOuterToolbarComponent
     );
   }
 
-  ngOnDestroy() {
+  ngOnDestroy(): void {
     events.off(
       this.elementRef.nativeElement.querySelector('#treeView'),
       'dxclick',
     );
   }
 
-  updateDrawer() {
+  /**
+   * Updates the drawer depending on the screen size.
+   */
+  updateDrawer(): void {
     const isXSmall = this.screen.sizes['screen-x-small'];
     const isLarge = this.screen.sizes['screen-large'];
 
@@ -144,15 +167,11 @@ export class SideNavOuterToolbarComponent
     this.shaderEnabled = !isLarge;
   }
 
-  get hideMenuAfterNavigation() {
-    return this.menuMode === 'overlap' || this.temporaryMenuOpened;
-  }
-
-  get showMenuAfterClick() {
-    return !this.menuOpened;
-  }
-
-  navigationChanged(event: DxTreeViewTypes.ItemClickEvent) {
+  /**
+   * Navigates to the selected element.
+   * @param event The click event of the tree item.
+   */
+  navigationChanged(event: DxTreeViewTypes.ItemClickEvent): void {
     const path = (event.itemData as { path: string }).path;
     const pointerEvent = event.event;
 
@@ -174,14 +193,21 @@ export class SideNavOuterToolbarComponent
     }
   }
 
-  navigationClick() {
+  /**
+   * Opens the menu if the menu should be open after a selection.
+   */
+  navigationClick(): void {
     if (this.showMenuAfterClick) {
       this.temporaryMenuOpened = true;
       this.menuOpened = true;
     }
   }
 
-  onTreeViewInitialized(event: DxTreeViewTypes.InitializedEvent) {
+  /**
+   * Sets the tree view to a value after initialization.
+   * @param event The initialization event.
+   */
+  onTreeViewInitialized(event: DxTreeViewTypes.InitializedEvent): void {
     if (!event.component) {
       return;
     }

@@ -28,21 +28,41 @@
           stylingMode="text"
         >
           <div *dxTemplate="let data of 'content'">
-            <app-user-panel
-              [user]="user"
-              [menuItems]="userMenuItems"
-              menuMode="context"
-            ></app-user-panel>
+            <div class="user-panel">
+              <div class="user-info">
+                <div class="image-container">
+                  <i class="user-icon dx-icon-user"></i>
+                </div>
+                <div class="user-name">{{ user?.email }}</div>
+              </div>
+              <dx-context-menu
+                [items]="userMenuItems"
+                target=".user-button"
+                showEvent="dxclick"
+                width="210px"
+                [position]="{
+                  my: 'top',
+                  at: 'bottom'
+                }"
+                cssClass="user-menu"
+              >
+              </dx-context-menu>
+            </div>
           </div>
         </dx-button>
       </div>
     </dxi-item>
     <div *dxTemplate="let data of 'menuItem'">
-      <app-user-panel
-        [user]="user"
-        [menuItems]="userMenuItems"
-        menuMode="list"
-      ></app-user-panel>
+      <div class="user-panel">
+        <div class="user-info">
+          <div class="image-container">
+            <i class="user-icon dx-icon-user"></i>
+          </div>
+          <div class="user-name">{{ user?.email }}</div>
+        </div>
+        <dx-list class="dx-toolbar-menu-action" [items]="userMenuItems">
+        </dx-list>
+      </div>
     </div>
   </dx-toolbar>
 </header>
