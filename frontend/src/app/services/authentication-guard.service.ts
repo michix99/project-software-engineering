@@ -7,12 +7,20 @@ import { Role } from '../models';
 
 @Injectable()
 export class AuthenticationGuardService {
+  /** The default application path to navigate to. */
   defaultPath = '/';
+
   constructor(
     private router: Router,
     private authService: AuthenticationService,
   ) {}
 
+  /**
+   * Indicates if a user can activate the given route.
+   * @param route The current route the user wants to access.
+   * @param requiredRole The user role required to see the view.
+   * @returns If the user can activate the route.
+   */
   canActivate(route: ActivatedRouteSnapshot, requiredRole?: Role): boolean {
     const isLoggedIn = this.authService.loggedIn;
     const isAuthForm = ['login-form', 'reset-password'].includes(
@@ -58,6 +66,11 @@ export class AuthenticationGuardService {
     return isLoggedIn || isAuthForm;
   }
 
+  /**
+   * Indicates if a user fullfills the required role.
+   * @param requiredRole The role the user (min) needs to have.
+   * @returns If the user has the required permissions.
+   */
   hasRole(requiredRole: Role): boolean {
     const userRole = this.authService.authUserInfo.role;
 
