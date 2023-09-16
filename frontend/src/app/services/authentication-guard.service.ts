@@ -21,12 +21,15 @@ export class AuthenticationGuardService {
    * @param requiredRole The user role required to see the view.
    * @returns If the user can activate the route.
    */
-  canActivate(route: ActivatedRouteSnapshot, requiredRole?: Role): boolean {
+  async canActivate(
+    route: ActivatedRouteSnapshot,
+    requiredRole?: Role,
+  ): Promise<boolean> {
     const isLoggedIn = this.authService.loggedIn;
     const isAuthForm = ['login-form', 'reset-password'].includes(
       route.routeConfig?.path || this.defaultPath,
     );
-    const isAllowed = requiredRole ? this.hasRole(requiredRole) : true;
+    const isAllowed = requiredRole ? await this.hasRole(requiredRole) : true;
 
     if (!isAllowed) {
       this.router.navigate([this.defaultPath]);
@@ -71,14 +74,18 @@ export class AuthenticationGuardService {
    * @param requiredRole The role the user (min) needs to have.
    * @returns If the user has the required permissions.
    */
-  hasRole(requiredRole: Role): boolean {
-    const userRole = this.authService.authUserInfo.role;
+  async hasRole(requiredRole: Role): Promise<boolean> {
+    const userRole = await this.authService.role;
+    console.log('userRole: ', userRole);
+    if (!userRole) return false;
 
     switch (requiredRole) {
       case Role.Admin:
         return userRole === Role.Admin;
-      case Role.User:
-        return [Role.Admin, Role.User].includes(userRole);
+      case Role.Editor:
+        return [Role.Admin, Role.Editor].includes(userRole);
+      case Role.Requester:
+        return [Role.Admin, Role.Editor, Role.Requester].includes(userRole);
       default:
         return requiredRole === userRole;
     }

@@ -10,7 +10,11 @@ import {
   Inject,
 } from '@angular/core';
 import { HeaderModule } from '..';
-import { AuthenticationGuardService, ScreenService } from '../../services';
+import {
+  AuthenticationGuardService,
+  AuthenticationService,
+  ScreenService,
+} from '../../services';
 import {
   DxTreeViewModule,
   DxTreeViewTypes,
@@ -27,6 +31,8 @@ import dxTreeView from 'devextreme/ui/tree_view';
 import * as events from 'devextreme/events';
 import { NavigationItem } from 'src/app/models';
 import { NAVIGATION_TOKEN } from './navigation';
+import { User } from '@angular/fire/auth';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-side-nav-outer-toolbar',
@@ -74,29 +80,11 @@ export class SideNavOuterToolbarComponent
   /** Depending on the screen size the toolbar will be closed on outside click. */
   shaderEnabled = false;
   /** The menu items shown in the toolbar. */
-  private _items: Record<string, unknown>[] = [];
-  get items() {
-    if (this._items.length === 0) {
-      for (const item of this.navigation) {
-        // Checking if the user has the claim to see the item
-        if (item.requiredRole && !this.authGuard.hasRole(item.requiredRole))
-          continue;
+  items: Record<string, unknown>[] = [];
 
-        const children = item.items ?? [];
-        item.items = [];
-        for (const child of children) {
-          if (child.requiredRole && !this.authGuard.hasRole(child.requiredRole))
-            continue;
+  userRef: string = '';
 
-          item.items.push(child);
-        }
-
-        this._items.push({ ...item, expanded: this.menuOpened });
-      }
-    }
-
-    return this._items;
-  }
+  updateSubscription: Subscription = new Subscription();
 
   /** Indicates if the menu should be hidden after navigating. */
   get hideMenuAfterNavigation() {
@@ -113,6 +101,7 @@ export class SideNavOuterToolbarComponent
     private router: Router,
     private elementRef: ElementRef,
     private authGuard: AuthenticationGuardService,
+    private authService: AuthenticationService,
     @Inject(NAVIGATION_TOKEN) private navigation: NavigationItem[],
   ) {}
 
@@ -135,6 +124,17 @@ export class SideNavOuterToolbarComponent
     this.screen.changed.subscribe(() => this.updateDrawer());
 
     this.updateDrawer();
+
+    this.updateSubscription = this.authService.authState.subscribe(
+      (user: User | null) => {
+        if (user && this.userRef !== user.uid) {
+          this.userRef = user.uid;
+          this.setItems();
+        } else {
+          this.items = [];
+        }
+      },
+    );
   }
 
   ngAfterViewInit(): void {
@@ -148,6 +148,7 @@ export class SideNavOuterToolbarComponent
   }
 
   ngOnDestroy(): void {
+    this.updateSubscription.unsubscribe();
     events.off(
       this.elementRef.nativeElement.querySelector('#treeView'),
       'dxclick',
@@ -212,6 +213,40 @@ export class SideNavOuterToolbarComponent
       return;
     }
     this.menu = event.component;
+  }
+
+  setItems(): void {
+    this.asyncSetItems().catch((error) => {
+      console.log(error);
+    });
+  }
+
+  async asyncSetItems(): Promise<void> {
+    this.items = [];
+    const queryNavigation = JSON.parse(JSON.stringify(this.navigation));
+    for (const item of queryNavigation) {
+      // Checking if the user has the claim to see the item
+      if (item.requiredRole) {
+        const hasRequiredRole = await this.authGuard.hasRole(item.requiredRole);
+
+        if (!hasRequiredRole) continue;
+      }
+
+      const children = item.items ?? [];
+      item.items = [];
+      for (const child of children) {
+        if (child.requiredRole) {
+          const hasRequiredRole = await this.authGuard.hasRole(
+            child.requiredRole,
+          );
+
+          if (!hasRequiredRole) continue;
+        }
+
+        item.items.push(child);
+      }
+      this.items.push({ ...item, expanded: this.menuOpened });
+    }
   }
 }
 

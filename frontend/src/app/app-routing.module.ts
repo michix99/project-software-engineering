@@ -29,7 +29,10 @@ const routes: Routes = [
   {
     path: 'profile',
     component: ProfileComponent,
-    canActivate: [AuthenticationGuardService],
+    canActivate: [
+      (route: ActivatedRouteSnapshot) =>
+        inject(AuthenticationGuardService).canActivate(route),
+    ],
   },
   {
     path: 'home',

@@ -33,7 +33,7 @@ export class TasksComponent implements OnInit {
     try {
       console.log('loading');
       const token = await this.authService.getToken();
-      const coursesResponse = await fetch(`${environment.apiUrl}/course`, {
+      const coursesResponse = await fetch(`${environment.apiUrl}/data/course`, {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`,

@@ -1,4 +1,4 @@
-import { Role } from './user-info';
+import { Role } from './role';
 
 export interface NavigationItem {
   text: string;

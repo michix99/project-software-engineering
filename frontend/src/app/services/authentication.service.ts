@@ -14,8 +14,8 @@ import {
   updatePassword,
 } from '@angular/fire/auth';
 import { Router } from '@angular/router';
-import { AuthUserInfo } from '../models';
 import { BehaviorSubject } from 'rxjs';
+import { Role } from '../models';
 
 const defaultPath = '/';
 
@@ -35,15 +35,29 @@ export class AuthenticationService {
   get loggedIn(): boolean {
     const user = JSON.parse(localStorage.getItem('user') ?? 'null') as User;
     return (
-      user !== null && (user.emailVerified || user.email === 'test@user.de')
+      user !== null //&& (user.emailVerified || user.email === 'test@admin.de')
     );
     // return !!this._user;
   }
 
-  get authUserInfo(): AuthUserInfo {
-    return JSON.parse(
-      localStorage.getItem('userInfo') ?? 'null',
-    ) as AuthUserInfo;
+  get role(): Promise<Role | undefined> {
+    return this.userData
+      ? this.userData
+          .getIdTokenResult()
+          .then((idTokenResult) => {
+            // Confirm the user is an Admin.
+            if (!!idTokenResult.claims['admin']) {
+              return Role.Admin;
+            } else if (!!idTokenResult.claims['editor']) {
+              return Role.Editor;
+            }
+            return Role.Requester;
+          })
+          .catch((error) => {
+            console.log(error);
+            return Role.Requester;
+          })
+      : Promise.resolve(undefined);
   }
 
   private _lastAuthenticatedPath: string = defaultPath;
@@ -74,7 +88,6 @@ export class AuthenticationService {
       } else {
         this.authState.next(null);
         localStorage.setItem('user', 'null');
-        localStorage.setItem('userInfo', 'null');
       }
     });
   }
@@ -89,12 +102,6 @@ export class AuthenticationService {
         email,
         password,
       );
-
-      // Get role from backend
-      // const response = await fetch(`${environment.apiUrl}/userInfo/${email}`);
-      // const userInfo = response.json() as unknown as AuthUserInfo;
-      const userInfo = { id: 'test', role: 'admin' } as unknown as AuthUserInfo;
-      localStorage.setItem('userInfo', JSON.stringify(userInfo));
 
       return {
         isOk: true,
