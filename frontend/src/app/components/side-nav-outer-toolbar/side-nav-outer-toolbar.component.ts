@@ -29,10 +29,10 @@ import { CommonModule } from '@angular/common';
 import { Router, NavigationEnd } from '@angular/router';
 import dxTreeView from 'devextreme/ui/tree_view';
 import * as events from 'devextreme/events';
-import { NavigationItem } from 'src/app/models';
+import { NavigationItem, Role } from 'src/app/models';
 import { NAVIGATION_TOKEN } from './navigation';
-import { User } from '@angular/fire/auth';
 import { Subscription } from 'rxjs';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-side-nav-outer-toolbar',
@@ -82,9 +82,7 @@ export class SideNavOuterToolbarComponent
   /** The menu items shown in the toolbar. */
   items: Record<string, unknown>[] = [];
 
-  userRef: string = '';
-
-  updateSubscription: Subscription = new Subscription();
+  roleUpdateSubscription: Subscription = new Subscription();
 
   /** Indicates if the menu should be hidden after navigating. */
   get hideMenuAfterNavigation() {
@@ -125,10 +123,9 @@ export class SideNavOuterToolbarComponent
 
     this.updateDrawer();
 
-    this.updateSubscription = this.authService.authState.subscribe(
-      (user: User | null) => {
-        if (user && this.userRef !== user.uid) {
-          this.userRef = user.uid;
+    this.roleUpdateSubscription = this.authService.roleState.subscribe(
+      (role: Role | null) => {
+        if (role) {
           this.setItems();
         } else {
           this.items = [];
@@ -148,7 +145,7 @@ export class SideNavOuterToolbarComponent
   }
 
   ngOnDestroy(): void {
-    this.updateSubscription.unsubscribe();
+    this.roleUpdateSubscription.unsubscribe();
     events.off(
       this.elementRef.nativeElement.querySelector('#treeView'),
       'dxclick',
@@ -216,18 +213,12 @@ export class SideNavOuterToolbarComponent
   }
 
   setItems(): void {
-    this.asyncSetItems().catch((error) => {
-      console.log(error);
-    });
-  }
-
-  async asyncSetItems(): Promise<void> {
     this.items = [];
     const queryNavigation = JSON.parse(JSON.stringify(this.navigation));
     for (const item of queryNavigation) {
       // Checking if the user has the claim to see the item
       if (item.requiredRole) {
-        const hasRequiredRole = await this.authGuard.hasRole(item.requiredRole);
+        const hasRequiredRole = this.authGuard.hasRole(item.requiredRole);
 
         if (!hasRequiredRole) continue;
       }
@@ -236,9 +227,7 @@ export class SideNavOuterToolbarComponent
       item.items = [];
       for (const child of children) {
         if (child.requiredRole) {
-          const hasRequiredRole = await this.authGuard.hasRole(
-            child.requiredRole,
-          );
+          const hasRequiredRole = this.authGuard.hasRole(child.requiredRole);
 
           if (!hasRequiredRole) continue;
         }
@@ -257,6 +246,7 @@ export class SideNavOuterToolbarComponent
     DxScrollViewModule,
     DxTreeViewModule,
     CommonModule,
+    MatSnackBarModule,
   ],
   exports: [SideNavOuterToolbarComponent],
   declarations: [SideNavOuterToolbarComponent],

@@ -3,10 +3,9 @@ import { Component, NgModule, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DxFormModule } from 'devextreme-angular/ui/form';
 import { DxLoadIndicatorModule } from 'devextreme-angular/ui/load-indicator';
-
-import { AuthenticationService } from '../../services';
-import notify from 'devextreme/ui/notify';
+import { AuthenticationService, LoggingService } from '../../services';
 import { ChangePasswordFormModule } from '../change-password-form/change-password-form.component';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-reset-password-form',
@@ -30,6 +29,8 @@ export class ResetPasswordFormComponent implements OnInit {
     private authService: AuthenticationService,
     private router: Router,
     private route: ActivatedRoute,
+    private notificationService: MatSnackBar,
+    private logger: LoggingService,
   ) {}
 
   ngOnInit() {
@@ -54,9 +55,20 @@ export class ResetPasswordFormComponent implements OnInit {
 
     if (result.isOk) {
       this.router.navigate(['/login-form']);
-      notify(notificationText, 'success', 2500);
+      this.notificationService.open(notificationText, 'OK', {
+        duration: 2500,
+        panelClass: ['green-snackbar'],
+      });
     } else {
-      notify(result.message, 'error', 2000);
+      this.logger.error(result.message);
+      this.notificationService.open(
+        result.message || 'Cannot send password reset!',
+        undefined,
+        {
+          duration: 2000,
+          panelClass: ['red-snackbar'],
+        },
+      );
     }
   }
 }
@@ -67,6 +79,7 @@ export class ResetPasswordFormComponent implements OnInit {
     DxFormModule,
     DxLoadIndicatorModule,
     ChangePasswordFormModule,
+    MatSnackBarModule,
   ],
   declarations: [ResetPasswordFormComponent],
   exports: [ResetPasswordFormComponent],

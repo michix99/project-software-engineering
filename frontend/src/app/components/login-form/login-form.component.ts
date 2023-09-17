@@ -3,8 +3,8 @@ import { Component, NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { DxFormModule } from 'devextreme-angular/ui/form';
 import { DxLoadIndicatorModule } from 'devextreme-angular/ui/load-indicator';
-import notify from 'devextreme/ui/notify';
-import { AuthenticationService } from '../../services';
+import { AuthenticationService, LoggingService } from '../../services';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-login-form',
@@ -17,7 +17,11 @@ export class LoginFormComponent {
   /** The data used for login the user. */
   formData: { password: string; email: string } = { password: '', email: '' };
 
-  constructor(private authService: AuthenticationService) {}
+  constructor(
+    private authService: AuthenticationService,
+    private notificationService: MatSnackBar,
+    private logger: LoggingService,
+  ) {}
 
   /**
    * Submits the login reset.
@@ -30,13 +34,23 @@ export class LoginFormComponent {
 
     const result = await this.authService.logIn(email, password);
     this.loading = false;
-    if (!result.isOk) {
-      notify(result.message, 'error', 2000);
+    if (!result.isOk && result.message) {
+      this.logger.error(result.message);
+      this.notificationService.open(result.message, 'Try again!', {
+        duration: 2000,
+        panelClass: ['red-snackbar'],
+      });
     }
   }
 }
 @NgModule({
-  imports: [CommonModule, RouterModule, DxFormModule, DxLoadIndicatorModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    DxFormModule,
+    DxLoadIndicatorModule,
+    MatSnackBarModule,
+  ],
   declarations: [LoginFormComponent],
   exports: [LoginFormComponent],
 })

@@ -22,6 +22,9 @@ import {
   NAVIGATION_TOKEN,
   NAVIGATION,
 } from './components/side-nav-outer-toolbar/navigation';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 @NgModule({
   declarations: [AppComponent],
@@ -35,6 +38,9 @@ import {
     ResetPasswordFormModule,
     ChangePasswordFormModule,
     LoginFormModule,
+    BrowserAnimationsModule,
+    MatProgressSpinnerModule,
+    MatSnackBarModule,
   ],
   providers: [
     AuthenticationService,

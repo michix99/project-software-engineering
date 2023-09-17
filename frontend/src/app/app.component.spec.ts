@@ -15,6 +15,8 @@ import {
   NAVIGATION,
   NAVIGATION_TOKEN,
 } from './components/side-nav-outer-toolbar/navigation';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({ template: '' })
 class TestComponent {}
@@ -55,6 +57,8 @@ describe('AppComponent', () => {
       imports: [
         RouterTestingModule.withRoutes(testRoutes),
         SideNavOuterToolbarModule,
+        MatSnackBarModule,
+        MatProgressSpinnerModule,
       ],
       providers: [
         { provide: AuthenticationService, useClass: AuthenticationServiceMock },
