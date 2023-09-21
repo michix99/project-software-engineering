@@ -3,6 +3,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 
 @Injectable()
 export class ScreenService {
+  /** Informs about the screen sizes changing, when a breakpoint was hit. */
   @Output() changed = new EventEmitter();
 
   constructor(private breakpointObserver: BreakpointObserver) {
@@ -23,6 +24,9 @@ export class ScreenService {
     return isLarge || isXLarge;
   }
 
+  /**
+   * Returns which screen sizes do currently match the screen.
+   */
   public get sizes(): Record<string, boolean> {
     return {
       'screen-x-small': this.breakpointObserver.isMatched(Breakpoints.XSmall),

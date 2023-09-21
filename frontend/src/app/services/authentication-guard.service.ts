@@ -7,17 +7,32 @@ import { Role } from '../models';
 
 @Injectable()
 export class AuthenticationGuardService {
+  /** The default application path to navigate to. */
   defaultPath = '/';
+
   constructor(
     private router: Router,
     private authService: AuthenticationService,
   ) {}
 
-  canActivate(route: ActivatedRouteSnapshot): boolean {
+  /**
+   * Indicates if a user can activate the given route.
+   * @param route The current route the user wants to access.
+   * @param requiredRole The user role required to see the view.
+   * @returns If the user can activate the route.
+   */
+  canActivate(route: ActivatedRouteSnapshot, requiredRole?: Role): boolean {
     const isLoggedIn = this.authService.loggedIn;
     const isAuthForm = ['login-form', 'reset-password'].includes(
       route.routeConfig?.path || this.defaultPath,
     );
+    const isAllowed = requiredRole ? this.hasRole(requiredRole) : true;
+
+    if (!isAllowed) {
+      this.router.navigate([this.defaultPath]);
+      notify('User is not allowed to access this ressource.', 'error', 2000);
+      return false;
+    }
 
     if (isLoggedIn && isAuthForm) {
       this.authService.lastAuthenticatedPath = this.defaultPath;
@@ -51,27 +66,21 @@ export class AuthenticationGuardService {
     return isLoggedIn || isAuthForm;
   }
 
+  /**
+   * Indicates if a user fullfills the required role.
+   * @param requiredRole The role the user (min) needs to have.
+   * @returns If the user has the required permissions.
+   */
   hasRole(requiredRole: Role): boolean {
     const userRole = this.authService.authUserInfo.role;
 
-    let isAllowed = false;
     switch (requiredRole) {
       case Role.Admin:
-        isAllowed = userRole === Role.Admin;
-        break;
+        return userRole === Role.Admin;
       case Role.User:
-        isAllowed = [Role.Admin, Role.User].includes(userRole);
-        break;
+        return [Role.Admin, Role.User].includes(userRole);
       default:
-        isAllowed = requiredRole === userRole;
-        break;
+        return requiredRole === userRole;
     }
-
-    if (!isAllowed) {
-      this.router.navigate([this.defaultPath]);
-      notify('User is not allowed to access this ressource.', 'error', 2000);
-    }
-
-    return isAllowed;
   }
 }

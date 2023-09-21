@@ -18,6 +18,10 @@ import {
 } from './services';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
+import {
+  NAVIGATION_TOKEN,
+  NAVIGATION,
+} from './components/side-nav-outer-toolbar/navigation';
 
 @NgModule({
   declarations: [AppComponent],
@@ -32,7 +36,12 @@ import { getAuth, provideAuth } from '@angular/fire/auth';
     ChangePasswordFormModule,
     LoginFormModule,
   ],
-  providers: [AuthenticationService, ScreenService, AppInfoService],
+  providers: [
+    AuthenticationService,
+    ScreenService,
+    AppInfoService,
+    { provide: NAVIGATION_TOKEN, useValue: NAVIGATION },
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

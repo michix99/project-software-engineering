@@ -6,7 +6,6 @@ import { DxLoadIndicatorModule } from 'devextreme-angular/ui/load-indicator';
 
 import { AuthenticationService } from '../../services';
 import notify from 'devextreme/ui/notify';
-import { ValidationCallbackData } from 'devextreme/common';
 import { ChangePasswordFormModule } from '../change-password-form/change-password-form.component';
 
 @Component({
@@ -15,13 +14,14 @@ import { ChangePasswordFormModule } from '../change-password-form/change-passwor
   styleUrls: ['./reset-password-form.component.scss'],
 })
 export class ResetPasswordFormComponent implements OnInit {
+  /** Indicates if the loading spinner should be shown. */
   loading = false;
+  /** The data fields for reseting the password. */
   resetFormData: { email: string } = { email: '' };
-  changeFormData: { password: string } = {
-    password: '',
-  };
+  /** The code used for confirming the password reset. */
   oobCode?: string;
 
+  /** Indicates if the route contains a reset code. */
   get hasResetCode(): boolean {
     return this.oobCode != undefined;
   }
@@ -38,6 +38,10 @@ export class ResetPasswordFormComponent implements OnInit {
     });
   }
 
+  /**
+   * Submits the password reset mail.
+   * @param e The form submit event.
+   */
   async onSubmit(e: Event) {
     e.preventDefault();
     this.loading = true;
@@ -55,10 +59,6 @@ export class ResetPasswordFormComponent implements OnInit {
       notify(result.message, 'error', 2000);
     }
   }
-
-  confirmPassword = (e: ValidationCallbackData) => {
-    return e.value === this.changeFormData.password;
-  };
 }
 @NgModule({
   imports: [
