@@ -8,6 +8,8 @@ from google.cloud.firestore_v1.base_query import FieldFilter
 from google.cloud import exceptions
 from db_operator import DatabaseOperator
 from data_model import Course
+from enums import Role
+from auth_utils import UserInfo
 
 
 class MockDocReference:  # pylint: disable=R0903
@@ -34,7 +36,8 @@ class TestDbOperator:  # pylint: disable=R0904
     def fixture_db_operator(self) -> DatabaseOperator:
         """Create a fake "DatabaseOperator" for testing purpose."""
         with mock.patch("firebase_admin.firestore.client"):
-            db_operator = DatabaseOperator()
+            user_info = UserInfo("123", [Role.ADMIN])
+            db_operator = DatabaseOperator(user_info)
             return db_operator
 
     def test_create_successful(self, db_operator) -> None:
@@ -251,12 +254,19 @@ class TestDbOperator:  # pylint: disable=R0904
             collection_mock.return_value = collection_return_mock = mock.Mock()
             collection_return_mock.document.return_value = element_mock = mock.Mock()
 
-            element_mock.get.return_value = MockDocReference(True, name="dummy_id")
+            element_mock.get.return_value = MockDocReference(
+                True, identifier="dummy_id", name="dummy_name"
+            )
 
             return_code, return_message = db_operator.read("test", "dummy_id")
 
             assert return_code == 200
-            assert return_message == {"name": "dummy_id"}
+            assert return_message == {
+                "id": "dummy_id",
+                "name": "dummy_name",
+                "created_by_name": "Unknown",
+                "modified_by_name": "Unknown",
+            }
 
     def test_read_failing_not_found(self, db_operator) -> None:
         """Tests reading a database entity failing, as the element was not found."""
@@ -300,8 +310,18 @@ class TestDbOperator:  # pylint: disable=R0904
 
             assert return_code == 200
             assert return_message == [
-                {"id": "dummy_id", "name": "name"},
-                {"id": "another_dummy_id", "name": "another_name"},
+                {
+                    "id": "dummy_id",
+                    "name": "name",
+                    "created_by_name": "Unknown",
+                    "modified_by_name": "Unknown",
+                },
+                {
+                    "id": "another_dummy_id",
+                    "name": "another_name",
+                    "created_by_name": "Unknown",
+                    "modified_by_name": "Unknown",
+                },
             ]
 
     def test_read_all_failing_with_timeout(self, db_operator) -> None:

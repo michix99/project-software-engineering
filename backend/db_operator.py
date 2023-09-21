@@ -2,7 +2,6 @@
 from uuid import uuid4
 from dataclasses import asdict, is_dataclass
 from datetime import datetime
-from auth_utils import UserInfo, get_user_name_by_id
 from firebase_admin import firestore
 from google.cloud.firestore_v1.base_query import (
     FieldFilter,
@@ -12,6 +11,7 @@ from google.cloud.firestore_v1.base_query import (
 from google.cloud.firestore_v1.base_document import BaseDocumentReference
 from google.cloud import exceptions
 from google.api_core.exceptions import RetryError
+from auth_utils import UserInfo, get_user_name_by_id
 
 from logger_utils import Logger
 

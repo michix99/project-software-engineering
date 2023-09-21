@@ -1,19 +1,30 @@
 """
     Handles request against the api endpoint.
 """
+from flask import Request
+from firebase_admin import auth, exceptions
 from auth_utils import UserInfo
 from enums import Role
 from request_helper import get_body
-from flask import Request
 from logger_utils import Logger
-from firebase_admin import auth, exceptions
 
 logger = Logger(component="api_handler")
 
 
-def api_handler(
+def api_handler(  # pylint: disable=too-many-return-statements
     request: Request, path_segments: list[str], headers: dict, user_info: UserInfo
 ) -> tuple:
+    """Handles all non-data related requests.
+
+    Args:
+        request (flask.Request) - The request object.
+        path_segments - The parsed list of request path segements.
+        headers - The access control allow headers for the response.
+        user_info - The parsed information about the requester.
+    Returns:
+        The response text, or any set of values that can be turned into a
+        Response object using `make_response`
+    """
     match request.method:
         case "POST" if path_segments[1] == "setRole":
             if Role.ADMIN not in user_info.roles:
@@ -74,7 +85,7 @@ def api_handler(
                 )
             except ValueError as error:
                 logger.error(f"Error while setting display name: {error}")
-                return ("User ID or invalid!", 400, headers)
+                return ("User ID invalid!", 400, headers)
             except exceptions.FirebaseError as error:
                 logger.error(f"Error while setting display name: {error}")
                 return (error.code, 500, headers)

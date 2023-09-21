@@ -4,7 +4,17 @@
 import os
 from unittest import mock
 import flask
-from auth_utils import is_authenticated
+from auth_utils import is_authenticated, get_user_name_by_id
+from enums import Role
+
+
+class MockUserReference:  # pylint: disable=R0903
+    """Mock implementation of a user reference."""
+
+    display_name: str
+
+    def __init__(self, display_name) -> None:
+        self.display_name = display_name
 
 
 class TestAuthUtils:
@@ -14,10 +24,9 @@ class TestAuthUtils:
         """Tests that the authentication check gets disabled when 'DISABLE_AUTH' is set to true"""
         os.environ["DISABLE_AUTH"] = "True"
         with app.test_request_context(method="GET"):
-            auth_successful, status_code, error_message = is_authenticated(
-                flask.request
-            )
-            assert auth_successful is True
+            user_info, status_code, error_message = is_authenticated(flask.request)
+            assert user_info.user_id == "dummy_user"
+            assert user_info.roles == [Role.REQUESTER]
             assert status_code is None
             assert error_message is None
 
@@ -35,28 +44,28 @@ class TestAuthUtils:
             "logger_utils.Logger.info"
         ) as logger_mock:
             mock_firebase_user = {
-                "user_id": "firebasegenerateduserid",
+                "user_id": "firebase_generated_user_id",
                 "email": "testuser@gmail.com",
+                "admin": True,
+                "editor": True,
+                "requester": True,
             }
             verify_mock.return_value = mock_firebase_user
-            auth_successful, status_code, error_message = is_authenticated(
-                flask.request
-            )
-            assert auth_successful is True
+            user_info, status_code, error_message = is_authenticated(flask.request)
+            assert user_info.user_id == "firebase_generated_user_id"
+            assert user_info.roles == [Role.ADMIN, Role.EDITOR, Role.REQUESTER]
             assert status_code is None
             assert error_message is None
             logger_mock.assert_called_with(
-                "Successfully Authenticated user with email: testuser@gmail.com"
+                "Successfully Authenticated user with ID: firebase_generated_user_id"
             )
 
     def test_no_token_provided(self, app) -> None:
         """Tests that the user is not authenticated if no authentication header is provided."""
         os.environ["DISABLE_AUTH"] = "False"
         with app.test_request_context(method="GET"):
-            auth_successful, status_code, error_message = is_authenticated(
-                flask.request
-            )
-            assert auth_successful is False
+            user_info, status_code, error_message = is_authenticated(flask.request)
+            assert user_info is None
             assert status_code == 401
             assert error_message == "No Authorization header provided!"
 
@@ -72,9 +81,28 @@ class TestAuthUtils:
             method="GET", environ_base={"HTTP_AUTHORIZATION": f"Bearer {dummy_token}"}
         ), mock.patch("firebase_admin.auth.verify_id_token") as verify_mock:
             verify_mock.side_effect = ValueError("Error")
-            auth_successful, status_code, error_message = is_authenticated(
-                flask.request
-            )
-            assert auth_successful is False
+            user_info, status_code, error_message = is_authenticated(flask.request)
+            assert user_info is None
             assert status_code == 403
             assert error_message == "Invalid Token: Error"
+
+    def test_get_user_name_success(self) -> None:
+        """Tests that we get the user name of a given user_id."""
+        with mock.patch("firebase_admin.auth.get_user") as user_mock:
+            user_mock.return_value = MockUserReference("Dummy Name")
+            display_name = get_user_name_by_id("user_dummy_id")
+            assert display_name == "Dummy Name"
+
+    def test_get_user_name_fail_value_error(self) -> None:
+        """Tests that we receive a value even if an error occurs."""
+        with mock.patch("firebase_admin.auth.get_user") as user_mock:
+            user_mock.side_effect = ValueError("Error")
+            display_name = get_user_name_by_id("user_dummy_id")
+            assert display_name == "Unknown"
+
+    def test_get_user_name_empty_display_name(self) -> None:
+        """Tests that we receive a value even if the display name is unset."""
+        with mock.patch("firebase_admin.auth.get_user") as user_mock:
+            user_mock.return_value = MockUserReference("")
+            display_name = get_user_name_by_id("user_dummy_id")
+            assert display_name == "Unknown"

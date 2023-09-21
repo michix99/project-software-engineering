@@ -8,25 +8,39 @@ from google.cloud.firestore_v1.base_query import FieldFilter
 from auth_utils import UserInfo
 from request_helper import get_body
 from enums import Role
-from data_model import Course, Ticket
+from data_model import Course, Ticket, ENTITY_MAPPINGS
 from db_operator import DatabaseOperator
-from data_model import ENTITY_MAPPINGS
 from logger_utils import Logger
 
 logger = Logger(component="data_handler")
 
 
-def data_handler(
+def data_handler(  # pylint: disable=too-many-return-statements
     request: Request, path_segments: list[str], headers: dict, user_info: UserInfo
 ) -> tuple:
+    """Handles all data related requests.
+
+    Args:
+        request (flask.Request) - The request object.
+        path_segments - The parsed list of request path segements.
+        headers - The access control allow headers for the response.
+        user_info - The parsed information about the requester.
+    Returns:
+        The response text, or any set of values that can be turned into a
+        Response object using `make_response`
+    """
     entity_type = path_segments[1].strip().lower()
     logger.debug(f"Request for entity type '{entity_type}'")
 
     if entity_type not in ENTITY_MAPPINGS:
         return ("Invalid Entity Type", 400, headers)
 
-    if entity_type == Course and Role.ADMIN not in user_info.roles:
-        error_message = "User does not have required rights to request course!"
+    if (
+        ENTITY_MAPPINGS[entity_type] == Course
+        and Role.ADMIN not in user_info.roles
+        and request.method != "GET"
+    ):
+        error_message = "User does not have required rights to modify course!"
         logger.error(error_message)
         return (error_message, 403, headers)
 
@@ -119,7 +133,7 @@ def data_handler(
                     )
                 return (response_message, response_code, headers)
             case "DELETE":
-                if entity_type == Ticket:
+                if ENTITY_MAPPINGS[entity_type] == Ticket:
                     error_message = "Tickets cannot be deleted!"
                     logger.error(error_message)
                     return (error_message, 405, headers)

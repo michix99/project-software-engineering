@@ -70,9 +70,10 @@ def request_handler(request: Request) -> tuple:
     if not valid_path_segments:
         return ("Invalid Request", 400, headers)
 
-    if valid_path_segments[0] == "data":
-        return data_handler(request, valid_path_segments, headers, user_info)
-    elif valid_path_segments[0] == "api":
-        return api_handler(request, valid_path_segments, headers, user_info)
+    match valid_path_segments[0]:
+        case "data":
+            return data_handler(request, valid_path_segments, headers, user_info)
+        case "api":
+            return api_handler(request, valid_path_segments, headers, user_info)
 
     return ("Invalid Request", 400, headers)
