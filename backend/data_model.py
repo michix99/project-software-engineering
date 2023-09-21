@@ -34,7 +34,6 @@ class Ticket:
     description: str
     course_id: str
     title: str
-    author: str
     status: str
 
 
@@ -42,7 +41,6 @@ class Ticket:
 class Comment:
     """Class to describe a comment for a ticket."""
 
-    author: str
     content: str
     ticket_id: str
 
