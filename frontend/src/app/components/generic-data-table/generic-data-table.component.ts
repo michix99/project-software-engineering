@@ -7,13 +7,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import {
-  DxButtonModule,
-  DxDataGridComponent,
-  DxDataGridModule,
-  DxFormModule,
-  DxTextBoxModule,
-} from 'devextreme-angular';
+import { DxDataGridComponent, DxDataGridModule } from 'devextreme-angular';
 import { Subscription } from 'rxjs';
 import { AuthenticationService, LoggingService } from '../../services';
 import { environment } from '../../../environments/environment';
@@ -23,7 +17,6 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-generic-data-table',
   templateUrl: './generic-data-table.component.html',
-  styleUrls: ['./generic-data-table.component.scss'],
 })
 export class GenericDataTableComponent implements AfterViewInit, OnDestroy {
   @ViewChild('dataGrid', { static: false }) dataGrid!: DxDataGridComponent;
