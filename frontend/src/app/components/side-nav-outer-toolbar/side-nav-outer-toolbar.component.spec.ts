@@ -1,4 +1,9 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import {
+  ComponentFixture,
+  TestBed,
+  fakeAsync,
+  tick,
+} from '@angular/core/testing';
 import {
   SideNavOuterToolbarComponent,
   SideNavOuterToolbarModule,
@@ -41,7 +46,7 @@ const navigation: NavigationItem[] = [
       {
         text: 'Allowed',
         path: '/allowed',
-        requiredRole: Role.User,
+        requiredRole: Role.Editor,
       },
       {
         text: 'Not Allowed',
@@ -53,7 +58,7 @@ const navigation: NavigationItem[] = [
   {
     text: 'Sample',
     path: '/sample',
-    requiredRole: Role.User,
+    requiredRole: Role.Requester,
   },
 ];
 
@@ -126,10 +131,12 @@ describe('SideNavOuterToolbarComponent ', () => {
   it('after navigation the menu selection should be applied as well as the selected route', () => {
     const navPath = navigation[1].path as string;
     fixture.detectChanges();
+    const selectSpy = spyOn(component.menu, 'selectItem').and.returnValue(true);
     router.navEventSubject.next(new NavigationEnd(0, navPath, navPath));
 
     fixture.detectChanges();
     expect(component.selectedRoute).toBe(navPath);
+    expect(selectSpy).toHaveBeenCalled();
   });
 
   it('after navigation the menu selection should be reset if the path is not known', () => {
@@ -183,8 +190,11 @@ describe('SideNavOuterToolbarComponent ', () => {
     expect(collapseSpy).toHaveBeenCalled();
   });
 
-  it('should not add items if they do not have the required role', () => {
-    authService.role = Role.User;
+  it('should not add items if they do not have the required role', fakeAsync(() => {
+    fixture.detectChanges();
+    authService.role = Role.Editor;
+    authService.roleState.next(Role.Editor);
+    tick();
     const items = component.items;
 
     expect(items.length).toBe(2);
@@ -192,7 +202,7 @@ describe('SideNavOuterToolbarComponent ', () => {
     const children = items[0]['items'] as NavigationItem[];
     expect(children.length).toBe(1);
     expect(children[0].text).toBe('Allowed');
-  });
+  }));
 
   it('navigationChanged should navigate to the selected element', () => {
     const routerSpy = spyOn(router, 'navigate');

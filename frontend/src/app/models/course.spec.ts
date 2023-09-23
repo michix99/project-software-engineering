@@ -8,8 +8,8 @@ describe('Course ', () => {
       name: 'Projekt Software Engineering',
       created_at: new Date(2020, 7, 14).toString(),
       modified_at: new Date(2022, 9, 3).toString(),
-      created_by: 'dummy',
-      modified_by: 'author',
+      created_by_name: 'dummy',
+      modified_by_name: 'author',
     };
 
     const parsedCourse = courseFromJson(course);

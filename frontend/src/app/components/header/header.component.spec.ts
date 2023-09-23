@@ -32,26 +32,18 @@ describe('HeaderComponent', () => {
   });
 
   it('ngOnInit should load the user', () => {
-    const loadSpy = spyOn(authService, 'getUser').and.returnValue({
-      isOk: true,
-      data: { email: 'test@user.de' } as User,
-    });
+    authService.authState.next({ email: 'test@user.de' } as User);
     fixture.detectChanges();
 
     expect(component.user).toBeDefined();
     expect(component.user!.email).toBe('test@user.de');
-    expect(loadSpy).toHaveBeenCalled();
   });
 
   it('ngOnInit should set the user to null if the auth service does not return anything', () => {
-    const loadSpy = spyOn(authService, 'getUser').and.returnValue({
-      isOk: false,
-      message: 'error',
-    });
+    authService.authState.next(null);
     fixture.detectChanges();
 
     expect(component.user).toBeNull();
-    expect(loadSpy).toHaveBeenCalled();
   });
 
   it('toggleMenu should notifiy that the menu was toggled', () => {

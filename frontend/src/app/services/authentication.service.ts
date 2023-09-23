@@ -14,10 +14,11 @@ import {
   updatePassword,
 } from '@angular/fire/auth';
 import { Router } from '@angular/router';
-import { AuthUserInfo } from '../models';
 import { BehaviorSubject } from 'rxjs';
+import { Role } from '../models';
+import { LoggingService } from './logging.service';
 
-const defaultPath = '/';
+const defaultPath = '/home';
 
 export abstract class AngularFireWrapper {
   static readonly authState = authState;
@@ -34,16 +35,12 @@ export class AuthenticationService {
   private userData: User | null = null;
   get loggedIn(): boolean {
     const user = JSON.parse(localStorage.getItem('user') ?? 'null') as User;
-    return (
-      user !== null && (user.emailVerified || user.email === 'test@user.de')
-    );
-    // return !!this._user;
+    return user !== null;
   }
 
-  get authUserInfo(): AuthUserInfo {
-    return JSON.parse(
-      localStorage.getItem('userInfo') ?? 'null',
-    ) as AuthUserInfo;
+  private _currentRole: Role | null = null;
+  get currentRole(): Role | null {
+    return this._currentRole;
   }
 
   private _lastAuthenticatedPath: string = defaultPath;
@@ -55,8 +52,13 @@ export class AuthenticationService {
     null,
   );
 
+  roleState: BehaviorSubject<Role | null> = new BehaviorSubject<Role | null>(
+    null,
+  );
+
   constructor(
     private router: Router,
+    private logger: LoggingService,
     @Optional() private auth: Auth, // Inject Firebase auth service
   ) {
     if (!auth) {
@@ -69,14 +71,35 @@ export class AuthenticationService {
       if (user) {
         this.userData = user;
         this.authState.next(this.userData);
+        user
+          .getIdTokenResult()
+          .then((idTokenResult) => {
+            // Confirm the user is an Admin.
+            if (idTokenResult.claims['admin']) {
+              this.updateRole(Role.Admin);
+              return;
+            } else if (idTokenResult.claims['editor']) {
+              this.updateRole(Role.Editor);
+              return;
+            }
+            this.updateRole(Role.Requester);
+          })
+          .catch((error) => {
+            logger.error(error);
+          });
         localStorage.setItem('user', JSON.stringify(this.userData));
         this.router.navigate([this._lastAuthenticatedPath]);
       } else {
         this.authState.next(null);
+        this.updateRole(null);
         localStorage.setItem('user', 'null');
-        localStorage.setItem('userInfo', 'null');
       }
     });
+  }
+
+  updateRole(role: Role | null) {
+    this._currentRole = role;
+    this.roleState.next(role);
   }
 
   async logIn(
@@ -89,12 +112,6 @@ export class AuthenticationService {
         email,
         password,
       );
-
-      // Get role from backend
-      // const response = await fetch(`${environment.apiUrl}/userInfo/${email}`);
-      // const userInfo = response.json() as unknown as AuthUserInfo;
-      const userInfo = { id: 'test', role: 'admin' } as unknown as AuthUserInfo;
-      localStorage.setItem('userInfo', JSON.stringify(userInfo));
 
       return {
         isOk: true,
@@ -142,22 +159,6 @@ export class AuthenticationService {
         message: `Failed to reauthenticate user. ${errorMessage}`,
       };
     }
-  }
-
-  getUser(): { isOk: boolean; data?: User | null; message?: string } {
-    if (!this.userData) {
-      this.userData = JSON.parse(localStorage.getItem('user') ?? 'null');
-    }
-
-    return this.userData !== null
-      ? {
-          isOk: true,
-          data: this.userData,
-        }
-      : {
-          isOk: false,
-          message: 'Failed to load current User!',
-        };
   }
 
   async changePassword(newPassword: string) {

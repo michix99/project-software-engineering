@@ -1,8 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { LoginFormComponent, LoginFormModule } from './login-form.component';
 import { AuthenticationServiceMock } from '../../../test/authentication-service.mock';
-import { AuthenticationService } from '../../services';
+import { AuthenticationService, LoggingService } from '../../services';
 import { RouterTestingModule } from '@angular/router/testing';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { LoggingServiceMock } from 'src/test/logging.service.mock';
 
 describe('LoginFormComponent ', () => {
   let component: LoginFormComponent;
@@ -11,9 +13,10 @@ describe('LoginFormComponent ', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [RouterTestingModule, LoginFormModule],
+      imports: [RouterTestingModule, LoginFormModule, BrowserAnimationsModule],
       providers: [
         { provide: AuthenticationService, useClass: AuthenticationServiceMock },
+        { provide: LoggingService, useClass: LoggingServiceMock },
       ],
       declarations: [LoginFormComponent],
     });

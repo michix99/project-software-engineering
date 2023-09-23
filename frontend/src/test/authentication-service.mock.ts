@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AuthenticationService } from '../app/services';
 import { User } from '@angular/fire/auth';
-import { AuthUserInfo, Role } from 'src/app/models';
+import { Role } from 'src/app/models';
 
 @Injectable()
 export class AuthenticationServiceMock extends AuthenticationService {
@@ -13,8 +13,8 @@ export class AuthenticationServiceMock extends AuthenticationService {
     return this.isLoggedIn;
   }
 
-  override get authUserInfo(): AuthUserInfo {
-    return { id: '12345', role: this.role };
+  override get currentRole(): Role {
+    return this.role;
   }
 
   override async logIn(
@@ -40,25 +40,6 @@ export class AuthenticationServiceMock extends AuthenticationService {
 
   override async getToken(): Promise<string> {
     return Promise.resolve('dummy-token');
-  }
-
-  override getUser(): {
-    isOk: boolean;
-    data?: User | null | undefined;
-    message?: string | undefined;
-  } {
-    if (this.requestSuccess) {
-      return {
-        isOk: true,
-        data: {
-          email: 'dummy@mail.de',
-        } as User,
-      };
-    }
-    return {
-      isOk: false,
-      message: 'Failed to load user!',
-    };
   }
 
   override reauthenticateUser(

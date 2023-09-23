@@ -33,7 +33,9 @@
                 <div class="image-container">
                   <i class="user-icon dx-icon-user"></i>
                 </div>
-                <div class="user-name">{{ user?.email }}</div>
+                <div class="user-name">
+                  {{ user?.displayName ?? user?.email }}
+                </div>
               </div>
               <dx-context-menu
                 [items]="userMenuItems"

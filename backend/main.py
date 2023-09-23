@@ -2,17 +2,14 @@
     Main entry point for the Cloud Function.
 """
 from os import getenv
-import json
-from dataclasses import fields
 import functions_framework
 from firebase_admin import initialize_app
-from google.cloud.firestore_v1.base_query import FieldFilter
 from flask import Request
 from logger_utils import Logger
 from auth_utils import is_authenticated
-from db_operator import DatabaseOperator
+from data_handler import data_handler
+from api_handler import api_handler
 from version import __version__
-from data_model import ENTITY_MAPPINGS
 
 
 initialize_app()
@@ -20,7 +17,7 @@ logger = Logger(component="main")
 
 
 @functions_framework.http
-def request_handler(request: Request):  # pylint: disable=too-many-locals,too-many-return-statements,too-many-branches
+def request_handler(request: Request) -> tuple:
     """HTTP Cloud Function.
     Args:
         request (flask.Request): The request object.
@@ -42,11 +39,11 @@ def request_handler(request: Request):  # pylint: disable=too-many-locals,too-ma
     )
 
     if request.method == "OPTIONS":
-        # Allows GET requests from any origin with the Content-Type
+        # Allows requests from any origin with the Content-Type
         # header and caches preflight response for an 3600s
         headers = {
+            "Access-Control-Allow-Methods": "GET, PUT, POST, DELETE",
             "Access-Control-Allow-Origin": allowed_origins,
-            "Access-Control-Allow-Methods": "GET",
             "Access-Control-Allow-Headers": "Content-Type, Authorization",
             "Access-Control-Allow-Credentials": "true",
             "Access-Control-Max-Age": "3600",
@@ -60,8 +57,8 @@ def request_handler(request: Request):  # pylint: disable=too-many-locals,too-ma
         "Access-Control-Allow-Credentials": "true",
     }
 
-    successfully_authenticated, error_status, error_message = is_authenticated(request)
-    if not successfully_authenticated:
+    user_info, error_status, error_message = is_authenticated(request)
+    if not user_info:
         return (error_message, error_status, headers)
 
     logger.debug(f"Request against '{request.path}'")
@@ -73,139 +70,10 @@ def request_handler(request: Request):  # pylint: disable=too-many-locals,too-ma
     if not valid_path_segments:
         return ("Invalid Request", 400, headers)
 
-    entity_type = valid_path_segments[0].strip().lower()
-    logger.debug(f"Request for entity type '{entity_type}'")
-
-    if entity_type not in ENTITY_MAPPINGS:
-        return ("Invalid Entity Type", 400, headers)
-
-    # For Requests against an entity, schema: https://<api>/<entity>
-    if len(valid_path_segments) == 1:
-        match request.method:
-            case "GET":
-                response_code, response_message = DatabaseOperator().read_all(
-                    entity_type
-                )
-                if response_code == 200:
-                    return (json.dumps(response_message), response_code, headers)
-                return (response_message, response_code, headers)
-            case "POST":
-                body = get_body(request)
-                course_field_names = get_field_names(ENTITY_MAPPINGS[entity_type])
-
-                if not body or not all(
-                    field_name in body for field_name in course_field_names
-                ):
-                    error_message = (
-                        "Not all required fields are provided! Required fields are: "
-                        + ", ".join(course_field_names)
-                    )
-                    logger.error(error_message)
-                    return (error_message, 400, headers)
-
-                only_relevant_attr = {
-                    key: body[key] for key in course_field_names if key in body
-                }
-                duplication_filters = get_field_filters(only_relevant_attr)
-                response_code, response_message = DatabaseOperator().create(
-                    entity_type,
-                    only_relevant_attr,
-                    duplication_filters=duplication_filters,
-                )
-
-                if response_code not in (201, 409):
-                    return (response_message, response_code, headers)
-                return (json.dumps({"id": response_message}), response_code, headers)
-
-    # For Requests against specific elements, schema: https://<api>/<entity>/<id>
-    elif len(valid_path_segments) == 2:
-        # Extract entity ID from URL
-        entity_id = valid_path_segments[1]
-
-        match request.method:
-            case "GET":
-                response_code, response_message = DatabaseOperator().read(
-                    entity_type, entity_id
-                )
-                if response_code == 200:
-                    return (json.dumps(response_message), response_code, headers)
-                return (response_message, response_code, headers)
-            case "PUT":
-                body = get_body(request)
-                course_field_names = get_field_names(ENTITY_MAPPINGS[entity_type])
-
-                if not body or not all(
-                    field_name in body for field_name in course_field_names
-                ):
-                    error_message = (
-                        "Not all required fields are provided! Required fields are: "
-                        + ", ".join(course_field_names)
-                    )
-                    logger.error(error_message)
-                    return (error_message, 400, headers)
-
-                only_relevant_attr = {
-                    key: body[key] for key in course_field_names if key in body
-                }
-                duplication_filters = get_field_filters(only_relevant_attr)
-
-                response_code, response_message = DatabaseOperator().update(
-                    entity_type,
-                    only_relevant_attr,
-                    valid_path_segments[1],
-                    duplication_filters,
-                )
-                if response_code in (200, 409):
-                    return (
-                        json.dumps({"id": response_message}),
-                        response_code,
-                        headers,
-                    )
-                return (response_message, response_code, headers)
-            case "DELETE":
-                response_code, response_message = DatabaseOperator().delete(
-                    entity_type, valid_path_segments[1]
-                )
-                if response_code == 204:
-                    return ("", response_code, headers)
-                return (response_message, response_code, headers)
+    match valid_path_segments[0]:
+        case "data":
+            return data_handler(request, valid_path_segments, headers, user_info)
+        case "api":
+            return api_handler(request, valid_path_segments, headers, user_info)
 
     return ("Invalid Request", 400, headers)
-
-
-def get_body(request: Request) -> dict:
-    """Parses the request body to a dict.
-    Args:
-        request -- The HTTP request body.
-    Returns:
-        The parsed body as dict.
-    """
-    content_type = request.headers.get("content-type")
-    if not content_type == "application/json":
-        logger.error(f"Expected JSON body but was: {content_type}")
-        return None
-    request_json = request.get_json(silent=True)
-    logger.info(f"Sucessfully loaded json body: {request_json}")
-    return request_json
-
-
-def get_field_names(class_type: type) -> list[str]:
-    """Gets the name of the attributes for a given class.
-    Args:
-        class_type -- The dataclass type to get the field names from.
-    Returns:
-        A list of field names.
-    """
-    field_elems = fields(class_type)
-    return [x.name for x in field_elems]
-
-
-def get_field_filters(fields_to_filter: dict) -> list[FieldFilter]:
-    """Creates eq filters for given entity fields. Can be used in queries.
-    Args:
-        fields -- The fields to create filters for.
-    Returns:
-        A list with equality filters.
-    """
-    conditions = [(key, "==", fields_to_filter[key]) for key in fields_to_filter]
-    return [FieldFilter(*_c) for _c in conditions]

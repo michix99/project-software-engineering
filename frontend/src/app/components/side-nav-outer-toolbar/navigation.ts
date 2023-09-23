@@ -20,9 +20,19 @@ export const NAVIGATION: NavigationItem[] = [
         path: '/profile',
       },
       {
-        text: 'Tasks',
+        text: 'Admin',
         path: '/tasks',
         requiredRole: Role.Admin,
+      },
+      {
+        text: 'Editor',
+        path: '/login-form',
+        requiredRole: Role.Editor,
+      },
+      {
+        text: 'Requester',
+        path: '/rest-password',
+        requiredRole: Role.Requester,
       },
     ],
   },

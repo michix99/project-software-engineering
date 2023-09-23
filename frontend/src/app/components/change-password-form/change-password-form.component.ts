@@ -4,8 +4,8 @@ import { Router, RouterModule } from '@angular/router';
 import { ValidationCallbackData } from 'devextreme-angular/common';
 import { DxFormModule } from 'devextreme-angular/ui/form';
 import { DxLoadIndicatorModule } from 'devextreme-angular/ui/load-indicator';
-import { AuthenticationService } from '../../services';
-import notify from 'devextreme/ui/notify';
+import { AuthenticationService, LoggingService } from '../../services';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-change-passsword-form',
@@ -28,6 +28,8 @@ export class ChangePasswordFormComponent {
   constructor(
     private authService: AuthenticationService,
     private router: Router,
+    private notificationService: MatSnackBar,
+    private logger: LoggingService,
   ) {}
 
   /**
@@ -50,7 +52,15 @@ export class ChangePasswordFormComponent {
 
       if (!result.isOk) {
         this.loading = false;
-        notify(result.message, 'error', 2000);
+        this.logger.error(result.message);
+        this.notificationService.open(
+          result.message || 'Reauthentication was not successful',
+          undefined,
+          {
+            duration: 2000,
+            panelClass: ['red-snackbar'],
+          },
+        );
         return;
       }
 
@@ -60,10 +70,21 @@ export class ChangePasswordFormComponent {
     this.loading = false;
 
     if (result.isOk) {
-      notify('Successfully changed password!', 'success', 2000);
+      this.notificationService.open('Successfully changed password!', 'OK', {
+        duration: 2000,
+        panelClass: ['green-snackbar'],
+      });
       this.router.navigate(['/']);
     } else {
-      notify(result.message, 'error', 2000);
+      this.logger.error(result.message);
+      this.notificationService.open(
+        result.message || 'Cannot change password.',
+        'Try again!',
+        {
+          duration: 2000,
+          panelClass: ['red-snackbar'],
+        },
+      );
     }
   }
 
@@ -73,7 +94,13 @@ export class ChangePasswordFormComponent {
   };
 }
 @NgModule({
-  imports: [CommonModule, RouterModule, DxFormModule, DxLoadIndicatorModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    DxFormModule,
+    DxLoadIndicatorModule,
+    MatSnackBarModule,
+  ],
   declarations: [ChangePasswordFormComponent],
   exports: [ChangePasswordFormComponent],
 })

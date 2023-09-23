@@ -15,6 +15,7 @@ import { DxToolbarModule } from 'devextreme-angular/ui/toolbar';
 import { Router } from '@angular/router';
 import { User } from '@angular/fire/auth';
 import { DxContextMenuModule, DxListModule } from 'devextreme-angular';
+import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-header',
   templateUrl: 'header.component.html',
@@ -61,13 +62,19 @@ export class HeaderComponent implements OnInit {
     },
   ];
 
+  authUpdateSubscription: Subscription = new Subscription();
+
   constructor(
     private authService: AuthenticationService,
     private router: Router,
   ) {}
 
   ngOnInit() {
-    this.user = this.authService.getUser().data ?? null;
+    this.authUpdateSubscription = this.authService.authState.subscribe(
+      (user: User | null) => {
+        this.user = user;
+      },
+    );
   }
 
   /** Informs about clicking on the menu button. */
