@@ -373,7 +373,9 @@ class TestDbOperator:  # pylint: disable=R0904
             "firebase_admin.auth.get_user"
         ) as user_mock, mock.patch(
             "db_operator.DatabaseOperator.read"
-        ) as read_mock:
+        ) as read_mock, mock.patch(
+            "firebase_admin.firestore.client"
+        ):
             collection_mock.return_value = collection_return_mock = mock.Mock()
             read_mock.return_value = (
                 200,
