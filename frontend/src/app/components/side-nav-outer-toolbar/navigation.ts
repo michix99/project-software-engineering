@@ -12,27 +12,31 @@ export const NAVIGATION: NavigationItem[] = [
     icon: 'home',
   },
   {
-    text: 'Examples',
-    icon: 'folder',
+    text: 'Create Ticket',
+    icon: 'add',
+    path: '/ticket/0',
+  },
+  {
+    text: 'Ticket Overview',
+    icon: 'description',
+    path: '/ticket',
+  },
+  {
+    text: 'Settings',
+    icon: 'preferences',
+    requiredRole: Role.Admin,
     items: [
       {
-        text: 'Profile',
-        path: '/profile',
+        text: 'Permissions',
+        path: '/permission',
       },
       {
-        text: 'Admin',
-        path: '/tasks',
-        requiredRole: Role.Admin,
+        text: 'Course Management',
+        path: '/course',
       },
       {
-        text: 'Editor',
-        path: '/login-form',
-        requiredRole: Role.Editor,
-      },
-      {
-        text: 'Requester',
-        path: '/rest-password',
-        requiredRole: Role.Requester,
+        text: 'User Management',
+        path: '/user',
       },
     ],
   },

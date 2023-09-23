@@ -11,6 +11,24 @@ from enums import Role
 from auth_utils import UserInfo
 
 
+class MockExportedUserReference:  # pylint: disable=R0903
+    """Mock implementation of a exported user record."""
+
+    class MockUserInfo:
+        """Mock implementation of a user info."""
+
+        uid: str = "uid"
+        email: str = "email"
+        display_name: str = "display name"
+        disabled: bool = False
+        custom_claims: dict
+
+    users = [MockUserInfo()]
+
+    def __init__(self, custom_claims: dict) -> None:
+        self.users[0].custom_claims = custom_claims
+
+
 class TestApiHandler:  # pylint: disable=R0904
     """Contains tests for the api request handler."""
 
@@ -318,3 +336,111 @@ class TestApiHandler:  # pylint: disable=R0904
             assert res[2].get("Access-Control-Allow-Origin") == "*"
             assert res[2].get("Access-Control-Allow-Credentials") == "true"
             assert res[2].get("Access-Control-Allow-Methods") == "POST"
+
+    def test_get_users_success(self, app) -> None:
+        """Tests a successful request to get all users."""
+        with app.test_request_context(
+            "/api/user",
+            method="GET",
+        ), mock.patch("firebase_admin.auth.list_users") as exported_users:
+            exported_users.return_value = MockExportedUserReference({"admin": True})
+            res = api_handler.api_handler(
+                flask.request,
+                ["api", "user"],
+                {
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Credentials": "true",
+                },
+                UserInfo("789", [Role.ADMIN]),
+            )
+            assert res[0] == [
+                {
+                    "id": "uid",
+                    "email": "email",
+                    "display_name": "display name",
+                    "disabled": False,
+                    "admin": True,
+                    "editor": False,
+                    "requester": False,
+                }
+            ]
+            assert res[1] == 200
+            assert res[2].get("Access-Control-Allow-Origin") == "*"
+            assert res[2].get("Access-Control-Allow-Credentials") == "true"
+            assert res[2].get("Access-Control-Allow-Methods") == "GET"
+
+    def test_get_users_failing_with_value_error(self, app) -> None:
+        """
+        Tests a failing request to get all users.
+        Raising value error while loading.
+        """
+        with app.test_request_context(
+            "/api/user",
+            method="GET",
+        ), mock.patch("firebase_admin.auth.list_users") as exported_users:
+            exported_users.side_effect = ValueError("Error")
+            res = api_handler.api_handler(
+                flask.request,
+                ["api", "user"],
+                {
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Credentials": "true",
+                },
+                UserInfo("123", [Role.ADMIN]),
+            )
+            assert res[0] == "Parameter max_results or page_token are invalid!"
+            assert res[1] == 400
+            assert res[2].get("Access-Control-Allow-Origin") == "*"
+            assert res[2].get("Access-Control-Allow-Methods") == "GET"
+            assert res[2].get("Access-Control-Allow-Credentials") == "true"
+
+    def test_get_users_failing_with_firebase_error(self, app) -> None:
+        """
+        Tests a failing request to get all users.
+        Raising firebase error while loading.
+        """
+        with app.test_request_context(
+            "/api/user",
+            method="GET",
+        ), mock.patch("firebase_admin.auth.list_users") as exported_users:
+            exported_users.side_effect = exceptions.FirebaseError(
+                "Error Code", "Error Message"
+            )
+            res = api_handler.api_handler(
+                flask.request,
+                ["api", "user"],
+                {
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Credentials": "true",
+                },
+                UserInfo("432", [Role.ADMIN]),
+            )
+            assert res[0] == "Error Code"
+            assert res[1] == 500
+            assert res[2].get("Access-Control-Allow-Origin") == "*"
+            assert res[2].get("Access-Control-Allow-Methods") == "GET"
+            assert res[2].get("Access-Control-Allow-Credentials") == "true"
+
+    def test_get_users_failing_missing_permissions(self, app) -> None:
+        """
+        Tests a failing request to get all users.
+        User is no admin.
+        """
+        with app.test_request_context(
+            "/api/user",
+            method="GET",
+        ):
+            res = api_handler.api_handler(
+                flask.request,
+                ["api", "user"],
+                {
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Credentials": "true",
+                },
+                UserInfo("789", [Role.REQUESTER]),
+            )
+            assert res[0] == "User does not have required rights to perform request!"
+            assert res[1] == 403
+            assert res[2].get("Access-Control-Allow-Origin") == "*"
+            assert res[2].get("Access-Control-Allow-Credentials") == "true"
+            assert res[2].get("Access-Control-Allow-Methods") == "GET"

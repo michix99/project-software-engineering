@@ -90,5 +90,41 @@ def api_handler(  # pylint: disable=too-many-return-statements
                 logger.error(f"Error while setting display name: {error}")
                 return (error.code, 500, headers)
             return ("", 200, headers)
+        case "GET" if path_segments[1] == "user":
+            headers["Access-Control-Allow-Methods"] = "GET"
+            if Role.ADMIN not in user_info.roles:
+                error_message = "User does not have required rights to perform request!"
+                logger.error(error_message)
+                return (error_message, 403, headers)
+
+            try:
+                exported_user_records = auth.list_users()
+
+                users = []
+                for record in exported_user_records.users:
+                    parsed_user = {
+                        "id": record.uid,
+                        "email": record.email,
+                        "display_name": record.display_name,
+                        "disabled": record.disabled,
+                        "admin": record.custom_claims is not None
+                        and record.custom_claims.get("admin", False) is True,
+                        "editor": record.custom_claims is not None
+                        and record.custom_claims.get("editor", False) is True,
+                        "requester": record.custom_claims is not None
+                        and record.custom_claims.get("requester", False) is True,
+                    }
+                    users.append(parsed_user)
+                return (users, 200, headers)
+            except ValueError as error:
+                logger.error(f"Error while loading users: {error}")
+                return (
+                    "Parameter max_results or page_token are invalid!",
+                    400,
+                    headers,
+                )
+            except exceptions.FirebaseError as error:
+                logger.error(f"Error while retrieving the user accounts: {error}")
+                return (error.code, 500, headers)
 
     return ("Invalid Request", 400, headers)

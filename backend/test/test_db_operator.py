@@ -7,7 +7,7 @@ import pytest
 from google.cloud.firestore_v1.base_query import FieldFilter
 from google.cloud import exceptions
 from db_operator import DatabaseOperator
-from data_model import Course
+from data_model import Course, Ticket
 from enums import Role
 from auth_utils import UserInfo
 
@@ -18,15 +18,19 @@ class MockDocReference:  # pylint: disable=R0903
     exists: bool
     id: str
     name: str
+    additional_attributes: dict
 
-    def __init__(self, exists, identifier=None, name=None) -> None:
+    def __init__(
+        self, exists, identifier=None, name=None, additional_attributes=None
+    ) -> None:
         self.exists = exists
         self.id = identifier  # pylint: disable=C0103
         self.name = name
+        self.additional_attributes = additional_attributes
 
     def to_dict(self) -> dict:
         """Parses the element to a dictionary."""
-        return {"name": self.name}
+        return {"name": self.name, **(self.additional_attributes or {})}
 
 
 class MockUserReference:  # pylint: disable=R0903
@@ -329,7 +333,7 @@ class TestDbOperator:  # pylint: disable=R0904
                 MockUserReference("Modified By Another Name"),
             ]
 
-            return_code, return_message = db_operator.read_all("test")
+            return_code, return_message = db_operator.read_all("test", Course)
 
             assert return_code == 200
             assert return_message == [
@@ -353,13 +357,75 @@ class TestDbOperator:  # pylint: disable=R0904
             collection_mock.return_value = collection_return_mock = mock.Mock()
             collection_return_mock.stream.side_effect = TimeoutError("Timeout Error")
 
-            return_code, return_message = db_operator.read_all("test")
+            return_code, return_message = db_operator.read_all("test", Course)
 
             assert return_code == 500
             assert (
                 return_message
                 == "Timed out while trying to read all entries for test: Timeout Error"
             )
+
+    def test_read_all_successful_with_references(self, db_operator) -> None:
+        """Tests reading a database collection with references to resolve successfully."""
+        with mock.patch.object(
+            db_operator.db_client, "collection"
+        ) as collection_mock, mock.patch(
+            "firebase_admin.auth.get_user"
+        ) as user_mock, mock.patch(
+            "db_operator.DatabaseOperator.read"
+        ) as read_mock:
+            collection_mock.return_value = collection_return_mock = mock.Mock()
+            read_mock.return_value = (
+                200,
+                MockDocReference(
+                    True, "dummy_id", "course name", {"course_abbreviation": "abbr"}
+                ).to_dict(),
+            )
+            collection_return_mock.stream.return_value = [
+                MockDocReference(
+                    True,
+                    "dummy_id",
+                    "name",
+                    {"course_id": "123", "assignee_id": "456"},
+                ),
+                MockDocReference(
+                    True, "another_dummy_id", "another_name", {"course_id": "123"}
+                ),
+            ]
+
+            user_mock.side_effect = [
+                MockUserReference("Created By Name"),
+                MockUserReference("Modified By Name"),
+                MockUserReference("Assignee Name"),
+                MockUserReference("Created By Another Name"),
+                MockUserReference("Modified By Another Name"),
+            ]
+
+            return_code, return_message = db_operator.read_all("test", Ticket)
+
+            assert return_code == 200
+            assert return_message == [
+                {
+                    "id": "dummy_id",
+                    "name": "name",
+                    "created_by_name": "Created By Name",
+                    "modified_by_name": "Modified By Name",
+                    "course_id": "123",
+                    "course_name": "course name",
+                    "course_abbreviation": "abbr",
+                    "assignee_id": "456",
+                    "assignee_name": "Assignee Name",
+                },
+                {
+                    "id": "another_dummy_id",
+                    "name": "another_name",
+                    "created_by_name": "Created By Another Name",
+                    "modified_by_name": "Modified By Another Name",
+                    "course_id": "123",
+                    "course_name": "course name",
+                    "course_abbreviation": "abbr",
+                },
+            ]
 
     def test_find_successful(self, db_operator) -> None:
         """Tests querying a database entity successfully."""
