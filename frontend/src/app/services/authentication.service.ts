@@ -20,6 +20,7 @@ import { LoggingService } from './logging.service';
 
 const defaultPath = '/home';
 
+/** Wrapper needed for testing. */
 export abstract class AngularFireWrapper {
   static readonly authState = authState;
   static readonly confirmPasswordReset = confirmPasswordReset;
@@ -85,7 +86,7 @@ export class AuthenticationService {
             this.updateRole(Role.Requester);
           })
           .catch((error) => {
-            logger.error(error);
+            this.logger.error(error);
           });
         localStorage.setItem('user', JSON.stringify(this.userData));
         this.router.navigate([this._lastAuthenticatedPath]);
@@ -97,11 +98,21 @@ export class AuthenticationService {
     });
   }
 
+  /**
+   * Updates the current role and informs about the change.
+   * @param role The role of the current user.
+   */
   updateRole(role: Role | null) {
     this._currentRole = role;
     this.roleState.next(role);
   }
 
+  /**
+   * Performs a login with given credentials.
+   * @param email The email of the user.
+   * @param password The password of the user.
+   * @returns If the login was successful including the user and the error if not.
+   */
   async logIn(
     email: string,
     password: string,
@@ -130,6 +141,11 @@ export class AuthenticationService {
     }
   }
 
+  /**
+   * Performs a re-login after the token is invalid.
+   * @param password The password of the user.
+   * @returns If the re-login was successful and the error if not.
+   */
   async reauthenticateUser(
     password: string,
   ): Promise<{ isOk: boolean; message?: string }> {
@@ -161,7 +177,14 @@ export class AuthenticationService {
     }
   }
 
-  async changePassword(newPassword: string) {
+  /**
+   * Changes the password of the current user.
+   * @param newPassword The new password of the user.
+   * @returns If the change was successful and the error if not.
+   */
+  async changePassword(
+    newPassword: string,
+  ): Promise<{ isOk: boolean; message?: string }> {
     try {
       if (!this.auth.currentUser)
         throw new FirebaseError('500', 'Could not load current user.');
@@ -183,7 +206,14 @@ export class AuthenticationService {
     }
   }
 
-  async sendPasswordReset(email: string) {
+  /**
+   * Sends a passwort reset email to the current user.
+   * @param email The email to sent a password reset to.
+   * @returns If the send was successful and the error if not.
+   */
+  async sendPasswordReset(
+    email: string,
+  ): Promise<{ isOk: boolean; message?: string }> {
     try {
       await AngularFireWrapper.sendPasswordResetEmail(this.auth, email);
 
@@ -200,7 +230,16 @@ export class AuthenticationService {
     }
   }
 
-  async confirmPasswordReset(oobCode: string, password: string) {
+  /**
+   * Confirms a password reset with a given code and a new password.
+   * @param oobCode The one time code for the password reset.
+   * @param password The new password to set.
+   * @returns If the password change was successful and the error if not.
+   */
+  async confirmPasswordReset(
+    oobCode: string,
+    password: string,
+  ): Promise<{ isOk: boolean; message?: string }> {
     try {
       await AngularFireWrapper.confirmPasswordReset(
         this.auth,
@@ -221,12 +260,18 @@ export class AuthenticationService {
     }
   }
 
+  /**
+   * Logs the user out.
+   */
   async logOut(): Promise<void> {
     await AngularFireWrapper.signOut(this.auth);
     localStorage.removeItem('user');
     this.router.navigate(['/login-form']);
   }
 
+  /**
+   * Returns an ID Token or nothing if no user is authenticated
+   */
   async getToken(): Promise<string> {
     return this.userData ? this.userData.getIdToken() : '';
   }

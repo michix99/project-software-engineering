@@ -73,22 +73,29 @@ export class GenericDataTableComponent implements AfterViewInit, OnDestroy {
 
   async getData() {
     const token = await this.authService.getToken();
-    const response = await fetch(`${environment.apiUrl}/${this.dataEndpoint}`, {
-      method: 'GET',
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    try {
+      const response = await fetch(
+        `${environment.apiUrl}/${this.dataEndpoint}`,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
 
-    if (response.status == 200) {
-      const jsonResponse = (await response.json()) as unknown as Array<
-        Record<string, unknown>
-      >;
+      if (response.status == 200) {
+        const jsonResponse = (await response.json()) as unknown as Array<
+          Record<string, unknown>
+        >;
 
-      this.dataSource = jsonResponse.map((e) => this.dataParser(e));
-    } else {
-      this.dataSource = [];
-      throw new Error(await response.text());
+        this.dataSource = jsonResponse.map((e) => this.dataParser(e));
+      } else {
+        this.dataSource = [];
+        throw new Error(await response.text());
+      }
+    } catch (error) {
+      throw new Error((error as Error).message);
     }
   }
 }
