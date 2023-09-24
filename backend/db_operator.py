@@ -11,6 +11,7 @@ from google.cloud.firestore_v1.base_query import (
 from google.cloud.firestore_v1.base_document import BaseDocumentReference
 from google.cloud import exceptions
 from google.api_core.exceptions import RetryError
+from auth_utils import UserInfo, get_user_name_by_id
 
 from logger_utils import Logger
 
@@ -20,8 +21,9 @@ logger = Logger(component="db_utils")
 class DatabaseOperator:
     """Class that hold a connection to the database and runs CRUD operations on it."""
 
-    def __init__(self) -> None:
+    def __init__(self, user_info: UserInfo) -> None:
         self.db_client = firestore.client()
+        self.user_info = user_info
 
     def create(
         self,
@@ -69,7 +71,9 @@ class DatabaseOperator:
 
         new_data = asdict(data) if is_dataclass(data) else data
         new_data["created_at"] = datetime.utcnow().isoformat()
+        new_data["created_by"] = self.user_info.user_id
         new_data["modified_at"] = datetime.utcnow().isoformat()
+        new_data["modified_by"] = self.user_info.user_id
 
         try:
             # Element will be overwritten if exists
@@ -117,6 +121,7 @@ class DatabaseOperator:
         try:
             elem_ref.update(update_data, timeout=10)
             elem_ref.update({"modified_at": datetime.utcnow().isoformat()}, timeout=10)
+            elem_ref.update({"modified_by": self.user_info.user_id}, timeout=10)
         except exceptions.NotFound as error:
             logger.error(f"Error while updating the entry: {error}")
             return 404, "Element not found!"
@@ -148,7 +153,16 @@ class DatabaseOperator:
                 logger.info(
                     f"Selected element '{document_id}' in collection '{collection}'."
                 )
-                return 200, element.to_dict()
+                return 200, {
+                    **element.to_dict(),
+                    "id": element.id,
+                    "created_by_name": get_user_name_by_id(
+                        element.to_dict().get("created_by")
+                    ),
+                    "modified_by_name": get_user_name_by_id(
+                        element.to_dict().get("modified_by")
+                    ),
+                }
             return 404, "Element not found!"
         except (TimeoutError, RetryError) as error:
             error_message = (
@@ -167,7 +181,17 @@ class DatabaseOperator:
         try:
             all_element_refs = self.db_client.collection(collection).stream(timeout=10)
             all_elements = [
-                {**element.to_dict(), "id": element.id} for element in all_element_refs
+                {
+                    **element.to_dict(),
+                    "id": element.id,
+                    "created_by_name": get_user_name_by_id(
+                        element.to_dict().get("created_by")
+                    ),
+                    "modified_by_name": get_user_name_by_id(
+                        element.to_dict().get("modified_by")
+                    ),
+                }
+                for element in all_element_refs
             ]
         except (TimeoutError, RetryError) as error:
             error_message = (

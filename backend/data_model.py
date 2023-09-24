@@ -11,30 +11,12 @@ class Course:
 
 
 @dataclass
-class Role:
-    """Class to describe a role of an User"""
-
-    name: str
-
-
-@dataclass
-class User:
-    """Class to describe an user of the IU."""
-
-    email: str
-    name_first: str
-    name_last: str
-    role: str
-
-
-@dataclass
 class Ticket:
     """Class to describe a ticket."""
 
     description: str
     course_id: str
     title: str
-    created_by: str
     status: str
 
 
@@ -42,15 +24,12 @@ class Ticket:
 class Comment:
     """Class to describe a comment for a ticket."""
 
-    created_by: str
-    comment: str
+    content: str
     ticket_id: str
 
 
 ENTITY_MAPPINGS = {
     "course": Course,
-    "role": Role,
-    "user": User,
     "ticket": Ticket,
     "comment": Comment,
 }

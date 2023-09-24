@@ -8,9 +8,11 @@ import { DxScrollViewModule } from 'devextreme-angular/ui/scroll-view';
   styleUrls: ['./single-card.component.scss'],
 })
 export class SingleCardComponent {
+  /** The title shown on the cards. */
   @Input()
   title!: string;
 
+  /** The description shown below the title. */
   @Input()
   description!: string;
 }

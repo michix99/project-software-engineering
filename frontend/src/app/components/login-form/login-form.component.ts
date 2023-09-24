@@ -3,8 +3,8 @@ import { Component, NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { DxFormModule } from 'devextreme-angular/ui/form';
 import { DxLoadIndicatorModule } from 'devextreme-angular/ui/load-indicator';
-import notify from 'devextreme/ui/notify';
-import { AuthenticationService } from '../../services';
+import { AuthenticationService, LoggingService } from '../../services';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-login-form',
@@ -12,25 +12,45 @@ import { AuthenticationService } from '../../services';
   styleUrls: ['./login-form.component.scss'],
 })
 export class LoginFormComponent {
+  /** Indicates if the loading spinner should be shown. */
   loading = false;
+  /** The data used for login the user. */
   formData: { password: string; email: string } = { password: '', email: '' };
 
-  constructor(private authService: AuthenticationService) {}
+  constructor(
+    private authService: AuthenticationService,
+    private notificationService: MatSnackBar,
+    private logger: LoggingService,
+  ) {}
 
-  async onSubmit(e: Event) {
+  /**
+   * Submits the login reset.
+   * @param e The form submit event.
+   */
+  async onSubmit(e: Event): Promise<void> {
     e.preventDefault();
     const { email, password } = this.formData;
     this.loading = true;
 
     const result = await this.authService.logIn(email, password);
-    if (!result.isOk) {
-      this.loading = false;
-      notify(result.message, 'error', 2000);
+    this.loading = false;
+    if (!result.isOk && result.message) {
+      this.logger.error(result.message);
+      this.notificationService.open(result.message, 'Try again!', {
+        duration: 2000,
+        panelClass: ['red-snackbar'],
+      });
     }
   }
 }
 @NgModule({
-  imports: [CommonModule, RouterModule, DxFormModule, DxLoadIndicatorModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    DxFormModule,
+    DxLoadIndicatorModule,
+    MatSnackBarModule,
+  ],
   declarations: [LoginFormComponent],
   exports: [LoginFormComponent],
 })

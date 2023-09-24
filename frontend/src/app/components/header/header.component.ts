@@ -9,29 +9,35 @@ import {
 import { CommonModule } from '@angular/common';
 
 import { AuthenticationService } from '../../services';
-import { UserPanelModule } from '../user-panel/user-panel.component';
 import { DxButtonModule } from 'devextreme-angular/ui/button';
 import { DxToolbarModule } from 'devextreme-angular/ui/toolbar';
 
 import { Router } from '@angular/router';
 import { User } from '@angular/fire/auth';
+import { DxContextMenuModule, DxListModule } from 'devextreme-angular';
+import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-header',
   templateUrl: 'header.component.html',
   styleUrls: ['./header.component.scss'],
 })
 export class HeaderComponent implements OnInit {
+  /** Notifies when the menu button is clicked. */
   @Output()
   menuToggle = new EventEmitter<boolean>();
 
+  /** Indicates if the menu can be toggled. */
   @Input()
   menuToggleEnabled = false;
 
+  /** The title of the header. */
   @Input()
   title!: string;
 
+  /** Information about the logged in user. */
   user: User | null = null;
 
+  /** The list of menu items shown in the context menu. */
   userMenuItems = [
     {
       text: 'Profile',
@@ -56,22 +62,35 @@ export class HeaderComponent implements OnInit {
     },
   ];
 
+  authUpdateSubscription: Subscription = new Subscription();
+
   constructor(
     private authService: AuthenticationService,
     private router: Router,
   ) {}
 
   ngOnInit() {
-    this.user = this.authService.getUser().data ?? null;
+    this.authUpdateSubscription = this.authService.authState.subscribe(
+      (user: User | null) => {
+        this.user = user;
+      },
+    );
   }
 
+  /** Informs about clicking on the menu button. */
   toggleMenu = () => {
     this.menuToggle.emit();
   };
 }
 
 @NgModule({
-  imports: [CommonModule, DxButtonModule, UserPanelModule, DxToolbarModule],
+  imports: [
+    CommonModule,
+    DxButtonModule,
+    DxToolbarModule,
+    DxListModule,
+    DxContextMenuModule,
+  ],
   declarations: [HeaderComponent],
   exports: [HeaderComponent],
 })

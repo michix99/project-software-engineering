@@ -4,8 +4,8 @@ import { Router, RouterModule } from '@angular/router';
 import { ValidationCallbackData } from 'devextreme-angular/common';
 import { DxFormModule } from 'devextreme-angular/ui/form';
 import { DxLoadIndicatorModule } from 'devextreme-angular/ui/load-indicator';
-import { AuthenticationService } from '../../services';
-import notify from 'devextreme/ui/notify';
+import { AuthenticationService, LoggingService } from '../../services';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-change-passsword-form',
@@ -13,21 +13,30 @@ import notify from 'devextreme/ui/notify';
   styleUrls: ['./change-password-form.component.scss'],
 })
 export class ChangePasswordFormComponent {
+  /** Indicates if the loading spinner should be shown. */
   loading = false;
+  /** The data fields for changing the password. */
   formData: { currentPassword: string; password: string } = {
     currentPassword: '',
     password: '',
   };
 
+  /** The reset code to confirm the password reset. */
   @Input()
   oobCode?: string;
 
   constructor(
     private authService: AuthenticationService,
     private router: Router,
+    private notificationService: MatSnackBar,
+    private logger: LoggingService,
   ) {}
 
-  async onSubmit(e: Event) {
+  /**
+   * Submits the password reset/ the password change.
+   * @param e The form submit event.
+   */
+  async onSubmit(e: Event): Promise<void> {
     e.preventDefault();
     const { currentPassword, password } = this.formData;
     this.loading = true;
@@ -43,7 +52,15 @@ export class ChangePasswordFormComponent {
 
       if (!result.isOk) {
         this.loading = false;
-        notify(result.message, 'error', 2000);
+        this.logger.error(result.message);
+        this.notificationService.open(
+          result.message || 'Reauthentication was not successful',
+          undefined,
+          {
+            duration: 2000,
+            panelClass: ['red-snackbar'],
+          },
+        );
         return;
       }
 
@@ -53,19 +70,37 @@ export class ChangePasswordFormComponent {
     this.loading = false;
 
     if (result.isOk) {
-      notify('Successfully changed password!', 'success', 2000);
+      this.notificationService.open('Successfully changed password!', 'OK', {
+        duration: 2000,
+        panelClass: ['green-snackbar'],
+      });
       this.router.navigate(['/']);
     } else {
-      notify(result.message, 'error', 2000);
+      this.logger.error(result.message);
+      this.notificationService.open(
+        result.message || 'Cannot change password.',
+        'Try again!',
+        {
+          duration: 2000,
+          panelClass: ['red-snackbar'],
+        },
+      );
     }
   }
 
+  /** Validates if the provided password and the confirm password value matches. */
   confirmPassword = (e: ValidationCallbackData) => {
     return e.value === this.formData.password;
   };
 }
 @NgModule({
-  imports: [CommonModule, RouterModule, DxFormModule, DxLoadIndicatorModule],
+  imports: [
+    CommonModule,
+    RouterModule,
+    DxFormModule,
+    DxLoadIndicatorModule,
+    MatSnackBarModule,
+  ],
   declarations: [ChangePasswordFormComponent],
   exports: [ChangePasswordFormComponent],
 })

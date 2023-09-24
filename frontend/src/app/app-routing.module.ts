@@ -23,14 +23,16 @@ const routes: Routes = [
     component: TasksComponent,
     canActivate: [
       (route: ActivatedRouteSnapshot) =>
-        inject(AuthenticationGuardService).canActivate(route),
-      () => inject(AuthenticationGuardService).hasRole(Role.Admin),
+        inject(AuthenticationGuardService).canActivate(route, Role.Admin),
     ],
   },
   {
     path: 'profile',
     component: ProfileComponent,
-    canActivate: [AuthenticationGuardService],
+    canActivate: [
+      (route: ActivatedRouteSnapshot) =>
+        inject(AuthenticationGuardService).canActivate(route),
+    ],
   },
   {
     path: 'home',
