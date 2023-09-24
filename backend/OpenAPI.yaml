@@ -1,0 +1,343 @@
+---
+openapi: 3.0.1  
+info:
+  title: projekt-software-engineering
+  description: "An OpenAPI for 'projekt-software-engineering'." 
+  version: 3.0.5
+servers:
+- url: https://europe-west3-projekt-software-engineering.cloudfunctions.net/project-software-engineering-rest
+paths:
+  /course:
+    get:
+      parameters: []
+      tags:
+          - course
+      responses:
+        "200":
+          description: Get a list of all courses
+    post:
+      parameters: []
+      tags:
+          - course
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/course_body'
+            examples:
+              example:
+                value: "{\r\n    \"course_abbreviation\": \"IMT101\",\r\n    \"name\": \"Grundlagen Mathematik I\"\r\n}"
+      responses:
+        "200":
+          description: Creates a new course
+  /course/0a4d21f7-e432-4fd4-9a13-076709f543dd:
+    get:
+      parameters: []
+      tags:
+          - course
+      responses:
+        "200":
+          description: Get a specific course
+    put:
+      parameters: []
+      tags:
+          - course
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/course_0a4d21f7e4324fd49a13076709f543dd_body'
+            examples:
+              example:
+                value: "{\r\n    \"course_abbreviation\": \"IMT101\",\r\n    \"name\": \"Grundlagen Mathematik I --> Update\"\r\n}"
+      responses:
+        "200":
+          description: Update a course. Works with not all or just one value as well.
+    delete:
+      parameters: []
+      tags:
+          - course
+      responses:
+        "200":
+          description: Deletes a course
+  /ticket:
+    get:
+      parameters: []
+      tags:
+          - ticket
+      responses:
+        "200":
+          description: Get a list of all tickets
+    post:
+      parameters: []
+      tags:
+          - ticket
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ticket_body'
+            examples:
+              example:
+                value: "{\r\n    \"description\": \"Description of a ticket/problem\",\r\n    \"course_id\": \"0a4d21f7-e432-4fd4-9a13-076709f543dd\",\r\n    \"title\": \"TITLE OF A TICKET\",\r\n    \"created_by\": \b7f8d0a9-c912-41b9-a6fc-77af169ee918\", \r\n  \"status\": \"open\"\r\n }"
+      responses:
+        "200":
+          description: Creates a new ticket
+  /ticket/b001a040-8900-488a-851c-b3d6b0bcc6ab:
+    get:
+      parameters: []
+      tags:
+          - ticket
+      responses:
+        "200":
+          description: Get a specific ticket
+    put:
+      parameters: []
+      tags:
+          - ticket
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ticket_b001a0408900488a851cb3d6b0bcc6ab_body'
+            examples:
+              example:
+                value: "{\r\n    \"description\": \"Description of a updated ticket/problem\",\r\n    \"course_id\": \"0a4d21f7-e432-4fd4-9a13-076709f543dd\",\r\n    \"title\": \"TITLE OF A TICKET\",\r\n    \"created_by\": \b7f8d0a9-c912-41b9-a6fc-77af169ee918\", \r\n  \"status\": \"open\"\r\n }"
+      responses:
+        "200":
+          description: Update a ticket. Works with not all or just one value as well.
+    delete:
+      parameters: []
+      tags:
+          - ticket
+      responses:
+        "200":
+          description: Deletes a ticket
+  /comment:
+    get:
+      parameters: []
+      tags:
+          - comment
+      responses:
+        "200":
+          description: Get a list of all comments
+    post:
+      parameters: []
+      tags:
+          - comment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/comment_body'
+            examples:
+              example:
+                value: "{\r\n    \"created_by\": \"f1d73cbf-81f5-4f2e-9f9f-f7178ee2dc64\",\r\n    \"comment\": \"A comment\",\r\n    \"ticket_id\": \"b001a040-8900-488a-851c-b3d6b0bcc6ab\"\r\n}"
+      responses:
+        "200":
+          description: Creates a new comment
+  /comment/dc5a28d5-11f3-48cf-97c5-168a3a7627e5:
+    get:
+      parameters: []
+      tags:
+          - comment
+      responses:
+        "200":
+          description: Get a specific comment
+    put:
+      parameters: []
+      tags:
+          - comment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/comment_dc5a28d511f348cf97c5168a3a7627e5_body'
+            examples:
+              example:
+                value: "{\r\n    \"created_by\": \"f1d73cbf-81f5-4f2e-9f9f-f7178ee2dc64\",\r\n    \"comment\": \"A Updated comment\",\r\n    \"ticket_id\": \"b001a040-8900-488a-851c-b3d6b0bcc6ab\"\r\n}"
+      responses:
+        "200":
+          description: Update a comment. Works with not all or just one value as well.
+    delete:
+      parameters: []
+      tags:
+          - comment
+      responses:
+        "200":
+          description: Deletes a comment
+  /invalid:
+    get:
+      parameters: []
+      tags:
+          - invalid
+      responses:
+        "400":
+          description: generates a 400 error massage
+  /user/invalid:
+    get:
+      parameters: []
+      tags:
+          - invalid
+      responses:
+        "400":
+          description: generates a 400 error massage
+components:
+  schemas:
+    ticket_body:
+      required:
+      - course_id
+      - created_by
+      - description
+      - status
+      - title
+      type: object
+      properties:
+        description:
+          type: string
+        course_id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        created_by:
+          type: string
+          format: uuid
+        status:
+          type: string
+      additionalProperties: false
+    ticket_b001a0408900488a851cb3d6b0bcc6ab_body:
+      required:
+      - course_id
+      - created_by
+      - description
+      - status
+      - title
+      type: object
+      properties:
+        description:
+          type: string
+        course_id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        created_by:
+          type: string
+          format: uuid
+        status:
+          type: string
+      additionalProperties: false
+    role_c252ed5c731643178f297900b5925654_body:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          type: string
+      additionalProperties: false
+    user_body:
+      required:
+      - email
+      - name_first
+      - name_last
+      - role
+      type: object
+      properties:
+        email:
+          type: string
+        name_first:
+          type: string
+        name_last:
+          type: string
+        role:
+          type: string
+          format: uuid
+      additionalProperties: false
+    course_body:
+      required:
+      - course_abbreviation
+      - name
+      type: object
+      properties:
+        course_abbreviation:
+          type: string
+        name:
+          type: string
+      additionalProperties: false
+    user_b7f8d0a9c91241b9a6fc77af169ee918_body:
+      required:
+      - email
+      - name_first
+      - name_last
+      - role
+      type: object
+      properties:
+        email:
+          type: string
+        name_first:
+          type: string
+        name_last:
+          type: string
+        role:
+          type: string
+          format: uuid
+      additionalProperties: false
+    role_body:
+      required:
+      - name
+      type: object
+      properties:
+        role:
+          type: string
+      additionalProperties: false
+    comment_body:
+      required:
+      - comment
+      - created_by
+      - ticket_id
+      type: object
+      properties:
+        created_by:
+          type: string
+          format: uuid
+        comment:
+          type: string
+        ticket_id:
+          type: string
+          format: uuid
+      additionalProperties: false
+    course_0a4d21f7e4324fd49a13076709f543dd_body:
+      required:
+      - course_abbreviation
+      - name
+      type: object
+      properties:
+        course_abbreviation:
+          type: string
+        name:
+          type: string
+      additionalProperties: false
+    comment_dc5a28d511f348cf97c5168a3a7627e5_body:
+      required:
+      - comment
+      - created_by
+      - ticket_id
+      type: object
+      properties:
+        created_by:
+          type: string
+          format: uuid
+        comment:
+          type: string
+        ticket_id:
+          type: string
+          format: uuid
+      additionalProperties: false
+  securitySchemes:
+    bearerAuth:     # <-- arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+security:
+  - bearerAuth: [] 
