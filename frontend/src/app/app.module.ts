@@ -25,9 +25,31 @@ import {
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { CourseEditorComponent } from './pages/course-editor/course-editor.component';
+import { TicketEditorComponent } from './pages/ticket-editor/ticket-editor.component';
+import { TicketTableComponent } from './pages/ticket-table/ticket-table.component';
+import { PermissionTableComponent } from './pages/permission-table/permission-table.component';
+import { UserTableComponent } from './pages/user-table/user-table.component';
+import { GenericDataTableModule } from './components/generic-data-table/generic-data-table.component';
+import { CourseTableComponent, HomeComponent, ProfileComponent } from './pages';
+import {
+  DxFormModule,
+  DxButtonModule,
+  DxTextBoxModule,
+} from 'devextreme-angular';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [
+    AppComponent,
+    HomeComponent,
+    ProfileComponent,
+    CourseEditorComponent,
+    TicketEditorComponent,
+    TicketTableComponent,
+    PermissionTableComponent,
+    UserTableComponent,
+    CourseTableComponent,
+  ],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -41,6 +63,10 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     BrowserAnimationsModule,
     MatProgressSpinnerModule,
     MatSnackBarModule,
+    GenericDataTableModule,
+    DxFormModule,
+    DxButtonModule,
+    DxTextBoxModule,
   ],
   providers: [
     AuthenticationService,

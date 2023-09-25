@@ -1,0 +1,27 @@
+<h2 class="content-block">{{ title }}</h2>
+
+<dx-data-grid
+  #dataGrid
+  class="dx-card wide-card"
+  [dataSource]="dataSource"
+  [showBorders]="false"
+  [focusedRowEnabled]="true"
+  [focusedRowIndex]="0"
+  [columnAutoWidth]="true"
+  [columnHidingEnabled]="true"
+  keyExpr="id"
+>
+  <dxo-paging [pageSize]="15"></dxo-paging>
+  <dxo-pager [showPageSizeSelector]="true" [showInfo]="true"></dxo-pager>
+  <dxo-filter-row [visible]="true"></dxo-filter-row>
+  <dxo-load-panel [enabled]="true"></dxo-load-panel>
+
+  <dxi-column
+    *ngFor="let column of columns"
+    [dataField]="column.fieldName"
+    [caption]="column.caption"
+    [dataType]="column.dataType"
+    [hidingPriority]="column.priority"
+  >
+  </dxi-column>
+</dx-data-grid>

@@ -171,7 +171,9 @@ class DatabaseOperator:
             logger.error(error_message)
             return 500, error_message
 
-    def read_all(self, collection: str) -> tuple[int, str | list[dict]]:
+    def read_all(
+        self, collection: str, class_type: type
+    ) -> tuple[int, str | list[dict]]:
         """Gets all data elements of a given collection.
         Args:
             collection -- The name of the entity.
@@ -180,8 +182,9 @@ class DatabaseOperator:
         """
         try:
             all_element_refs = self.db_client.collection(collection).stream(timeout=10)
-            all_elements = [
-                {
+            all_elements = []
+            for element in all_element_refs:
+                parsed_element = {
                     **element.to_dict(),
                     "id": element.id,
                     "created_by_name": get_user_name_by_id(
@@ -191,8 +194,14 @@ class DatabaseOperator:
                         element.to_dict().get("modified_by")
                     ),
                 }
-                for element in all_element_refs
-            ]
+                if hasattr(class_type, "resolve_refs") and callable(
+                    class_type.resolve_refs
+                ):
+                    parsed_element = class_type.resolve_refs(
+                        parsed_element, self.user_info
+                    )
+                all_elements.append(parsed_element)
+
         except (TimeoutError, RetryError) as error:
             error_message = (
                 f"Timed out while trying to read all entries for {collection}: "

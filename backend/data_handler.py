@@ -50,7 +50,7 @@ def data_handler(  # pylint: disable=too-many-return-statements
             case "GET":
                 headers["Access-Control-Allow-Methods"] = "GET"
                 response_code, response_message = DatabaseOperator(user_info).read_all(
-                    entity_type
+                    entity_type, ENTITY_MAPPINGS[entity_type]
                 )
                 if response_code == 200:
                     return (json.dumps(response_message), response_code, headers)
