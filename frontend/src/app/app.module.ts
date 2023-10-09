@@ -26,7 +26,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { CourseEditorComponent } from './pages/course-editor/course-editor.component';
-import { TicketEditorComponent } from './pages/ticket-editor/ticket-editor.component';
+import { TicketEditorModule } from './pages/ticket-editor/ticket-editor.component';
 import { TicketTableComponent } from './pages/ticket-table/ticket-table.component';
 import { PermissionTableComponent } from './pages/permission-table/permission-table.component';
 import { UserTableComponent } from './pages/user-table/user-table.component';
@@ -46,7 +46,6 @@ import {
     HomeComponent,
     ProfileComponent,
     CourseEditorComponent,
-    TicketEditorComponent,
     TicketTableComponent,
     PermissionTableComponent,
     UserTableComponent,
@@ -71,6 +70,7 @@ import {
     DxTextBoxModule,
     DxLoadIndicatorModule,
     DxTextAreaModule,
+    TicketEditorModule,
   ],
   providers: [
     AuthenticationService,
