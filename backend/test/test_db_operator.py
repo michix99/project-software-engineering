@@ -574,12 +574,20 @@ class TestDbOperator:  # pylint: disable=R0904
 
     def test_find_all_successful(self, db_operator) -> None:
         """Tests querying a database collection successfully."""
-        with mock.patch.object(db_operator.db_client, "collection") as collection_mock:
+        with mock.patch.object(
+            db_operator.db_client, "collection"
+        ) as collection_mock, mock.patch("firebase_admin.auth.get_user") as user_mock:
             collection_mock.return_value = collection_return_mock = mock.Mock()
             collection_return_mock.where.return_value = filtered_mock = mock.Mock()
             filtered_mock.stream.return_value = [
                 MockDocReference(True, name="dummy_id", identifier="test"),
                 MockDocReference(True, name="another_dummy_id", identifier="test2"),
+            ]
+            user_mock.side_effect = [
+                MockUserReference("Dummy Name"),
+                MockUserReference("Another Dummy Name"),
+                MockUserReference("Dummy Name"),
+                MockUserReference("Another Dummy Name"),
             ]
 
             response_code, return_message = db_operator.find_all(
@@ -591,14 +599,14 @@ class TestDbOperator:  # pylint: disable=R0904
                 {
                     "name": "dummy_id",
                     "id": "test",
-                    "created_by_name": "Unknown",
-                    "modified_by_name": "Unknown",
+                    "created_by_name": "Dummy Name",
+                    "modified_by_name": "Another Dummy Name",
                 },
                 {
                     "name": "another_dummy_id",
                     "id": "test2",
-                    "created_by_name": "Unknown",
-                    "modified_by_name": "Unknown",
+                    "created_by_name": "Dummy Name",
+                    "modified_by_name": "Another Dummy Name",
                 },
             ]
 
@@ -611,6 +619,8 @@ class TestDbOperator:  # pylint: disable=R0904
         ) as collection_mock, mock.patch(
             "firebase_admin.auth.get_user"
         ) as user_mock, mock.patch(
+            "firebase_admin.firestore.client"
+        ), mock.patch(
             "db_operator.DatabaseOperator.read"
         ) as read_mock:
             collection_mock.return_value = collection_return_mock = mock.Mock()
