@@ -3,31 +3,45 @@ import {
   TestBed,
   fakeAsync,
   flush,
+  inject,
 } from '@angular/core/testing';
 import {
   GenericDataTableComponent,
   GenericDataTableModule,
 } from './generic-data-table.component';
-import { AuthenticationService, LoggingService } from '../../services';
+import {
+  AuthenticationService,
+  DataService,
+  LoggingService,
+} from '../../services';
 import { AuthenticationServiceMock } from '../../../test/authentication-service.mock';
 import { LoggingServiceMock } from 'src/test/logging.service.mock';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { User } from '@angular/fire/auth';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { RouterTestingModule } from '@angular/router/testing';
+import { Router } from '@angular/router';
+import { CellClickEvent } from 'devextreme/ui/data_grid';
 
 describe('GenericDataTableComponent', () => {
   let component: GenericDataTableComponent;
   let fixture: ComponentFixture<GenericDataTableComponent>;
   let authService: AuthenticationServiceMock;
   let notificationService: MatSnackBar;
+  let dataService: DataService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [GenericDataTableModule, BrowserAnimationsModule],
+      imports: [
+        GenericDataTableModule,
+        BrowserAnimationsModule,
+        RouterTestingModule,
+      ],
       declarations: [GenericDataTableComponent],
       providers: [
         { provide: AuthenticationService, useClass: AuthenticationServiceMock },
         { provide: LoggingService, useClass: LoggingServiceMock },
+        DataService,
       ],
     });
 
@@ -35,6 +49,7 @@ describe('GenericDataTableComponent', () => {
       AuthenticationService,
     ) as AuthenticationServiceMock;
     notificationService = TestBed.inject(MatSnackBar);
+    dataService = TestBed.inject(DataService);
     fixture = TestBed.createComponent(GenericDataTableComponent);
     component = fixture.componentInstance;
   });
@@ -44,20 +59,20 @@ describe('GenericDataTableComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should load the data after view init, if no data was provided', () => {
-    const dataSpy = spyOn(component, 'getData').and.callFake(() => {
-      component.dataSource = [{ id: '0', field: 'test' }];
-      return Promise.resolve();
-    });
+  it('should load the data after view init, if no data was provided', fakeAsync(() => {
+    const dataSpy = spyOn(dataService, 'getAll').and.resolveTo([
+      { id: '0', field: 'test' },
+    ]);
     fixture.detectChanges();
     authService.authState.next({ email: 'test@user.de' } as User);
     fixture.detectChanges();
+    flush();
     expect(dataSpy).toHaveBeenCalled();
     expect(component.dataSource.length).toBe(1);
-  });
+  }));
 
   it('should not load the data after view init, if data was provided', () => {
-    const dataSpy = spyOn(component, 'getData');
+    const dataSpy = spyOn(dataService, 'getAll');
     component.dataSource = [{ id: '0', field: 'test' }];
     authService.authState.next({ email: 'test@user.de' } as User);
     fixture.detectChanges();
@@ -67,9 +82,7 @@ describe('GenericDataTableComponent', () => {
 
   it('should notify if no data could be loaded', fakeAsync(() => {
     const notifySpy = spyOn(notificationService, 'open');
-    const dataSpy = spyOn(component, 'getData').and.callFake(() => {
-      return Promise.reject('Error');
-    });
+    const dataSpy = spyOn(dataService, 'getAll').and.rejectWith('Error');
     fixture.detectChanges();
     authService.authState.next({ email: 'test@user.de' } as User);
     flush();
@@ -78,34 +91,20 @@ describe('GenericDataTableComponent', () => {
     expect(notifySpy).toHaveBeenCalled();
   }));
 
-  it('getData should load the given data endpoint and parse the data', async () => {
-    const data = [
-      {
-        id: '0',
-        field: 'test',
-      },
-    ];
-    spyOn(globalThis, 'fetch').and.resolveTo({
-      status: 200,
-      json: () => Promise.resolve(data),
-    } as unknown as Response);
-
-    await component.getData();
-    expect(component.dataSource).toEqual(data);
-  });
-
-  it('getData should load the given data endpoint and parse the data', async () => {
-    spyOn(globalThis, 'fetch').and.resolveTo({
-      status: 403,
-      text: () => Promise.resolve('Sample Error'),
-    } as unknown as Response);
-
-    try {
-      await component.getData();
-      fail('Should throw error!');
-    } catch (error) {
-      expect(component.dataSource.length).toBe(0);
-      expect((error as Error).message).toBe('Sample Error');
-    }
-  });
+  it('onEditClick should navigte to the editor of the clicked item', inject(
+    [Router],
+    (router: Router) => {
+      const navigateSpy = spyOn(router, 'navigate');
+      component.editRoute = '/dummy-edit-route';
+      const clickEvent = {
+        row: {
+          data: {
+            id: 'dummy-id',
+          },
+        },
+      };
+      component.onEditClick(clickEvent as CellClickEvent);
+      expect(navigateSpy).toHaveBeenCalledWith(['/dummy-edit-route/dummy-id']);
+    },
+  ));
 });

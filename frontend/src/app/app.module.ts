@@ -36,6 +36,8 @@ import {
   DxFormModule,
   DxButtonModule,
   DxTextBoxModule,
+  DxLoadIndicatorModule,
+  DxTextAreaModule,
 } from 'devextreme-angular';
 
 @NgModule({
@@ -67,6 +69,8 @@ import {
     DxFormModule,
     DxButtonModule,
     DxTextBoxModule,
+    DxLoadIndicatorModule,
+    DxTextAreaModule,
   ],
   providers: [
     AuthenticationService,

@@ -15,7 +15,7 @@ from logger_utils import Logger
 logger = Logger(component="data_handler")
 
 
-def data_handler(  # pylint: disable=too-many-return-statements
+def data_handler(  # pylint: disable=too-many-return-statements, too-many-branches
     request: Request, path_segments: list[str], headers: dict, user_info: UserInfo
 ) -> tuple:
     """Handles all data related requests.
@@ -36,11 +36,14 @@ def data_handler(  # pylint: disable=too-many-return-statements
         return ("Invalid Entity Type", 400, headers)
 
     if (
-        ENTITY_MAPPINGS[entity_type] == Course
+        request.method != "GET"
+        and not has_required_role(entity_type, Course, Role.ADMIN, user_info.roles)
+    ) or (
+        request.method == "POST"
+        and ENTITY_MAPPINGS[entity_type] != Ticket
         and Role.ADMIN not in user_info.roles
-        and request.method != "GET"
     ):
-        error_message = "User does not have required rights to modify course!"
+        error_message = "User does not have required rights to perform action!"
         logger.error(error_message)
         return (error_message, 403, headers)
 
@@ -49,29 +52,41 @@ def data_handler(  # pylint: disable=too-many-return-statements
         match request.method:
             case "GET":
                 headers["Access-Control-Allow-Methods"] = "GET"
-                response_code, response_message = DatabaseOperator(user_info).read_all(
-                    entity_type, ENTITY_MAPPINGS[entity_type]
-                )
+                # Requesters are only allowed to view their created tickets.
+                if not has_required_role(
+                    entity_type, Ticket, Role.EDITOR, user_info.roles
+                ):
+                    response_code, response_message = DatabaseOperator(
+                        user_info
+                    ).find_all(
+                        entity_type,
+                        ENTITY_MAPPINGS[entity_type],
+                        [FieldFilter("created_by", "==", user_info.user_id)],
+                    )
+                else:
+                    response_code, response_message = DatabaseOperator(
+                        user_info
+                    ).read_all(entity_type, ENTITY_MAPPINGS[entity_type])
                 if response_code == 200:
                     return (json.dumps(response_message), response_code, headers)
                 return (response_message, response_code, headers)
             case "POST":
                 headers["Access-Control-Allow-Methods"] = "POST"
                 body = get_body(request)
-                course_field_names = get_field_names(ENTITY_MAPPINGS[entity_type])
+                entity_field_names = get_field_names(ENTITY_MAPPINGS[entity_type])
 
                 if not body or not all(
-                    field_name in body for field_name in course_field_names
+                    field_name in body for field_name in entity_field_names
                 ):
                     error_message = (
                         "Not all required fields are provided! Required fields are: "
-                        + ", ".join(course_field_names)
+                        + ", ".join(entity_field_names)
                     )
                     logger.error(error_message)
                     return (error_message, 400, headers)
 
                 only_relevant_attr = {
-                    key: body[key] for key in course_field_names if key in body
+                    key: body[key] for key in entity_field_names if key in body
                 }
 
                 duplication_filters = get_field_filters(only_relevant_attr)
@@ -94,28 +109,40 @@ def data_handler(  # pylint: disable=too-many-return-statements
             case "GET":
                 headers["Access-Control-Allow-Methods"] = "GET"
                 response_code, response_message = DatabaseOperator(user_info).read(
-                    entity_type, entity_id
+                    entity_type, ENTITY_MAPPINGS[entity_type], entity_id
                 )
                 if response_code == 200:
+                    # Requesters are only allowed to read their tickets.
+                    if (
+                        not has_required_role(
+                            entity_type, Ticket, Role.EDITOR, user_info.roles
+                        )
+                        and response_message.get("created_by") != user_info.user_id
+                    ):
+                        error_message = (
+                            "User does not have required rights to load ticket!"
+                        )
+                        logger.error(error_message)
+                        return (error_message, 403, headers)
                     return (json.dumps(response_message), response_code, headers)
                 return (response_message, response_code, headers)
             case "PUT":
                 headers["Access-Control-Allow-Methods"] = "PUT"
                 body = get_body(request)
-                course_field_names = get_field_names(ENTITY_MAPPINGS[entity_type])
+                entity_field_names = get_field_names(ENTITY_MAPPINGS[entity_type])
 
                 if not body or not all(
-                    field_name in body for field_name in course_field_names
+                    field_name in body for field_name in entity_field_names
                 ):
                     error_message = (
                         "Not all required fields are provided! Required fields are: "
-                        + ", ".join(course_field_names)
+                        + ", ".join(entity_field_names)
                     )
                     logger.error(error_message)
                     return (error_message, 400, headers)
 
                 only_relevant_attr = {
-                    key: body[key] for key in course_field_names if key in body
+                    key: body[key] for key in entity_field_names if key in body
                 }
                 duplication_filters = get_field_filters(only_relevant_attr)
 
@@ -124,6 +151,11 @@ def data_handler(  # pylint: disable=too-many-return-statements
                     only_relevant_attr,
                     path_segments[2],
                     duplication_filters,
+                    user_info.user_id  # Requesters are only allowed to update their tickets.
+                    if not has_required_role(
+                        entity_type, Ticket, Role.EDITOR, user_info.roles
+                    )
+                    else None,
                 )
                 if response_code in (200, 409):
                     return (
@@ -168,3 +200,29 @@ def get_field_filters(fields_to_filter: dict) -> list[FieldFilter]:
     """
     conditions = [(key, "==", fields_to_filter[key]) for key in fields_to_filter]
     return [FieldFilter(*_c) for _c in conditions]
+
+
+def has_required_role(
+    entity_type: str, class_type: type, required_role: str, user_roles: list[Role]
+) -> bool:
+    """Checks if the given user has the min. required role to perform the action.
+    Args:
+        entity_type -- The entity the request was made against.
+        class_type -- The class the rule is applicable to.
+        required_role -- The minimum required role to perform the action.
+        user_roles -- The list of roles that the user has.
+    Returns:
+        If the user has the permissions to perform this action.
+    """
+    if ENTITY_MAPPINGS[entity_type] != class_type:
+        return True
+    match required_role:
+        case Role.REQUESTER:
+            return any(
+                role in user_roles for role in [Role.REQUESTER, Role.EDITOR, Role.ADMIN]
+            )
+        case Role.EDITOR:
+            return any(role in user_roles for role in [Role.EDITOR, Role.ADMIN])
+        case Role.ADMIN:
+            return Role.ADMIN in user_roles
+    return False

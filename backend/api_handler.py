@@ -92,7 +92,7 @@ def api_handler(  # pylint: disable=too-many-return-statements
             return ("", 200, headers)
         case "GET" if path_segments[1] == "user":
             headers["Access-Control-Allow-Methods"] = "GET"
-            if Role.ADMIN not in user_info.roles:
+            if Role.ADMIN not in user_info.roles and Role.EDITOR not in user_info.roles:
                 error_message = "User does not have required rights to perform request!"
                 logger.error(error_message)
                 return (error_message, 403, headers)

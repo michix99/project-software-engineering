@@ -7,6 +7,7 @@ import { Column, ticketFromJson } from '../../models';
 })
 export class TicketTableComponent {
   dataEndpoint = 'data/ticket';
+  editRoute = 'ticket';
   dataParser = ticketFromJson;
   columns: Array<Column> = [
     {

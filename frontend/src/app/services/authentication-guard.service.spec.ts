@@ -4,7 +4,12 @@ import { AuthenticationServiceMock } from 'src/test/authentication-service.mock'
 import { AuthenticationGuardService } from './authentication-guard.service';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Role } from '../models';
-import { ActivatedRouteSnapshot, Router } from '@angular/router';
+import {
+  ActivatedRouteSnapshot,
+  Params,
+  Router,
+  UrlSegment,
+} from '@angular/router';
 import { environment } from 'src/environments/environment';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -43,6 +48,7 @@ describe('AuthenticationGuardService', () => {
     expect(
       await service.canActivate({
         routeConfig: { path: 'login-form' },
+        params: {},
       } as ActivatedRouteSnapshot),
     ).toBeFalse();
     expect(navSpy).toHaveBeenCalled();
@@ -58,6 +64,7 @@ describe('AuthenticationGuardService', () => {
     expect(
       await service.canActivate({
         routeConfig: { path: 'no-auth-form' },
+        params: {},
       } as ActivatedRouteSnapshot),
     ).toBeFalse();
     expect(navSpy).toHaveBeenCalledWith(['/login-form']);
@@ -68,6 +75,7 @@ describe('AuthenticationGuardService', () => {
     expect(
       await service.canActivate({
         routeConfig: { path: 'no-auth-form' },
+        params: {},
       } as ActivatedRouteSnapshot),
     ).toBeTrue();
     expect(
@@ -76,11 +84,31 @@ describe('AuthenticationGuardService', () => {
     ).toBe('no-auth-form');
   });
 
+  it('canActivate should include the params in the last authenticated path if the user is logged in', async () => {
+    authService.isLoggedIn = true;
+    expect(
+      await service.canActivate({
+        routeConfig: { path: 'no-auth-form' },
+        params: { dummy: 'param-value' } as Params,
+        pathFromRoot: [
+          { url: [new UrlSegment('no-auth-form', {})] },
+          { url: [new UrlSegment('sub-path', {})] },
+          { url: [new UrlSegment('param-value', {})] },
+        ],
+      } as ActivatedRouteSnapshot),
+    ).toBeTrue();
+    expect(
+      (authService as unknown as { _lastAuthenticatedPath: string })
+        ._lastAuthenticatedPath,
+    ).toBe('no-auth-form/sub-path/param-value');
+  });
+
   it('canActivate should set the last authenticated path to the default path if the user is logged in and no path is provided', async () => {
     authService.isLoggedIn = true;
     expect(
       await service.canActivate({
         routeConfig: {},
+        params: {},
       } as ActivatedRouteSnapshot),
     ).toBeTrue();
     expect(
@@ -123,7 +151,10 @@ describe('AuthenticationGuardService', () => {
     authService.role = Role.Editor;
     authService.roleState.next(Role.Editor);
     expect(
-      await service.canActivate({} as ActivatedRouteSnapshot, Role.Admin),
+      await service.canActivate(
+        { params: {} } as ActivatedRouteSnapshot,
+        Role.Admin,
+      ),
     ).toBeFalse();
     expect(navSpy).toHaveBeenCalledWith([service.defaultPath]);
   });
@@ -136,10 +167,35 @@ describe('AuthenticationGuardService', () => {
       await service.canActivate(
         {
           routeConfig: { path: 'login-form' },
+          params: {},
         } as ActivatedRouteSnapshot,
         Role.Editor,
       ),
     ).toBeTrue();
+  });
+
+  it('canActivate should include the params in the last authenticated path, if the route as required role', async () => {
+    authService.isLoggedIn = true;
+    authService.role = Role.Editor;
+    authService.roleState.next(Role.Editor);
+    expect(
+      await service.canActivate(
+        {
+          routeConfig: { path: 'login-form' },
+          params: { dummy: 'param-value' } as Params,
+          pathFromRoot: [
+            { url: [new UrlSegment('no-auth-form', {})] },
+            { url: [new UrlSegment('sub-path', {})] },
+            { url: [new UrlSegment('param-value', {})] },
+          ],
+        } as ActivatedRouteSnapshot,
+        Role.Editor,
+      ),
+    ).toBeTrue();
+    expect(
+      (authService as unknown as { _lastAuthenticatedPath: string })
+        ._lastAuthenticatedPath,
+    ).toBe('no-auth-form/sub-path/param-value');
   });
 
   it('hasRole should indicate if the user has the permission required', () => {

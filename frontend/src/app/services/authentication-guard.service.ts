@@ -35,8 +35,14 @@ export class AuthenticationGuardService {
     );
 
     if (requiredRole) {
-      this.authService.lastAuthenticatedPath =
-        route.routeConfig?.path || this.defaultPath;
+      if (Object.keys(route.params).length > 0) {
+        this.authService.lastAuthenticatedPath = route.pathFromRoot
+          .map((v) => v.url.map((segment) => segment.toString()).join('/'))
+          .join('/');
+      } else {
+        this.authService.lastAuthenticatedPath =
+          route.routeConfig?.path || this.defaultPath;
+      }
       return new Promise((resolve) => {
         this.authService.roleState
           .pipe(takeWhile((role) => role === null))
@@ -76,8 +82,14 @@ export class AuthenticationGuardService {
     }
 
     if (isLoggedIn) {
-      this.authService.lastAuthenticatedPath =
-        route.routeConfig?.path || this.defaultPath;
+      if (Object.keys(route.params).length > 0) {
+        this.authService.lastAuthenticatedPath = route.pathFromRoot
+          .map((v) => v.url.map((segment) => segment.toString()).join('/'))
+          .join('/');
+      } else {
+        this.authService.lastAuthenticatedPath =
+          route.routeConfig?.path || this.defaultPath;
+      }
     }
 
     if (

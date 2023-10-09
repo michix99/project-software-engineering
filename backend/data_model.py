@@ -33,7 +33,7 @@ class Ticket:
             The element with resolved course and assignee.
         """
         response, course = DatabaseOperator(user_info).read(
-            "course", element["course_id"]
+            "course", Course, element["course_id"]
         )
 
         if response == 200:
