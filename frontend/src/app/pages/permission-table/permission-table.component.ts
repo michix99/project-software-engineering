@@ -14,12 +14,14 @@ export class PermissionTableComponent {
       caption: 'View',
       priority: 1,
       dataType: 'string',
+      headerFilterEnabled: true,
     },
     {
       fieldName: 'function',
       caption: 'Function',
       priority: 0,
       dataType: 'string',
+      headerFilterEnabled: true,
     },
 
     {
@@ -27,24 +29,28 @@ export class PermissionTableComponent {
       caption: 'Description',
       priority: 5,
       dataType: 'string',
+      headerFilterEnabled: false,
     },
     {
       fieldName: 'admin',
       caption: 'Admin',
       priority: 4,
       dataType: 'boolean',
+      headerFilterEnabled: false,
     },
     {
       fieldName: 'editor',
       caption: 'Editor',
       priority: 3,
       dataType: 'boolean',
+      headerFilterEnabled: false,
     },
     {
       fieldName: 'requester',
       caption: 'Requester',
       priority: 2,
       dataType: 'boolean',
+      headerFilterEnabled: false,
     },
   ];
 }

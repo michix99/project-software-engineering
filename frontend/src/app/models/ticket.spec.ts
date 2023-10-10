@@ -2,6 +2,7 @@ import {
   Priority,
   Status,
   Ticket,
+  Type,
   ticketFromJson,
   ticketToModel,
 } from './ticket';
@@ -23,6 +24,7 @@ describe('Ticket ', () => {
       modified_at: new Date(2022, 9, 3).toString(),
       created_by_name: 'dummy',
       modified_by_name: 'author',
+      type: 'ADDITION',
     };
 
     const parsedTicket = ticketFromJson(ticket);
@@ -32,14 +34,15 @@ describe('Ticket ', () => {
     expect(parsedTicket.courseId).toBe('456');
     expect(parsedTicket.courseAbbreviation).toBe('ISEF01');
     expect(parsedTicket.courseName).toBe('Projekt Software Engineering');
-    expect(parsedTicket.status).toBe('DONE');
-    expect(parsedTicket.priority).toBe('HIGH');
+    expect(parsedTicket.status).toBe(Status.Done);
+    expect(parsedTicket.priority).toBe(Priority.High);
     expect(parsedTicket.assigneeId).toBe('987');
     expect(parsedTicket.assigneeName).toBe('Assigne');
     expect(parsedTicket.createdAt).toEqual(new Date(2020, 7, 14));
     expect(parsedTicket.modifiedAt).toEqual(new Date(2022, 9, 3));
     expect(parsedTicket.createdBy).toBe('dummy');
     expect(parsedTicket.modifiedBy).toBe('author');
+    expect(parsedTicket.type).toBe('author');
   });
 
   it('ticketToModel should parse a ticket to the json format expected by the backend', () => {
@@ -58,6 +61,7 @@ describe('Ticket ', () => {
       priority: Priority.Undefined,
       assigneeId: 'assignee-id',
       assigneeName: '',
+      type: Type.Error,
     };
 
     const parsedTicket = ticketToModel(ticket);
@@ -67,5 +71,6 @@ describe('Ticket ', () => {
     expect(parsedTicket['status']).toBe('OPEN');
     expect(parsedTicket['priority']).toBe('UNDEFINED');
     expect(parsedTicket['assignee_id']).toBe('assignee-id');
+    expect(parsedTicket['type']).toBe('ERROR');
   });
 });

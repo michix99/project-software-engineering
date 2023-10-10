@@ -3,4 +3,6 @@ export interface Column {
   caption: string;
   dataType: 'string' | 'date' | 'number' | 'boolean' | 'object' | 'datetime';
   priority: number;
+  headerFilterEnabled: boolean;
+  format?: string;
 }

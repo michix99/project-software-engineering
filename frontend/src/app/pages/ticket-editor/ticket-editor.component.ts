@@ -5,6 +5,7 @@ import {
   Role,
   Status,
   Ticket,
+  Type,
   User,
   courseFromJson,
   ticketFromJson,
@@ -64,6 +65,7 @@ export class TicketEditorComponent implements OnInit, OnDestroy {
   editors: Array<User> = [];
   statuses = Object.values(Status);
   priorities = Object.values(Priority);
+  types = Object.values(Type);
 
   constructor(
     private authService: AuthenticationService,
@@ -199,6 +201,7 @@ export class TicketEditorComponent implements OnInit, OnDestroy {
       priority: Priority.Undefined,
       assigneeId: '',
       assigneeName: '',
+      type: Type.Undefined,
     };
   }
 

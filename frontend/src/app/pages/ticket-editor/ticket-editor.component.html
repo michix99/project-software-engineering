@@ -32,6 +32,17 @@
         ></dxi-validation-rule
       ></dxi-item>
       <dxi-item
+        dataField="type"
+        editorType="dxSelectBox"
+        [editorOptions]="{
+          items: types
+        }"
+        ><dxi-validation-rule
+          type="required"
+          message="Type is required"
+        ></dxi-validation-rule
+      ></dxi-item>
+      <dxi-item
         dataField="description"
         editorType="dxTextArea"
         [editorOptions]="{ height: 90 }"
@@ -81,9 +92,21 @@
       </dxi-item>
       <dxi-item itemType="group" [colCount]="2" caption="Metadata">
         <dxi-item dataField="createdBy" disabled="true"></dxi-item>
-        <dxi-item dataField="createdAt" disabled="true"></dxi-item>
+        <dxi-item
+          dataField="createdAt"
+          disabled="true"
+          [editorOptions]="{
+            displayFormat: 'dd/MM/yyyy HH:mm:ss'
+          }"
+        ></dxi-item>
         <dxi-item dataField="modifiedBy" disabled="true"></dxi-item>
-        <dxi-item dataField="modifiedAt" disabled="true"></dxi-item>
+        <dxi-item
+          dataField="modifiedAt"
+          disabled="true"
+          [editorOptions]="{
+            displayFormat: 'dd/MM/yyyy HH:mm:ss'
+          }"
+        ></dxi-item>
       </dxi-item>
       <dxi-item itemType="button">
         <dxo-button-options

@@ -14,12 +14,14 @@ export class UserTableComponent {
       caption: 'E-Mail',
       priority: 5,
       dataType: 'string',
+      headerFilterEnabled: false,
     },
     {
       fieldName: 'displayName',
       caption: 'Display Name',
       priority: 1,
       dataType: 'string',
+      headerFilterEnabled: false,
     },
 
     {
@@ -27,24 +29,28 @@ export class UserTableComponent {
       caption: 'Admin',
       priority: 4,
       dataType: 'boolean',
+      headerFilterEnabled: false,
     },
     {
       fieldName: 'editor',
       caption: 'Editor',
       priority: 3,
       dataType: 'boolean',
+      headerFilterEnabled: false,
     },
     {
       fieldName: 'requester',
       caption: 'Requester',
       priority: 2,
       dataType: 'boolean',
+      headerFilterEnabled: false,
     },
     {
       fieldName: 'disabled',
       caption: 'Is disabled',
       priority: 0,
       dataType: 'boolean',
+      headerFilterEnabled: false,
     },
   ];
 }

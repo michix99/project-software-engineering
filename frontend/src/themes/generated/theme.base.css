@@ -18716,6 +18716,7 @@
 .dx-datagrid .dx-column-indicators,
 .dx-datagrid-container .dx-column-indicators {
   height: 16px;
+  float: right
 }
 
 .dx-datagrid .dx-column-indicators .dx-sort-index-icon,
