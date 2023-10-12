@@ -7,7 +7,11 @@ import {
   ViewChild,
 } from '@angular/core';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { DxDataGridComponent, DxDataGridModule } from 'devextreme-angular';
+import {
+  DxButtonModule,
+  DxDataGridComponent,
+  DxDataGridModule,
+} from 'devextreme-angular';
 import { Subscription } from 'rxjs';
 import {
   AuthenticationService,
@@ -18,6 +22,7 @@ import { Column } from '../../models';
 import { CommonModule } from '@angular/common';
 import { CellClickEvent } from 'devextreme/ui/data_grid';
 import { Router } from '@angular/router';
+import { ClickEvent } from 'devextreme/ui/button';
 
 @Component({
   selector: 'app-generic-data-table',
@@ -103,10 +108,19 @@ export class GenericDataTableComponent implements AfterViewInit, OnDestroy {
     e.event?.preventDefault();
     this.router.navigate([`${this.editRoute}/${e.row.data.id}`]);
   }
+
+  /**
+   * Navigates to the related editor on add click.
+   * @param e The event of the click.
+   */
+  onAddClick(e: ClickEvent) {
+    e.event?.preventDefault();
+    this.router.navigate([`${this.editRoute}/0`]);
+  }
 }
 
 @NgModule({
-  imports: [CommonModule, DxDataGridModule, MatSnackBarModule],
+  imports: [CommonModule, DxDataGridModule, MatSnackBarModule, DxButtonModule],
   exports: [GenericDataTableComponent],
   declarations: [GenericDataTableComponent],
 })
