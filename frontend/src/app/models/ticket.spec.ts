@@ -42,7 +42,7 @@ describe('Ticket ', () => {
     expect(parsedTicket.modifiedAt).toEqual(new Date(2022, 9, 3));
     expect(parsedTicket.createdBy).toBe('dummy');
     expect(parsedTicket.modifiedBy).toBe('author');
-    expect(parsedTicket.type).toBe('author');
+    expect(parsedTicket.type).toBe('ADDITION');
   });
 
   it('ticketToModel should parse a ticket to the json format expected by the backend', () => {

@@ -328,7 +328,7 @@ describe('TicketEditorComponent', () => {
       priority: Priority.Undefined,
       assigneeId: '',
       assigneeName: '',
-      type: 'ADDITION',
+      type: 'UNDEFINED',
     });
   });
 
