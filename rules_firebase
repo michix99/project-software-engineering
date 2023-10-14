@@ -1,0 +1,51 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+  function isAdmin() {
+      return request.auth.token.role == "admin";
+    }
+
+    function isProfessor() {
+      return request.auth.token.role == "professor";
+    }
+    
+    // Tickets
+    match /tickets/{ticket_id} {
+      allow read, write: if request.auth != null &&
+      isAdmin() || isProfessor() ||
+        request.resource.data.ownerId == request.auth.uid;
+    }
+
+    // Comments
+    match /comments/{comment_id} {
+      allow read, write: if request.auth != null &&
+        isAdmin() || isProfessor() ||
+        request.resource.data.ownerId == request.auth.uid ||
+        (get(/databases/$(database)/documents/tickets/$(request.resource.data.ticketId)).data.ownerId == request.auth.uid);
+    }
+
+    // Courses
+    match /courses/{course_id} {
+      allow read:  if request.auth != null;
+      allow write: if request.auth != null &&
+      isAdmin();  
+    }
+
+    // Roles
+    match /roles/{roles_id} {
+      allow read: if request.auth != null &&
+        request.resource.data.ownerId == request.auth.uid;
+      allow write: if request.auth != null &&
+      isAdmin() 
+    }
+
+    // Users
+    match /users/{user_id} {
+      allow read: if request.auth != null && request.auth.uid == user_id;
+      allow write: if request.auth != null &&
+      isAdmin()
+    }
+  }
+}
+
