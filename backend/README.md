@@ -35,4 +35,5 @@ Run `pylint backend` to execute the linter via pylint.
 
 ## Running unit tests
 
-Run `pytest --cov=backend` to execute the unit tests via pytest.
+Run `pytest --cov-report html --cov-report term  --cov=.` to execute the unit tests via pytest.
+

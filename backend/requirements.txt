@@ -1,4 +1,4 @@
-functions-framework==3.3.0
-google-cloud-storage==2.9.0
+functions-framework==3.4.0
+google-cloud-storage==2.11.0
 firebase-admin==6.2.0
-google-cloud-firestore==2.11.1
+google-cloud-firestore==2.12.0

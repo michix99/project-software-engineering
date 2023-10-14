@@ -1,17 +1,19 @@
-import { Component, HostBinding } from '@angular/core';
+import { Component, HostBinding, OnDestroy, OnInit } from '@angular/core';
 import {
   AppInfoService,
   AuthenticationService,
   ScreenService,
 } from './services';
 import { Router } from '@angular/router';
+import { User } from '@angular/fire/auth';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent {
+export class AppComponent implements OnInit, OnDestroy {
   @HostBinding('class') get getClass() {
     return Object.keys(this.screen.sizes)
       .filter((cl) => this.screen.sizes[cl])
@@ -49,12 +51,27 @@ export class AppComponent {
     }
   }
 
+  authUpdateSubscription: Subscription = new Subscription();
+  user: User | null = null;
+
   constructor(
     private authService: AuthenticationService,
     private screen: ScreenService,
     private router: Router,
     public appInfo: AppInfoService,
   ) {}
+
+  ngOnInit(): void {
+    this.authUpdateSubscription = this.authService.authState.subscribe(
+      (user: User | null) => {
+        this.user = user;
+      },
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.authUpdateSubscription.unsubscribe();
+  }
 
   isAuthenticated() {
     return this.authService.loggedIn;

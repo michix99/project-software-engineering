@@ -1,6 +1,9 @@
 <ng-container *ngIf="isAuthenticated(); else unauthenticated">
   <app-side-nav-outer-toolbar title="{{ appInfo.title }}">
-    <router-outlet></router-outlet>
+    <div *ngIf="!user" class="spinner-wrapper">
+      <mat-spinner class="spinner"></mat-spinner>
+    </div>
+    <router-outlet *ngIf="user"></router-outlet>
     <footer class="footer-wrapper">
       Copyright © {{ appInfo.currentYear }} {{ appInfo.title }}
       <br />

@@ -12,8 +12,8 @@ export function courseFromJson(parsedJson: Record<string, unknown>): Course {
     name: parsedJson['name'],
     createdAt: new Date(parsedJson['created_at'] as string),
     modifiedAt: new Date(parsedJson['modified_at'] as string),
-    createdBy: parsedJson['created_by'],
-    modifiedBy: parsedJson['modified_by'],
+    createdBy: parsedJson['created_by_name'],
+    modifiedBy: parsedJson['modified_by_name'],
   };
   return course as Course;
 }

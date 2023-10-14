@@ -7,7 +7,9 @@ import pytest
 from google.cloud.firestore_v1.base_query import FieldFilter
 from google.cloud import exceptions
 from db_operator import DatabaseOperator
-from data_model import Course
+from data_model import Course, Ticket
+from enums import Role
+from auth_utils import UserInfo
 
 
 class MockDocReference:  # pylint: disable=R0903
@@ -16,15 +18,28 @@ class MockDocReference:  # pylint: disable=R0903
     exists: bool
     id: str
     name: str
+    additional_attributes: dict
 
-    def __init__(self, exists, identifier=None, name=None) -> None:
+    def __init__(
+        self, exists, identifier=None, name=None, additional_attributes=None
+    ) -> None:
         self.exists = exists
         self.id = identifier  # pylint: disable=C0103
         self.name = name
+        self.additional_attributes = additional_attributes
 
     def to_dict(self) -> dict:
         """Parses the element to a dictionary."""
-        return {"name": self.name}
+        return {"name": self.name, **(self.additional_attributes or {})}
+
+
+class MockUserReference:  # pylint: disable=R0903
+    """Mock implementation of a user reference."""
+
+    display_name: str
+
+    def __init__(self, display_name) -> None:
+        self.display_name = display_name
 
 
 class TestDbOperator:  # pylint: disable=R0904
@@ -34,7 +49,8 @@ class TestDbOperator:  # pylint: disable=R0904
     def fixture_db_operator(self) -> DatabaseOperator:
         """Create a fake "DatabaseOperator" for testing purpose."""
         with mock.patch("firebase_admin.firestore.client"):
-            db_operator = DatabaseOperator()
+            user_info = UserInfo("123", [Role.ADMIN])
+            db_operator = DatabaseOperator(user_info)
             return db_operator
 
     def test_create_successful(self, db_operator) -> None:
@@ -178,6 +194,52 @@ class TestDbOperator:  # pylint: disable=R0904
             assert return_code == 200
             assert return_message == "another_dummy_id"
 
+    def test_update_not_allowed(self, db_operator) -> None:
+        """Tests a failing database entity update. User is not allowed."""
+        with mock.patch.object(db_operator.db_client, "collection") as collection_mock:
+            collection_mock.return_value = collection_return_mock = mock.Mock()
+            collection_return_mock.document.return_value = element_mock = mock.Mock()
+
+            element_mock.get.return_value = MockDocReference(
+                True,
+                identifier="dummy_id",
+                name="dummy_name",
+                additional_attributes={"created_by": "dummy-modifier"},
+            )
+
+            return_code, return_message = db_operator.update(
+                "test",
+                {"new": "updated_entity"},
+                "dummy_id",
+                allowed_updater="another-modifier",
+            )
+
+            assert return_code == 403
+            assert return_message == "Not allowed to update entry!"
+
+    def test_update_allowed(self, db_operator) -> None:
+        """Tests a successful database entity update. User is allowed."""
+        with mock.patch.object(db_operator.db_client, "collection") as collection_mock:
+            collection_mock.return_value = collection_return_mock = mock.Mock()
+            collection_return_mock.document.return_value = element_mock = mock.Mock()
+
+            element_mock.get.return_value = MockDocReference(
+                True,
+                identifier="dummy_id",
+                name="dummy_name",
+                additional_attributes={"created_by": "dummy-modifier"},
+            )
+
+            return_code, return_message = db_operator.update(
+                "test",
+                {"new": "updated_entity"},
+                "dummy_id",
+                allowed_updater="dummy-modifier",
+            )
+
+            assert return_code == 200
+            assert return_message == "dummy_id"
+
     def test_update_failing_timeout_while_updating(self, db_operator) -> None:
         """Tests a failing database entity update. Timeout happening while updating."""
         with mock.patch.object(db_operator.db_client, "collection") as collection_mock:
@@ -247,16 +309,82 @@ class TestDbOperator:  # pylint: disable=R0904
 
     def test_read_successful(self, db_operator) -> None:
         """Tests reading a database entity successfully."""
-        with mock.patch.object(db_operator.db_client, "collection") as collection_mock:
+        with mock.patch.object(
+            db_operator.db_client, "collection"
+        ) as collection_mock, mock.patch("firebase_admin.auth.get_user") as user_mock:
             collection_mock.return_value = collection_return_mock = mock.Mock()
             collection_return_mock.document.return_value = element_mock = mock.Mock()
+            user_mock.side_effect = [
+                MockUserReference("Dummy Name"),
+                MockUserReference("Another Dummy Name"),
+            ]
 
-            element_mock.get.return_value = MockDocReference(True, name="dummy_id")
+            element_mock.get.return_value = MockDocReference(
+                True, identifier="dummy_id", name="dummy_name"
+            )
 
-            return_code, return_message = db_operator.read("test", "dummy_id")
+            return_code, return_message = db_operator.read("test", Course, "dummy_id")
 
             assert return_code == 200
-            assert return_message == {"name": "dummy_id"}
+            assert return_message == {
+                "id": "dummy_id",
+                "name": "dummy_name",
+                "created_by_name": "Dummy Name",
+                "modified_by_name": "Another Dummy Name",
+            }
+
+    def test_read_successful_with_refs(self, db_operator) -> None:
+        """Tests reading a database entity successfully with references to other collections."""
+        with mock.patch.object(
+            db_operator.db_client, "collection"
+        ) as collection_mock, mock.patch(
+            "firebase_admin.auth.get_user"
+        ) as user_mock, mock.patch(
+            "data_model.Ticket.resolve_refs"
+        ) as refs_mock:
+            collection_mock.return_value = collection_return_mock = mock.Mock()
+            collection_return_mock.document.return_value = element_mock = mock.Mock()
+            user_mock.side_effect = [
+                MockUserReference("Dummy Name"),
+                MockUserReference("Another Dummy Name"),
+                MockUserReference("Assignee Name"),
+            ]
+
+            element_mock.get.return_value = MockDocReference(
+                True,
+                identifier="dummy_ticket_id",
+                name="dummy_ticket",
+                additional_attributes={
+                    "course_id": "dummy_course_id",
+                    "assignee_id": "dummy_assignee_id",
+                },
+            )
+            refs_mock.return_value = {
+                "id": "dummy_ticket_id",
+                "name": "dummy_ticket",
+                "created_by_name": "Dummy Name",
+                "modified_by_name": "Another Dummy Name",
+                "course_id": "dummy_course_id",
+                "course_name": "dummy_course",
+                "course_abbreviation": "DN",
+                "assignee_id": "dummy_assignee_id",
+                "assignee_name": "Assignee Name",
+            }
+
+            return_code, return_message = db_operator.read("test", Ticket, "dummy_id")
+
+            assert return_code == 200
+            assert return_message == {
+                "id": "dummy_ticket_id",
+                "name": "dummy_ticket",
+                "created_by_name": "Dummy Name",
+                "modified_by_name": "Another Dummy Name",
+                "course_id": "dummy_course_id",
+                "course_name": "dummy_course",
+                "course_abbreviation": "DN",
+                "assignee_id": "dummy_assignee_id",
+                "assignee_name": "Assignee Name",
+            }
 
     def test_read_failing_not_found(self, db_operator) -> None:
         """Tests reading a database entity failing, as the element was not found."""
@@ -266,7 +394,7 @@ class TestDbOperator:  # pylint: disable=R0904
 
             element_mock.get.return_value = MockDocReference(False)
 
-            return_code, return_message = db_operator.read("test", "dummy_id")
+            return_code, return_message = db_operator.read("test", Course, "dummy_id")
 
             assert return_code == 404
             assert return_message == "Element not found!"
@@ -279,7 +407,7 @@ class TestDbOperator:  # pylint: disable=R0904
 
             element_mock.get.side_effect = TimeoutError("Timeout Error")
 
-            return_code, return_message = db_operator.read("test", "dummy_id")
+            return_code, return_message = db_operator.read("test", Course, "dummy_id")
 
             assert return_code == 500
             assert (
@@ -289,19 +417,37 @@ class TestDbOperator:  # pylint: disable=R0904
 
     def test_read_all_successful(self, db_operator) -> None:
         """Tests reading a database collection successfully."""
-        with mock.patch.object(db_operator.db_client, "collection") as collection_mock:
+        with mock.patch.object(
+            db_operator.db_client, "collection"
+        ) as collection_mock, mock.patch("firebase_admin.auth.get_user") as user_mock:
             collection_mock.return_value = collection_return_mock = mock.Mock()
             collection_return_mock.stream.return_value = [
                 MockDocReference(True, "dummy_id", "name"),
                 MockDocReference(True, "another_dummy_id", "another_name"),
             ]
+            user_mock.side_effect = [
+                MockUserReference("Created By Name"),
+                MockUserReference("Modified By Name"),
+                MockUserReference("Created By Another Name"),
+                MockUserReference("Modified By Another Name"),
+            ]
 
-            return_code, return_message = db_operator.read_all("test")
+            return_code, return_message = db_operator.read_all("test", Course)
 
             assert return_code == 200
             assert return_message == [
-                {"id": "dummy_id", "name": "name"},
-                {"id": "another_dummy_id", "name": "another_name"},
+                {
+                    "id": "dummy_id",
+                    "name": "name",
+                    "created_by_name": "Created By Name",
+                    "modified_by_name": "Modified By Name",
+                },
+                {
+                    "id": "another_dummy_id",
+                    "name": "another_name",
+                    "created_by_name": "Created By Another Name",
+                    "modified_by_name": "Modified By Another Name",
+                },
             ]
 
     def test_read_all_failing_with_timeout(self, db_operator) -> None:
@@ -310,13 +456,77 @@ class TestDbOperator:  # pylint: disable=R0904
             collection_mock.return_value = collection_return_mock = mock.Mock()
             collection_return_mock.stream.side_effect = TimeoutError("Timeout Error")
 
-            return_code, return_message = db_operator.read_all("test")
+            return_code, return_message = db_operator.read_all("test", Course)
 
             assert return_code == 500
             assert (
                 return_message
                 == "Timed out while trying to read all entries for test: Timeout Error"
             )
+
+    def test_read_all_successful_with_references(self, db_operator) -> None:
+        """Tests reading a database collection with references to resolve successfully."""
+        with mock.patch.object(
+            db_operator.db_client, "collection"
+        ) as collection_mock, mock.patch(
+            "firebase_admin.auth.get_user"
+        ) as user_mock, mock.patch(
+            "db_operator.DatabaseOperator.read"
+        ) as read_mock, mock.patch(
+            "firebase_admin.firestore.client"
+        ):
+            collection_mock.return_value = collection_return_mock = mock.Mock()
+            read_mock.return_value = (
+                200,
+                MockDocReference(
+                    True, "dummy_id", "course name", {"course_abbreviation": "abbr"}
+                ).to_dict(),
+            )
+            collection_return_mock.stream.return_value = [
+                MockDocReference(
+                    True,
+                    "dummy_id",
+                    "name",
+                    {"course_id": "123", "assignee_id": "456"},
+                ),
+                MockDocReference(
+                    True, "another_dummy_id", "another_name", {"course_id": "123"}
+                ),
+            ]
+
+            user_mock.side_effect = [
+                MockUserReference("Created By Name"),
+                MockUserReference("Modified By Name"),
+                MockUserReference("Assignee Name"),
+                MockUserReference("Created By Another Name"),
+                MockUserReference("Modified By Another Name"),
+            ]
+
+            return_code, return_message = db_operator.read_all("test", Ticket)
+
+            assert return_code == 200
+            assert return_message == [
+                {
+                    "id": "dummy_id",
+                    "name": "name",
+                    "created_by_name": "Created By Name",
+                    "modified_by_name": "Modified By Name",
+                    "course_id": "123",
+                    "course_name": "course name",
+                    "course_abbreviation": "abbr",
+                    "assignee_id": "456",
+                    "assignee_name": "Assignee Name",
+                },
+                {
+                    "id": "another_dummy_id",
+                    "name": "another_name",
+                    "created_by_name": "Created By Another Name",
+                    "modified_by_name": "Modified By Another Name",
+                    "course_id": "123",
+                    "course_name": "course name",
+                    "course_abbreviation": "abbr",
+                },
+            ]
 
     def test_find_successful(self, db_operator) -> None:
         """Tests querying a database entity successfully."""
@@ -364,22 +574,133 @@ class TestDbOperator:  # pylint: disable=R0904
 
     def test_find_all_successful(self, db_operator) -> None:
         """Tests querying a database collection successfully."""
-        with mock.patch.object(db_operator.db_client, "collection") as collection_mock:
+        with mock.patch.object(
+            db_operator.db_client, "collection"
+        ) as collection_mock, mock.patch("firebase_admin.auth.get_user") as user_mock:
             collection_mock.return_value = collection_return_mock = mock.Mock()
             collection_return_mock.where.return_value = filtered_mock = mock.Mock()
             filtered_mock.stream.return_value = [
-                MockDocReference(True, name="dummy_id"),
-                MockDocReference(True, name="another_dummy_id"),
+                MockDocReference(True, name="dummy_id", identifier="test"),
+                MockDocReference(True, name="another_dummy_id", identifier="test2"),
+            ]
+            user_mock.side_effect = [
+                MockUserReference("Dummy Name"),
+                MockUserReference("Another Dummy Name"),
+                MockUserReference("Dummy Name"),
+                MockUserReference("Another Dummy Name"),
             ]
 
-            found_successful, return_message = db_operator.find_all(
-                "test", [FieldFilter("new", "==", "updated_entity")]
+            response_code, return_message = db_operator.find_all(
+                "test", Course, [FieldFilter("new", "==", "updated_entity")]
             )
 
-            assert found_successful is True
+            assert response_code == 200
             assert return_message == [
-                {"name": "dummy_id"},
-                {"name": "another_dummy_id"},
+                {
+                    "name": "dummy_id",
+                    "id": "test",
+                    "created_by_name": "Dummy Name",
+                    "modified_by_name": "Another Dummy Name",
+                },
+                {
+                    "name": "another_dummy_id",
+                    "id": "test2",
+                    "created_by_name": "Dummy Name",
+                    "modified_by_name": "Another Dummy Name",
+                },
+            ]
+
+    def test_find_all_successful_with_refs(self, db_operator) -> None:
+        """
+        Tests querying a database collection successfully with references to other collections.
+        """
+        with mock.patch.object(
+            db_operator.db_client, "collection"
+        ) as collection_mock, mock.patch(
+            "firebase_admin.auth.get_user"
+        ) as user_mock, mock.patch(
+            "firebase_admin.firestore.client"
+        ), mock.patch(
+            "db_operator.DatabaseOperator.read"
+        ) as read_mock:
+            collection_mock.return_value = collection_return_mock = mock.Mock()
+            collection_return_mock.where.return_value = filtered_mock = mock.Mock()
+            filtered_mock.stream.return_value = [
+                MockDocReference(
+                    True,
+                    identifier="dummy_ticket_id",
+                    name="dummy_ticket",
+                    additional_attributes={
+                        "course_id": "dummy_course_id",
+                        "assignee_id": "dummy_assignee_id",
+                    },
+                ),
+                MockDocReference(
+                    True,
+                    identifier="another_dummy_ticket_id",
+                    name="another_dummy_ticket",
+                    additional_attributes={
+                        "course_id": "another_dummy_course_id",
+                        "assignee_id": "dummy_assignee_id",
+                    },
+                ),
+            ]
+            read_mock.side_effect = [
+                (
+                    200,
+                    {
+                        "id": "dummy_course_id",
+                        "name": "dummy_course",
+                        "course_abbreviation": "DN",
+                    },
+                ),
+                (
+                    200,
+                    {
+                        "id": "another_dummy_course_id",
+                        "name": "dummy_course",
+                        "course_abbreviation": "DN",
+                    },
+                ),
+            ]
+
+            user_mock.side_effect = [
+                MockUserReference("Dummy Name"),
+                MockUserReference("Another Dummy Name"),
+                MockUserReference("Assignee Name"),
+                MockUserReference("Dummy Name"),
+                MockUserReference("Another Dummy Name"),
+                MockUserReference("Assignee Name"),
+            ]
+
+            response_code, return_message = db_operator.find_all(
+                "test", Ticket, [FieldFilter("new", "==", "updated_entity")]
+            )
+
+            assert response_code == 200
+            assert return_message == [
+                {
+                    "id": "dummy_ticket_id",
+                    "name": "dummy_ticket",
+                    "created_by_name": "Dummy Name",
+                    "modified_by_name": "Another Dummy Name",
+                    "course_id": "dummy_course_id",
+                    "course_name": "dummy_course",
+                    "course_abbreviation": "DN",
+                    "assignee_id": "dummy_assignee_id",
+                    "assignee_name": "Assignee Name",
+                },
+                {
+                    "id": "another_dummy_ticket_id",
+                    "name": "another_dummy_ticket",
+                    "created_by_name": "Dummy Name",
+                    "modified_by_name": "Another Dummy Name",
+                    "course_id": "another_dummy_course_id",
+                    "course_name": "dummy_course",
+                    "course_abbreviation": "DN",
+                    "assignee_id": "dummy_assignee_id",
+                    "assignee_name": "Assignee Name",
+                },
             ]
 
     def test_find_all_failing_with_filter_field_unknown(self, db_operator) -> None:
@@ -388,11 +709,11 @@ class TestDbOperator:  # pylint: disable=R0904
             collection_mock.return_value = collection_return_mock = mock.Mock()
             collection_return_mock.where.side_effect = ValueError("Value Error")
 
-            found_successful, return_message = db_operator.find_all(
-                "test", [FieldFilter("new", "==", "updated_entity")]
+            response_code, return_message = db_operator.find_all(
+                "test", Course, [FieldFilter("new", "==", "updated_entity")]
             )
 
-            assert found_successful is False
+            assert response_code == 400
             assert return_message is None
 
     def test_find_all_failing_with_timeout(self, db_operator) -> None:
@@ -401,11 +722,11 @@ class TestDbOperator:  # pylint: disable=R0904
             collection_mock.return_value = collection_return_mock = mock.Mock()
             collection_return_mock.where.side_effect = TimeoutError("Timeout Error")
 
-            found_successful, return_message = db_operator.find_all(
-                "test", [FieldFilter("new", "==", "updated_entity")]
+            response_code, return_message = db_operator.find_all(
+                "test", Course, [FieldFilter("new", "==", "updated_entity")]
             )
 
-            assert found_successful is False
+            assert response_code == 500
             assert return_message is None
 
     def test_delete_successful(self, db_operator) -> None:

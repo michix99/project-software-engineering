@@ -6,31 +6,26 @@ import {
   ResetPasswordFormComponent,
 } from './components';
 import { AuthenticationGuardService } from './services';
-import { HomeComponent } from './pages/home/home.component';
-import { ProfileComponent } from './pages/profile/profile.component';
-import { TasksComponent } from './pages/tasks/tasks.component';
-import {
-  DxButtonModule,
-  DxDataGridModule,
-  DxFormModule,
-  DxTextBoxModule,
-} from 'devextreme-angular';
 import { Role } from './models';
+import {
+  CourseEditorComponent,
+  CourseTableComponent,
+  HomeComponent,
+  PermissionTableComponent,
+  ProfileComponent,
+  TicketEditorComponent,
+  TicketTableComponent,
+  UserTableComponent,
+} from './pages';
 
 const routes: Routes = [
   {
-    path: 'tasks',
-    component: TasksComponent,
+    path: 'profile',
+    component: ProfileComponent,
     canActivate: [
       (route: ActivatedRouteSnapshot) =>
         inject(AuthenticationGuardService).canActivate(route),
-      () => inject(AuthenticationGuardService).hasRole(Role.Admin),
     ],
-  },
-  {
-    path: 'profile',
-    component: ProfileComponent,
-    canActivate: [AuthenticationGuardService],
   },
   {
     path: 'home',
@@ -65,21 +60,62 @@ const routes: Routes = [
     ],
   },
   {
+    path: 'course',
+    component: CourseTableComponent,
+    canActivate: [
+      (route: ActivatedRouteSnapshot) =>
+        inject(AuthenticationGuardService).canActivate(route, Role.Admin),
+    ],
+  },
+  {
+    path: 'course/:id',
+    component: CourseEditorComponent,
+    canActivate: [
+      (route: ActivatedRouteSnapshot) =>
+        inject(AuthenticationGuardService).canActivate(route, Role.Admin),
+    ],
+  },
+  {
+    path: 'ticket',
+    component: TicketTableComponent,
+    canActivate: [
+      (route: ActivatedRouteSnapshot) =>
+        inject(AuthenticationGuardService).canActivate(route),
+    ],
+  },
+  {
+    path: 'ticket/:id',
+    component: TicketEditorComponent,
+    canActivate: [
+      (route: ActivatedRouteSnapshot) =>
+        inject(AuthenticationGuardService).canActivate(route),
+    ],
+  },
+  {
+    path: 'permission',
+    component: PermissionTableComponent,
+    canActivate: [
+      (route: ActivatedRouteSnapshot) =>
+        inject(AuthenticationGuardService).canActivate(route, Role.Admin),
+    ],
+  },
+  {
+    path: 'user',
+    component: UserTableComponent,
+    canActivate: [
+      (route: ActivatedRouteSnapshot) =>
+        inject(AuthenticationGuardService).canActivate(route, Role.Admin),
+    ],
+  },
+  {
     path: '**',
     redirectTo: 'home',
   },
 ];
 
 @NgModule({
-  imports: [
-    RouterModule.forRoot(routes),
-    DxDataGridModule,
-    DxFormModule,
-    DxButtonModule,
-    DxTextBoxModule,
-  ],
+  imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
   providers: [AuthenticationGuardService],
-  declarations: [HomeComponent, ProfileComponent, TasksComponent],
 })
 export class AppRoutingModule {}

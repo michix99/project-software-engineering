@@ -2,22 +2,73 @@ import { Injectable } from '@angular/core';
 import { Router, ActivatedRouteSnapshot } from '@angular/router';
 import { AuthenticationService } from './authentication.service';
 import { environment } from 'src/environments/environment';
-import notify from 'devextreme/ui/notify';
 import { Role } from '../models';
+import { takeWhile } from 'rxjs';
+import { LoggingService } from './logging.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Injectable()
 export class AuthenticationGuardService {
+  /** The default application path to navigate to. */
   defaultPath = '/';
+
   constructor(
     private router: Router,
     private authService: AuthenticationService,
+    private logger: LoggingService,
+    private notificationService: MatSnackBar,
   ) {}
 
-  canActivate(route: ActivatedRouteSnapshot): boolean {
+  /**
+   * Indicates if a user can activate the given route.
+   * @param route The current route the user wants to access.
+   * @param requiredRole The user role required to see the view.
+   * @returns If the user can activate the route.
+   */
+  async canActivate(
+    route: ActivatedRouteSnapshot,
+    requiredRole?: Role,
+  ): Promise<boolean> {
     const isLoggedIn = this.authService.loggedIn;
     const isAuthForm = ['login-form', 'reset-password'].includes(
       route.routeConfig?.path || this.defaultPath,
     );
+
+    if (requiredRole) {
+      if (Object.keys(route.params).length > 0) {
+        this.authService.lastAuthenticatedPath = route.pathFromRoot
+          .map((v) => v.url.map((segment) => segment.toString()).join('/'))
+          .join('/');
+      } else {
+        this.authService.lastAuthenticatedPath =
+          route.routeConfig?.path || this.defaultPath;
+      }
+      return new Promise((resolve) => {
+        this.authService.roleState
+          .pipe(takeWhile((role) => role === null))
+          .subscribe({
+            complete: () => {
+              if (!this.hasRole(requiredRole)) {
+                this.router.navigate([this.defaultPath]);
+                this.notificationService.open(
+                  'User is not allowed to access this ressource.',
+                  undefined,
+                  {
+                    duration: 2000,
+                    panelClass: ['red-snackbar'],
+                  },
+                );
+                this.logger.error(
+                  `User with role ${this.authService.currentRole} is not allowd to access route: ${route.routeConfig?.path}`,
+                );
+                resolve(false);
+              }
+
+              resolve(true);
+            },
+          });
+      });
+    }
 
     if (isLoggedIn && isAuthForm) {
       this.authService.lastAuthenticatedPath = this.defaultPath;
@@ -26,12 +77,19 @@ export class AuthenticationGuardService {
     }
 
     if (!isLoggedIn && !isAuthForm) {
+      this.logger.error('User is not logged in, redirect to login.');
       this.router.navigate(['/login-form']);
     }
 
     if (isLoggedIn) {
-      this.authService.lastAuthenticatedPath =
-        route.routeConfig?.path || this.defaultPath;
+      if (Object.keys(route.params).length > 0) {
+        this.authService.lastAuthenticatedPath = route.pathFromRoot
+          .map((v) => v.url.map((segment) => segment.toString()).join('/'))
+          .join('/');
+      } else {
+        this.authService.lastAuthenticatedPath =
+          route.routeConfig?.path || this.defaultPath;
+      }
     }
 
     if (
@@ -41,7 +99,17 @@ export class AuthenticationGuardService {
       const apiKey = route.queryParams['apiKey'];
       if (!apiKey || apiKey !== environment.firebase.apiKey) {
         this.router.navigate([this.defaultPath]);
-        notify('Reset password link is not valid!', 'error', 2000);
+        this.notificationService.open(
+          'Reset password link is not valid!',
+          undefined,
+          {
+            duration: 2000,
+            panelClass: ['red-snackbar'],
+          },
+        );
+        this.logger.error(
+          'Reset password link is not valid: invalid API key provided',
+        );
         return false;
       }
 
@@ -51,27 +119,24 @@ export class AuthenticationGuardService {
     return isLoggedIn || isAuthForm;
   }
 
+  /**
+   * Indicates if a user fullfills the required role.
+   * @param requiredRole The role the user (min) needs to have.
+   * @returns If the user has the required permissions.
+   */
   hasRole(requiredRole: Role): boolean {
-    const userRole = this.authService.authUserInfo.role;
+    const userRole = this.authService.currentRole;
+    if (!userRole) return false;
 
-    let isAllowed = false;
     switch (requiredRole) {
       case Role.Admin:
-        isAllowed = userRole === Role.Admin;
-        break;
-      case Role.User:
-        isAllowed = [Role.Admin, Role.User].includes(userRole);
-        break;
+        return userRole === Role.Admin;
+      case Role.Editor:
+        return [Role.Admin, Role.Editor].includes(userRole);
+      case Role.Requester:
+        return [Role.Admin, Role.Editor, Role.Requester].includes(userRole);
       default:
-        isAllowed = requiredRole === userRole;
-        break;
+        return requiredRole === userRole;
     }
-
-    if (!isAllowed) {
-      this.router.navigate([this.defaultPath]);
-      notify('User is not allowed to access this ressource.', 'error', 2000);
-    }
-
-    return isAllowed;
   }
 }

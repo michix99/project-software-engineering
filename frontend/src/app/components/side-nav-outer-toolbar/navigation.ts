@@ -1,23 +1,42 @@
+import { InjectionToken } from '@angular/core';
 import { NavigationItem, Role } from '../../models';
 
-export const navigation: NavigationItem[] = [
+export const NAVIGATION_TOKEN = new InjectionToken<NavigationItem[]>(
+  'navigation',
+);
+
+export const NAVIGATION: NavigationItem[] = [
   {
     text: 'Home',
     path: '/home',
     icon: 'home',
   },
   {
-    text: 'Examples',
-    icon: 'folder',
+    text: 'Create Ticket',
+    icon: 'add',
+    path: '/ticket/0',
+  },
+  {
+    text: 'Ticket Overview',
+    icon: 'description',
+    path: '/ticket',
+  },
+  {
+    text: 'Settings',
+    icon: 'preferences',
+    requiredRole: Role.Admin,
     items: [
       {
-        text: 'Profile',
-        path: '/profile',
+        text: 'Permissions',
+        path: '/permission',
       },
       {
-        text: 'Tasks',
-        path: '/tasks',
-        requiredRole: Role.Admin,
+        text: 'Course Management',
+        path: '/course',
+      },
+      {
+        text: 'User Management',
+        path: '/user',
       },
     ],
   },
