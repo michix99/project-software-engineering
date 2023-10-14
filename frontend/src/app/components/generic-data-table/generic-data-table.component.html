@@ -24,4 +24,7 @@
     [hidingPriority]="column.priority"
   >
   </dxi-column>
+  <dxi-column type="buttons" *ngIf="editRoute">
+    <dxi-button hint="Edit" icon="edit" [onClick]="onEditClick"></dxi-button>
+  </dxi-column>
 </dx-data-grid>

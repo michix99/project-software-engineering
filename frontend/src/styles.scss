@@ -45,6 +45,26 @@ html, body {
   }
 }
 
+.content {
+  margin: 0 4%;
+  
+  .screen-x-small & {
+    margin: 0 2%;
+  }
+
+  .screen-small & {
+    margin: 0 4%;
+  }
+
+  .screen-medium & {
+    margin: 0 6%;
+  }
+
+  .screen-large & {
+    margin: 0 10%;
+  }
+}
+
 .responsive-paddings {
   padding: 20px;
 

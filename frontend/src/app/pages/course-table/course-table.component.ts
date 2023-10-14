@@ -7,6 +7,7 @@ import { Column, courseFromJson } from '../../models';
 })
 export class CourseTableComponent {
   dataEndpoint = 'data/course';
+  editRoute = 'course';
   dataParser = courseFromJson;
   columns: Array<Column> = [
     { fieldName: 'name', caption: 'Name', priority: 5, dataType: 'string' },

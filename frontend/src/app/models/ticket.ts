@@ -31,3 +31,30 @@ export function ticketFromJson(parsedJson: Record<string, unknown>): Ticket {
   };
   return ticket as Ticket;
 }
+
+export function ticketToModel(ticket: Ticket): Record<string, unknown> {
+  const parsedJson: Record<string, unknown> = {
+    description: ticket.description,
+    course_id: ticket.courseId,
+    title: ticket.title,
+    status: ticket.status,
+    priority: ticket.priority,
+    assignee_id: ticket.assigneeId,
+  };
+  return parsedJson;
+}
+
+export enum Status {
+  Open = 'OPEN',
+  InProgress = 'IN PROGRESS',
+  Feedback = 'FEEDBACK',
+  InReview = 'IN REVIEW',
+  Done = 'DONE',
+}
+
+export enum Priority {
+  High = 'HIGH',
+  Medium = 'MEDIUM',
+  Low = 'LOW',
+  Undefined = 'UNDEFINED',
+}

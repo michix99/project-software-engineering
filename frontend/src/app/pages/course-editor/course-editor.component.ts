@@ -5,4 +5,6 @@ import { Component } from '@angular/core';
   templateUrl: './course-editor.component.html',
   styleUrls: ['./course-editor.component.scss'],
 })
-export class CourseEditorComponent {}
+export class CourseEditorComponent {
+  title = 'Create new Course';
+}

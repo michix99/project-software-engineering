@@ -1,0 +1,25 @@
+.form-wrapper {
+  margin-top: 30px;
+  display: flex;
+}
+
+form {
+  width: 100%
+}
+
+
+.header {
+  margin-top: 20px;
+}
+
+.save-button {
+  background-color: rgb(242, 242, 242);
+}
+
+.spinner-wrapper {
+  margin-top: 5rem;
+  position: absolute;
+  width: 92%;
+  display: flex;
+  justify-content: center;
+}
