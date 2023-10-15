@@ -22,6 +22,7 @@ class Ticket:
     status: str
     priority: str
     assignee_id: str
+    type: str
 
     @classmethod
     def resolve_refs(cls, element: dict, user_info: UserInfo) -> dict:

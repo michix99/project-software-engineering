@@ -10,6 +10,7 @@ export interface Ticket extends Metadata {
   priority: string;
   assigneeId: string;
   assigneeName: string;
+  type: string;
 }
 
 export function ticketFromJson(parsedJson: Record<string, unknown>): Ticket {
@@ -28,6 +29,7 @@ export function ticketFromJson(parsedJson: Record<string, unknown>): Ticket {
     modifiedAt: new Date(parsedJson['modified_at'] as string),
     createdBy: parsedJson['created_by_name'],
     modifiedBy: parsedJson['modified_by_name'],
+    type: parsedJson['type'],
   };
   return ticket as Ticket;
 }
@@ -40,6 +42,7 @@ export function ticketToModel(ticket: Ticket): Record<string, unknown> {
     status: ticket.status,
     priority: ticket.priority,
     assignee_id: ticket.assigneeId,
+    type: ticket.type,
   };
   return parsedJson;
 }
@@ -56,5 +59,12 @@ export enum Priority {
   High = 'HIGH',
   Medium = 'MEDIUM',
   Low = 'LOW',
+  Undefined = 'UNDEFINED',
+}
+
+export enum Type {
+  Error = 'ERROR',
+  Improvement = 'IMPROVEMENT',
+  Addition = 'ADDITION',
   Undefined = 'UNDEFINED',
 }

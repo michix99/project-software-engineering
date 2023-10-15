@@ -70,9 +70,9 @@ class DatabaseOperator:
                 return 409, duplicate_ids[0]
 
         new_data = asdict(data) if is_dataclass(data) else data
-        new_data["created_at"] = datetime.utcnow().isoformat()
+        new_data["created_at"] = f"{datetime.utcnow().isoformat()}Z"
         new_data["created_by"] = self.user_info.user_id
-        new_data["modified_at"] = datetime.utcnow().isoformat()
+        new_data["modified_at"] = f"{datetime.utcnow().isoformat()}Z"
         new_data["modified_by"] = self.user_info.user_id
 
         try:
@@ -126,7 +126,9 @@ class DatabaseOperator:
                 if element.get("created_by") != allowed_updater:
                     return 403, "Not allowed to update entry!"
             elem_ref.update(update_data, timeout=10)
-            elem_ref.update({"modified_at": datetime.utcnow().isoformat()}, timeout=10)
+            elem_ref.update(
+                {"modified_at": f"{datetime.utcnow().isoformat()}Z"}, timeout=10
+            )
             elem_ref.update({"modified_by": self.user_info.user_id}, timeout=10)
         except exceptions.NotFound as error:
             logger.error(f"Error while updating the entry: {error}")

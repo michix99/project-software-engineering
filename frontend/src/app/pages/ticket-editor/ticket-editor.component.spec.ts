@@ -119,6 +119,7 @@ describe('TicketEditorComponent', () => {
       modified_at: new Date(2022, 9, 3).toString(),
       created_by_name: 'dummy',
       modified_by_name: 'author',
+      type: 'ERROR',
     });
     const getAllCoursesSpy = spyOn(dataService, 'getAll').and.resolveTo([
       {
@@ -151,6 +152,7 @@ describe('TicketEditorComponent', () => {
       modifiedAt: new Date(2022, 9, 3),
       createdBy: 'dummy',
       modifiedBy: 'author',
+      type: 'ERROR',
     });
     expect(component.courses).toEqual([
       {
@@ -308,6 +310,7 @@ describe('TicketEditorComponent', () => {
       modifiedAt: new Date(2022, 9, 3),
       createdBy: 'dummy',
       modifiedBy: 'author',
+      type: 'ADDITION',
     };
     component.resetTicket();
     expect(component.ticket).toEqual({
@@ -325,6 +328,7 @@ describe('TicketEditorComponent', () => {
       priority: Priority.Undefined,
       assigneeId: '',
       assigneeName: '',
+      type: 'UNDEFINED',
     });
   });
 
@@ -351,6 +355,7 @@ describe('TicketEditorComponent', () => {
       modified_at: new Date(2022, 9, 3).toString(),
       created_by_name: 'dummy',
       modified_by_name: 'author',
+      type: 'IMPROVEMENTS',
     });
 
     component.id = '123';
@@ -373,6 +378,7 @@ describe('TicketEditorComponent', () => {
       modifiedAt: new Date(2022, 9, 3),
       createdBy: 'dummy',
       modifiedBy: 'author',
+      type: 'IMPROVEMENTS',
     });
   }));
 
