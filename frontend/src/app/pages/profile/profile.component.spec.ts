@@ -257,7 +257,9 @@ describe('ProfileComponent', () => {
     async (router: Router) => {
       const navigateSpy = spyOn(router, 'navigate');
       const notifySpy = spyOn(notificationService, 'open');
-      const updateUserSpy = spyOn(dataService, 'update').and.resolveTo();
+      const updateUserSpy = spyOn(dataService, 'update').and.resolveTo({
+        id: '123',
+      });
 
       component.id = '123';
       component.roleHasChanged = true;
