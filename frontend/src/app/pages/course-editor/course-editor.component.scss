@@ -1,5 +1,5 @@
 .form-wrapper {
-  margin-top: 30px;
+  margin-top: 20px;
   display: flex;
 }
 
@@ -22,4 +22,9 @@ form {
   width: 92%;
   display: flex;
   justify-content: center;
+}
+
+.back-button-row {
+  display: flex;
+  justify-content: flex-end;
 }

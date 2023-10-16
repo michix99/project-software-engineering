@@ -40,4 +40,14 @@ export const NAVIGATION: NavigationItem[] = [
       },
     ],
   },
+  {
+    text: 'Privacy Policy',
+    path: '/privacy-policy',
+    icon: 'eyeopen',
+  },
+  {
+    text: 'About Us',
+    path: '/about',
+    icon: 'card',
+  },
 ];

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, NgModule, OnDestroy, OnInit } from '@angular/core';
 import { Course, courseFromJson, courseToModel } from '../../models';
 import { Subscription } from 'rxjs';
 import {
@@ -6,8 +6,16 @@ import {
   DataService,
   LoggingService,
 } from '../../services';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { ActivatedRoute, Router } from '@angular/router';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import {
+  DxFormModule,
+  DxLoadIndicatorModule,
+  DxButtonModule,
+  DxTextBoxModule,
+} from 'devextreme-angular';
 
 @Component({
   selector: 'app-course-editor',
@@ -168,4 +176,27 @@ export class CourseEditorComponent implements OnInit, OnDestroy {
       this.loading = false;
     }
   }
+
+  /**
+   * Navigates to the course overview.
+   */
+  navigateBack(): void {
+    this.router.navigate(['/course']);
+  }
 }
+
+@NgModule({
+  imports: [
+    CommonModule,
+    RouterModule,
+    DxFormModule,
+    DxLoadIndicatorModule,
+    DxButtonModule,
+    DxTextBoxModule,
+    MatSnackBarModule,
+    MatProgressSpinnerModule,
+  ],
+  declarations: [CourseEditorComponent],
+  exports: [CourseEditorComponent],
+})
+export class CourseEditorModule {}

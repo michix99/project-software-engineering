@@ -133,7 +133,9 @@ export class TicketEditorComponent implements OnInit, OnDestroy {
               .then((value) => {
                 this.editors = value
                   .map((e) => userFromJson(e))
-                  .filter((u) => u.admin || u.editor);
+                  .filter(
+                    (u) => u.role === Role.Admin || u.role === Role.Editor,
+                  );
               })
               .catch((error) => {
                 this.editors = [];
@@ -284,6 +286,13 @@ export class TicketEditorComponent implements OnInit, OnDestroy {
     } finally {
       this.loading = false;
     }
+  }
+
+  /**
+   * Navigates to the ticket overview.
+   */
+  navigateBack(): void {
+    this.router.navigate(['/ticket']);
   }
 }
 

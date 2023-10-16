@@ -7,3 +7,5 @@ export * from './permission-table/permission-table.component';
 export * from './ticket-editor/ticket-editor.component';
 export * from './ticket-table/ticket-table.component';
 export * from './user-table/user-table.component';
+export * from './privacy-policy/privacy-policy.component';
+export * from './about/about.component';

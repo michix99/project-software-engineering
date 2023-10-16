@@ -14,8 +14,6 @@ import {
   DataService,
   LoggingService,
 } from '../../services';
-import { AuthenticationServiceMock } from '../../../test/authentication-service.mock';
-import { LoggingServiceMock } from '../../../test/logging.service.mock';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterTestingModule } from '@angular/router/testing';
 import {
@@ -24,7 +22,6 @@ import {
   ParamMap,
   Router,
 } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
 import { User } from '@angular/fire/auth';
 import {
   Course,
@@ -34,25 +31,11 @@ import {
   Priority,
   Ticket,
 } from '../../models';
-
-export class ActivatedRouteMock {
-  paramMapSubject = new BehaviorSubject<ParamMap | null>({
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    get(_: string): string | null {
-      return null;
-    },
-  } as ParamMap);
-  paramMap = this.paramMapSubject;
-
-  snapshot: ActivatedRouteSnapshot = {
-    paramMap: {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      get(_: string): string | null {
-        return null;
-      },
-    } as ParamMap,
-  } as ActivatedRouteSnapshot;
-}
+import {
+  ActivatedRouteMock,
+  AuthenticationServiceMock,
+  LoggingServiceMock,
+} from '../../../test';
 
 describe('TicketEditorComponent', () => {
   let component: TicketEditorComponent;
@@ -217,9 +200,7 @@ describe('TicketEditorComponent', () => {
         email: 'dummy@test.de',
         displayName: 'Dummy User',
         disabled: false,
-        admin: false,
-        editor: true,
-        requester: true,
+        role: Role.Editor,
       },
     ]);
     expect(component.isAdminOrEditor).toBeTrue();
@@ -273,9 +254,7 @@ describe('TicketEditorComponent', () => {
         email: 'dummy@test.de',
         displayName: 'Dummy User',
         disabled: false,
-        admin: false,
-        editor: true,
-        requester: true,
+        role: Role.Editor,
       }),
     ).toBe('Dummy User - dummy@test.de');
     expect(
@@ -284,9 +263,7 @@ describe('TicketEditorComponent', () => {
         email: 'dummy@test.de',
         displayName: '',
         disabled: false,
-        admin: false,
-        editor: true,
-        requester: true,
+        role: Role.Editor,
       }),
     ).toBe('dummy@test.de');
     expect(
@@ -400,7 +377,7 @@ describe('TicketEditorComponent', () => {
     }),
   ));
 
-  it('title should return if the editor is in creat or update mode', () => {
+  it('title should return if the editor is in create or update mode', () => {
     component.id = '123';
     expect(component.title).toBe('Update Ticket');
     component.id = undefined;
@@ -490,4 +467,13 @@ describe('TicketEditorComponent', () => {
 
     expect(updateTicketSpy).not.toHaveBeenCalled();
   });
+
+  it('navigateBack should navigte to the ticket table view', inject(
+    [Router],
+    (router: Router) => {
+      const navigateSpy = spyOn(router, 'navigate');
+      component.navigateBack();
+      expect(navigateSpy).toHaveBeenCalledWith(['/ticket']);
+    },
+  ));
 });

@@ -23,7 +23,7 @@ export class DataService {
         },
       });
 
-      if (response.status == 200) {
+      if (response.status === 200) {
         const jsonResponse = (await response.json()) as unknown as Array<
           Record<string, unknown>
         >;
@@ -59,7 +59,7 @@ export class DataService {
         },
       );
 
-      if (response.status == 200) {
+      if (response.status === 200) {
         const jsonResponse = (await response.json()) as unknown as Record<
           string,
           unknown
@@ -95,12 +95,16 @@ export class DataService {
         body: JSON.stringify(newItem),
       });
 
-      if (response.status == 201) {
+      if (response.status === 201) {
         const jsonResponse = (await response.json()) as { id: string };
 
         return jsonResponse;
       } else {
-        throw new Error(await response.text());
+        throw new Error(
+          response.status === 409
+            ? 'Element with given attributs does already exist.'
+            : await response.text(),
+        );
       }
     } catch (error) {
       throw new Error((error as Error).message);
@@ -128,11 +132,41 @@ export class DataService {
         body: JSON.stringify(updatedItem),
       });
 
-      if (response.status == 200) {
+      if (response.status === 200) {
         const jsonResponse = (await response.json()) as { id: string };
 
         return jsonResponse;
       } else {
+        throw new Error(
+          response.status === 409
+            ? 'Element with given attributs does already exist.'
+            : await response.text(),
+        );
+      }
+    } catch (error) {
+      throw new Error((error as Error).message);
+    }
+  }
+
+  /**
+   * Deletes a data item for a given data endpoint.
+   * @param dataEndpoint The URL endpoint to load the data from.
+   * @param id The identifier of the item to delete.
+   */
+  async delete(dataEndpoint: string, id: string): Promise<void> {
+    const token = await this.authService.getToken();
+    try {
+      const response = await fetch(
+        `${environment.apiUrl}/${dataEndpoint}/${id}`,
+        {
+          method: 'DELETE',
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      if (response.status !== 204) {
         throw new Error(await response.text());
       }
     } catch (error) {

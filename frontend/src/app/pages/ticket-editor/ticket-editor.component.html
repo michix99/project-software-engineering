@@ -1,5 +1,13 @@
 <h2 class="header content">{{ title }}</h2>
-
+<div class="content back-button-row">
+  <dx-button
+    stylingMode="contained"
+    text="Go Back"
+    type="normal"
+    (onClick)="navigateBack()"
+  >
+  </dx-button>
+</div>
 <div *ngIf="dataLoading" class="spinner-wrapper">
   <mat-spinner class="spinner"></mat-spinner>
 </div>

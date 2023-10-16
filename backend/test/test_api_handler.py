@@ -6,6 +6,7 @@ from unittest.mock import patch
 import flask
 import pytest
 from firebase_admin import exceptions
+from backend.test.mocks import MockUserReference
 import api_handler
 from enums import Role
 from auth_utils import UserInfo
@@ -61,12 +62,12 @@ class TestApiHandler:  # pylint: disable=R0904
             assert res[2].get("Access-Control-Allow-Origin") == "*"
             assert res[2].get("Access-Control-Allow-Credentials") == "true"
 
-    def test_set_role_successful(self, app) -> None:
-        """Tests a successful request to set a user role."""
+    def test_set_role_successful(self, app, role="requester") -> None:
+        """Tests a successful request to set a user role to requester."""
         with app.test_request_context(
             "/api/setRole",
-            method="POST",
-            json={"target_user_id": "dummy-id", "role": "requester", "value": True},
+            method="PUT",
+            json={"target_user_id": "dummy-id", "role": role},
         ), mock.patch("firebase_admin.auth.set_custom_user_claims"):
             res = api_handler.api_handler(
                 flask.request,
@@ -77,11 +78,19 @@ class TestApiHandler:  # pylint: disable=R0904
                 },
                 UserInfo("123", [Role.ADMIN]),
             )
-            assert res[0] == ""
+            assert res[0] == '{"id": "dummy-id"}'
             assert res[1] == 200
             assert res[2].get("Access-Control-Allow-Origin") == "*"
             assert res[2].get("Access-Control-Allow-Credentials") == "true"
-            assert res[2].get("Access-Control-Allow-Methods") == "POST"
+            assert res[2].get("Access-Control-Allow-Methods") == "PUT"
+
+    def test_set_role_successful_editor(self, app) -> None:
+        """Tests a successful request to set a user role to editor."""
+        self.test_set_role_successful(app, "editor")
+
+    def test_set_role_successful_admin(self, app) -> None:
+        """Tests a successful request to set a user role to admin."""
+        self.test_set_role_successful(app, "admin")
 
     def test_set_role_failing_missing_permission(self, app) -> None:
         """
@@ -90,11 +99,10 @@ class TestApiHandler:  # pylint: disable=R0904
         """
         with app.test_request_context(
             "/api/setRole",
-            method="POST",
+            method="PUT",
             json={
                 "target_user_id": "another-dummy-id",
                 "role": "requester",
-                "value": True,
             },
         ):
             res = api_handler.api_handler(
@@ -118,10 +126,9 @@ class TestApiHandler:  # pylint: disable=R0904
         """
         with app.test_request_context(
             "/api/setRole",
-            method="POST",
+            method="PUT",
             json={
                 "role": "requester",
-                "value": True,
             },
         ):
             res = api_handler.api_handler(
@@ -136,10 +143,10 @@ class TestApiHandler:  # pylint: disable=R0904
             assert (
                 res[0]
                 == "Not all required fields are provided! Required fields are: "
-                + "target_user_id, role, value"
+                + "target_user_id, role"
             )
             assert res[1] == 400
-            assert res[2].get("Access-Control-Allow-Methods") == "POST"
+            assert res[2].get("Access-Control-Allow-Methods") == "PUT"
             assert res[2].get("Access-Control-Allow-Origin") == "*"
             assert res[2].get("Access-Control-Allow-Credentials") == "true"
 
@@ -150,11 +157,10 @@ class TestApiHandler:  # pylint: disable=R0904
         """
         with app.test_request_context(
             "/api/setRole",
-            method="POST",
+            method="PUT",
             json={
                 "target_user_id": "dummy-id",
                 "role": "requester",
-                "value": True,
             },
         ), mock.patch("firebase_admin.auth.set_custom_user_claims") as set_claims_mock:
             set_claims_mock.side_effect = ValueError("Error")
@@ -170,7 +176,7 @@ class TestApiHandler:  # pylint: disable=R0904
             assert res[0] == "User ID or custom claim invalid!"
             assert res[1] == 400
             assert res[2].get("Access-Control-Allow-Origin") == "*"
-            assert res[2].get("Access-Control-Allow-Methods") == "POST"
+            assert res[2].get("Access-Control-Allow-Methods") == "PUT"
             assert res[2].get("Access-Control-Allow-Credentials") == "true"
 
     def test_set_role_failing_with_firebase_error(self, app) -> None:
@@ -180,11 +186,10 @@ class TestApiHandler:  # pylint: disable=R0904
         """
         with app.test_request_context(
             "/api/setRole",
-            method="POST",
+            method="PUT",
             json={
                 "target_user_id": "dummy-id",
                 "role": "requester",
-                "value": True,
             },
         ), mock.patch("firebase_admin.auth.set_custom_user_claims") as set_claims_mock:
             set_claims_mock.side_effect = exceptions.FirebaseError(
@@ -203,45 +208,49 @@ class TestApiHandler:  # pylint: disable=R0904
             assert res[1] == 500
             assert res[2].get("Access-Control-Allow-Origin") == "*"
             assert res[2].get("Access-Control-Allow-Credentials") == "true"
-            assert res[2].get("Access-Control-Allow-Methods") == "POST"
+            assert res[2].get("Access-Control-Allow-Methods") == "PUT"
 
-    def test_set_display_name_successful(self, app) -> None:
-        """Tests a successful request to set a display name."""
+    def test_update_user_successful(self, app) -> None:
+        """Tests a successful request to update a user."""
         with app.test_request_context(
-            "/api/setDisplayName",
-            method="POST",
-            json={"target_user_id": "dummy-id", "display_name": "Dummy Name"},
+            "/api/updateUser",
+            method="PUT",
+            json={
+                "target_user_id": "dummy-id",
+                "display_name": "Dummy Name",
+                "email": "dummy@test.de",
+            },
         ), mock.patch("firebase_admin.auth.update_user"):
             res = api_handler.api_handler(
                 flask.request,
-                ["api", "setDisplayName"],
+                ["api", "updateUser"],
                 {
                     "Access-Control-Allow-Origin": "*",
                     "Access-Control-Allow-Credentials": "true",
                 },
                 UserInfo("456", [Role.ADMIN]),
             )
-            assert res[0] == ""
+            assert res[0] == '{"id": "dummy-id"}'
             assert res[1] == 200
             assert res[2].get("Access-Control-Allow-Origin") == "*"
+            assert res[2].get("Access-Control-Allow-Methods") == "PUT"
             assert res[2].get("Access-Control-Allow-Credentials") == "true"
-            assert res[2].get("Access-Control-Allow-Methods") == "POST"
 
-    def test_set_display_name_failing_incomplete_body(self, app) -> None:
+    def test_update_user_failing_incomplete_body(self, app) -> None:
         """
-        Tests a failing request to set a display name.
+        Tests a failing request to update a user.
         Body is missing required fields.
         """
         with app.test_request_context(
-            "/api/setDisplayName",
-            method="POST",
+            "/api/updateUser",
+            method="PUT",
             json={
                 "target_user_id": "dummy-id",
             },
         ):
             res = api_handler.api_handler(
                 flask.request,
-                ["api", "setDisplayName"],
+                ["api", "updateUser"],
                 {
                     "Access-Control-Allow-Origin": "*",
                     "Access-Control-Allow-Credentials": "true",
@@ -251,27 +260,31 @@ class TestApiHandler:  # pylint: disable=R0904
             assert (
                 res[0]
                 == "Not all required fields are provided! Required fields are: "
-                + "target_user_id, display_name"
+                + "target_user_id, display_name, email"
             )
             assert res[1] == 400
-            assert res[2].get("Access-Control-Allow-Methods") == "POST"
+            assert res[2].get("Access-Control-Allow-Methods") == "PUT"
             assert res[2].get("Access-Control-Allow-Origin") == "*"
             assert res[2].get("Access-Control-Allow-Credentials") == "true"
 
-    def test_set_display_name_failing_with_value_error(self, app) -> None:
+    def test_update_user_failing_with_value_error(self, app) -> None:
         """
-        Tests a failing request to set a display name.
+        Tests a failing request to update a user.
         Raising value error while setting.
         """
         with app.test_request_context(
-            "/api/setDisplayName",
-            method="POST",
-            json={"target_user_id": "dummy-id", "display_name": "Dummy Name"},
+            "/api/updateUser",
+            method="PUT",
+            json={
+                "target_user_id": "dummy-id",
+                "display_name": "Dummy Name",
+                "email": "dummy@test.de",
+            },
         ), mock.patch("firebase_admin.auth.update_user") as update_mock:
             update_mock.side_effect = ValueError("Error")
             res = api_handler.api_handler(
                 flask.request,
-                ["api", "setDisplayName"],
+                ["api", "updateUser"],
                 {
                     "Access-Control-Allow-Origin": "*",
                     "Access-Control-Allow-Credentials": "true",
@@ -280,26 +293,30 @@ class TestApiHandler:  # pylint: disable=R0904
             )
             assert res[0] == "User ID invalid!"
             assert res[1] == 400
-            assert res[2].get("Access-Control-Allow-Methods") == "POST"
+            assert res[2].get("Access-Control-Allow-Methods") == "PUT"
             assert res[2].get("Access-Control-Allow-Origin") == "*"
             assert res[2].get("Access-Control-Allow-Credentials") == "true"
 
-    def test_set_display_name_failing_with_firebase_error(self, app) -> None:
+    def test_update_user_failing_with_firebase_error(self, app) -> None:
         """
-        Tests a failing request to set a display name.
+        Tests a failing request to update a user.
         Raising firebase error while setting.
         """
         with app.test_request_context(
-            "/api/setDisplayName",
-            method="POST",
-            json={"target_user_id": "dummy-id", "display_name": "Dummy Name"},
+            "/api/updateUser",
+            method="PUT",
+            json={
+                "target_user_id": "dummy-id",
+                "display_name": "Dummy Name",
+                "email": "dummy@test.de",
+            },
         ), mock.patch("firebase_admin.auth.update_user") as update_mock:
             update_mock.side_effect = exceptions.FirebaseError(
                 "Error Code", "Error Message"
             )
             res = api_handler.api_handler(
                 flask.request,
-                ["api", "setDisplayName"],
+                ["api", "updateUser"],
                 {
                     "Access-Control-Allow-Origin": "*",
                     "Access-Control-Allow-Credentials": "true",
@@ -310,21 +327,25 @@ class TestApiHandler:  # pylint: disable=R0904
             assert res[1] == 500
             assert res[2].get("Access-Control-Allow-Origin") == "*"
             assert res[2].get("Access-Control-Allow-Credentials") == "true"
-            assert res[2].get("Access-Control-Allow-Methods") == "POST"
+            assert res[2].get("Access-Control-Allow-Methods") == "PUT"
 
-    def test_set_display_name_failing_missing_permissions(self, app) -> None:
+    def test_update_user_failing_missing_permissions(self, app) -> None:
         """
-        Tests a failing request to set a display name.
+        Tests a failing request to update a user.
         User is no admin or does not try to modify his own user name.
         """
         with app.test_request_context(
-            "/api/setDisplayName",
-            method="POST",
-            json={"target_user_id": "dummy-id", "display_name": "name"},
+            "/api/updateUser",
+            method="PUT",
+            json={
+                "target_user_id": "dummy-id",
+                "display_name": "name",
+                "email": "dummy@test.de",
+            },
         ):
             res = api_handler.api_handler(
                 flask.request,
-                ["api", "setDisplayName"],
+                ["api", "updateUser"],
                 {
                     "Access-Control-Allow-Origin": "*",
                     "Access-Control-Allow-Credentials": "true",
@@ -335,7 +356,7 @@ class TestApiHandler:  # pylint: disable=R0904
             assert res[1] == 403
             assert res[2].get("Access-Control-Allow-Origin") == "*"
             assert res[2].get("Access-Control-Allow-Credentials") == "true"
-            assert res[2].get("Access-Control-Allow-Methods") == "POST"
+            assert res[2].get("Access-Control-Allow-Methods") == "PUT"
 
     def test_get_users_success(self, app) -> None:
         """Tests a successful request to get all users."""
@@ -441,6 +462,37 @@ class TestApiHandler:  # pylint: disable=R0904
             )
             assert res[0] == "User does not have required rights to perform request!"
             assert res[1] == 403
+            assert res[2].get("Access-Control-Allow-Origin") == "*"
+            assert res[2].get("Access-Control-Allow-Credentials") == "true"
+            assert res[2].get("Access-Control-Allow-Methods") == "GET"
+
+    def test_get_user_success(self, app) -> None:
+        """Tests a successful request to get one user."""
+        with app.test_request_context(
+            "/api/user/uid",
+            method="GET",
+        ), mock.patch("firebase_admin.auth.get_user") as user_mock:
+            user_mock.return_value = MockUserReference("Dummy Name")
+            res = api_handler.api_handler(
+                flask.request,
+                ["api", "user", "uid"],
+                {
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Credentials": "true",
+                },
+                UserInfo("789", [Role.ADMIN]),
+            )
+            assert res[0] == {
+                "id": "uid",
+                "email": "email",
+                "display_name": "Dummy Name",
+                "disabled": False,
+                "admin": True,
+                "editor": False,
+                "requester": False,
+            }
+
+            assert res[1] == 200
             assert res[2].get("Access-Control-Allow-Origin") == "*"
             assert res[2].get("Access-Control-Allow-Credentials") == "true"
             assert res[2].get("Access-Control-Allow-Methods") == "GET"

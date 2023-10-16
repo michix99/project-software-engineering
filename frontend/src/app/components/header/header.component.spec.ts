@@ -2,9 +2,9 @@ import { ComponentFixture, TestBed, inject } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { HeaderComponent, HeaderModule } from './header.component';
 import { AuthenticationService } from '../../services';
-import { AuthenticationServiceMock } from '../../../test/authentication-service.mock';
 import { User } from '@angular/fire/auth';
 import { Router } from '@angular/router';
+import { AuthenticationServiceMock } from '../../../test';
 
 describe('HeaderComponent', () => {
   let component: HeaderComponent;

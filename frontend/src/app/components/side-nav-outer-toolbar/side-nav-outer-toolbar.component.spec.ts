@@ -13,8 +13,7 @@ import {
   AuthenticationGuardService,
   AuthenticationService,
   ScreenService,
-} from 'src/app/services';
-import { AuthenticationServiceMock } from '../../../test/authentication-service.mock';
+} from '../../services';
 import {
   NavigationEnd,
   NavigationStart,
@@ -25,7 +24,8 @@ import { Observable, Subject } from 'rxjs';
 import { NAVIGATION, NAVIGATION_TOKEN } from './navigation';
 import { EventEmitter } from '@angular/core';
 import dxTreeView, { ItemClickEvent } from 'devextreme/ui/tree_view';
-import { Role, NavigationItem } from 'src/app/models';
+import { Role, NavigationItem } from '../../models';
+import { AuthenticationServiceMock } from '../../../test';
 
 class RouterMock {
   navEventSubject = new Subject<RouterEvent>();
@@ -237,11 +237,11 @@ describe('SideNavOuterToolbarComponent ', () => {
     expect(routerSpy).not.toHaveBeenCalled();
   });
 
-  it('navigationChanged should prevent the event if the menu is not opened', () => {
+  it('navigationChanged should prevent the event if the path is not defined', () => {
     const routerSpy = spyOn(router, 'navigate');
     const event = {
       itemData: {
-        path: '/test',
+        path: '',
       },
       event: new Event('click'),
       node: {

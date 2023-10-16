@@ -40,9 +40,21 @@
     [hidingPriority]="column.priority"
     [allowHeaderFiltering]="column.headerFilterEnabled"
     [format]="column.format ?? ''"
+    [customizeText]="column.customizeText ?? undefined"
   >
   </dxi-column>
-  <dxi-column type="buttons" *ngIf="editRoute">
-    <dxi-button hint="Edit" icon="edit" [onClick]="onEditClick"></dxi-button>
+  <dxi-column type="buttons" *ngIf="editRoute || deleteRoute">
+    <dxi-button
+      *ngIf="editRoute"
+      hint="Edit"
+      icon="edit"
+      [onClick]="onEditClick"
+    ></dxi-button>
+    <dxi-button
+      *ngIf="deleteRoute"
+      hint="Delete"
+      icon="trash"
+      [onClick]="onDeleteClick"
+    ></dxi-button>
   </dxi-column>
 </dx-data-grid>

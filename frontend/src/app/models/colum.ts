@@ -5,4 +5,5 @@ export interface Column {
   priority: number;
   headerFilterEnabled: boolean;
   format?: string;
+  customizeText?: (cellInfo: { value: string }) => string;
 }

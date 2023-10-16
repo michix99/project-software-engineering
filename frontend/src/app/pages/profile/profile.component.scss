@@ -1,18 +1,30 @@
-.form-avatar {
-  float: left;
-  height: 120px;
-  width: 120px;
-  margin-right: 20px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  background-color: #fff;
-  overflow: hidden;
+.form-wrapper {
+  margin-top: 30px;
+  display: flex;
+}
 
-  img {
-    height: 120px;
-    display: block;
-    margin: 0 auto;
-  }
+form {
+  width: 100%
+}
+
+
+.header {
+  margin-top: 20px;
+}
+
+.save-button {
+  background-color: rgb(242, 242, 242);
+}
+
+.spinner-wrapper {
+  margin-top: 5rem;
+  position: absolute;
+  width: 92%;
+  display: flex;
+  justify-content: center;
+}
+
+.back-button-row {
+  display: flex;
+  justify-content: flex-end;
 }

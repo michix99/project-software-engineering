@@ -6,40 +6,11 @@ from collections import namedtuple
 import pytest
 from google.cloud.firestore_v1.base_query import FieldFilter
 from google.cloud import exceptions
+from backend.test.mocks import MockDocReference, MockUserReference
 from db_operator import DatabaseOperator
 from data_model import Course, Ticket
 from enums import Role
 from auth_utils import UserInfo
-
-
-class MockDocReference:  # pylint: disable=R0903
-    """Mock implementation of a document reference."""
-
-    exists: bool
-    id: str
-    name: str
-    additional_attributes: dict
-
-    def __init__(
-        self, exists, identifier=None, name=None, additional_attributes=None
-    ) -> None:
-        self.exists = exists
-        self.id = identifier  # pylint: disable=C0103
-        self.name = name
-        self.additional_attributes = additional_attributes
-
-    def to_dict(self) -> dict:
-        """Parses the element to a dictionary."""
-        return {"name": self.name, **(self.additional_attributes or {})}
-
-
-class MockUserReference:  # pylint: disable=R0903
-    """Mock implementation of a user reference."""
-
-    display_name: str
-
-    def __init__(self, display_name) -> None:
-        self.display_name = display_name
 
 
 class TestDbOperator:  # pylint: disable=R0904
