@@ -31,8 +31,11 @@ export class UserTableComponent {
       priority: 2,
       dataType: 'string',
       headerFilterEnabled: false,
-      customizeText: function (cellInfo: { value: string }) {
-        return cellInfo.value.charAt(0).toUpperCase() + cellInfo.value.slice(1);
+      customizeText: function (cellInfo: { value: unknown }) {
+        return (
+          (cellInfo.value as string).charAt(0).toUpperCase() +
+          (cellInfo.value as string).slice(1)
+        );
       },
     },
     {

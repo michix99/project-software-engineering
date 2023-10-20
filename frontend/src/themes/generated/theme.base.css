@@ -19094,6 +19094,11 @@
   color: rgba(0, 0, 0, .87);
 }
 
+.dx-data-row, .dx-datagrid-table .dx-field-item-content {
+  white-space: pre;
+}
+
+
 .dx-datagrid-headers {
   color: rgba(0, 0, 0, .54);
   -ms-touch-action: pinch-zoom;

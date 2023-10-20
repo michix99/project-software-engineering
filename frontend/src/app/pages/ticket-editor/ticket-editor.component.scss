@@ -24,7 +24,21 @@ form {
   justify-content: center;
 }
 
+.history-spinner-wrapper {
+  display: flex;
+  justify-content: center;
+  margin: 2rem;
+}
+
 .back-button-row {
   display: flex;
   justify-content: flex-end;
+}
+
+.accordion {
+  margin-top: 2rem;
+}
+
+.data-grid-wrapper {
+  padding: 0;
 }
