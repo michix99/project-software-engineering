@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed, inject } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AuthenticationService, LoggingService } from '../../services';
-import { AuthenticationServiceMock } from '../../../test/authentication-service.mock';
 import {
   ChangePasswordFormComponent,
   ChangePasswordFormModule,
@@ -9,8 +8,8 @@ import {
 import { Router } from '@angular/router';
 import { ValidationCallbackData } from 'devextreme/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { LoggingServiceMock } from '../../../test/logging.service.mock';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { AuthenticationServiceMock, LoggingServiceMock } from '../../../test';
 
 describe('ChangePasswordFormComponent', () => {
   let component: ChangePasswordFormComponent;

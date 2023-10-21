@@ -17,3 +17,11 @@ export function courseFromJson(parsedJson: Record<string, unknown>): Course {
   };
   return course as Course;
 }
+
+export function courseToModel(course: Course): Record<string, unknown> {
+  const parsedJson: Record<string, unknown> = {
+    name: course.name,
+    course_abbreviation: course.courseAbbreviation,
+  };
+  return parsedJson;
+}

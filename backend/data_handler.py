@@ -15,7 +15,7 @@ from logger_utils import Logger
 logger = Logger(component="data_handler")
 
 
-def data_handler(  # pylint: disable=too-many-return-statements, too-many-branches
+def data_handler(  # pylint: disable=too-many-return-statements, too-many-branches, too-many-statements
     request: Request, path_segments: list[str], headers: dict, user_info: UserInfo
 ) -> tuple:
     """Handles all data related requests.
@@ -171,6 +171,21 @@ def data_handler(  # pylint: disable=too-many-return-statements, too-many-branch
                     return (error_message, 405, headers)
 
                 headers["Access-Control-Allow-Methods"] = "DELETE"
+                if ENTITY_MAPPINGS[entity_type] == Course:
+                    response_code, response_message = DatabaseOperator(
+                        user_info
+                    ).find_all(
+                        "ticket",
+                        ENTITY_MAPPINGS["ticket"],
+                        [FieldFilter("course_id", "==", path_segments[2])],
+                    )
+                    if len(response_message) > 0 or response_code != 200:
+                        error_message = (
+                            "Course cannot be deleted! Tickets are refereing to them!"
+                        )
+                        logger.error(error_message)
+                        return (error_message, 409, headers)
+
                 response_code, response_message = DatabaseOperator(user_info).delete(
                     entity_type, path_segments[2]
                 )

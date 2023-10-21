@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed, inject } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AuthenticationService, LoggingService } from '../../services';
-import { AuthenticationServiceMock } from '../../../test/authentication-service.mock';
 import {
   ResetPasswordFormComponent,
   ResetPasswordFormModule,
@@ -9,8 +8,8 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { LoggingServiceMock } from '../../../test/logging.service.mock';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { AuthenticationServiceMock, LoggingServiceMock } from '../../../test';
 
 describe('ResetPasswordFormComponent', () => {
   let component: ResetPasswordFormComponent;

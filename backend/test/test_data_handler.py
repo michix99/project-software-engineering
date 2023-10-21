@@ -420,7 +420,9 @@ class TestDataHandler:  # pylint: disable=R0904
         """Test a successful DELETE request to remove a given course entry."""
         with app.test_request_context("/data/course/dummy_id", method="DELETE"), patch(
             "db_operator.DatabaseOperator.delete"
-        ) as delete_mock:
+        ) as delete_mock, patch(
+            "db_operator.DatabaseOperator.find_all", return_value=(200, [])
+        ):
             delete_mock.return_value = 204, None
             res = data_handler.data_handler(
                 flask.request,
@@ -433,6 +435,36 @@ class TestDataHandler:  # pylint: disable=R0904
             )
             assert res[0] == ""
             assert res[1] == 204
+            assert res[2].get("Access-Control-Allow-Origin") == "*"
+            assert res[2].get("Access-Control-Allow-Credentials") == "true"
+            assert res[2].get("Access-Control-Allow-Methods") == "DELETE"
+
+    def test_delete_course_conflict(self, app) -> None:
+        """
+        Test a failing DELETE request to remove a given course entry.
+        Conflicting references found.
+        """
+        with app.test_request_context("/data/course/dummy_id", method="DELETE"), patch(
+            "db_operator.DatabaseOperator.find_all",
+            return_value=(
+                200,
+                [
+                    {"id": "dummy_id"},
+                    {"id": "another_dummy_id"},
+                ],
+            ),
+        ):
+            res = data_handler.data_handler(
+                flask.request,
+                ["data", "course", "dummy_id"],
+                {
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Credentials": "true",
+                },
+                UserInfo("123", [Role.ADMIN]),
+            )
+            assert res[0] == "Course cannot be deleted! Tickets are refereing to them!"
+            assert res[1] == 409
             assert res[2].get("Access-Control-Allow-Origin") == "*"
             assert res[2].get("Access-Control-Allow-Credentials") == "true"
             assert res[2].get("Access-Control-Allow-Methods") == "DELETE"

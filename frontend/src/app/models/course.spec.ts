@@ -1,4 +1,4 @@
-import { courseFromJson } from './course';
+import { Course, courseFromJson, courseToModel } from './course';
 
 describe('Course ', () => {
   it('courseFromJson should parse an object to a course instance', () => {
@@ -20,5 +20,21 @@ describe('Course ', () => {
     expect(parsedCourse.modifiedAt).toEqual(new Date(2022, 9, 3));
     expect(parsedCourse.createdBy).toBe('dummy');
     expect(parsedCourse.modifiedBy).toBe('author');
+  });
+
+  it('courseToModel should parse a course to the json format expected by the backend', () => {
+    const course: Course = {
+      id: '7531',
+      createdAt: new Date(),
+      createdBy: 'dummy',
+      modifiedAt: new Date(),
+      modifiedBy: 'another',
+      courseAbbreviation: 'DN',
+      name: 'Dummy Name',
+    };
+
+    const parsedCourse = courseToModel(course);
+    expect(parsedCourse['name']).toBe('Dummy Name');
+    expect(parsedCourse['course_abbreviation']).toBe('DN');
   });
 });

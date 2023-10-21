@@ -2,8 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TicketTableComponent } from './ticket-table.component';
 import { GenericDataTableModule } from '../../components';
 import { AuthenticationService, LoggingService } from '../../services';
-import { AuthenticationServiceMock } from '../../../test/authentication-service.mock';
-import { LoggingServiceMock } from '../../../test/logging.service.mock';
+import { AuthenticationServiceMock, LoggingServiceMock } from '../../../test';
 
 describe('TicketTableComponent', () => {
   let component: TicketTableComponent;

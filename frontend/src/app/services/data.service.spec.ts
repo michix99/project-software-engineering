@@ -133,6 +133,22 @@ describe('DataService', () => {
     }
   });
 
+  it('create should indicate if there is a data conflict', async () => {
+    spyOn(globalThis, 'fetch').and.resolveTo({
+      status: 409,
+      text: () => Promise.resolve('Sample Error'),
+    } as unknown as Response);
+
+    try {
+      await service.create('dummy/endpoint', {});
+      fail('Should throw error!');
+    } catch (error) {
+      expect((error as Error).message).toBe(
+        'Element with given attributs does already exist.',
+      );
+    }
+  });
+
   it('update should take the given data endpoint and data, update the item and return the identifier', async () => {
     const modifiedItem = {
       attribut: 'value',
@@ -169,6 +185,53 @@ describe('DataService', () => {
 
     try {
       await service.update('dummy/endpoint/dummy-id', {});
+      fail('Should throw error!');
+    } catch (error) {
+      expect((error as Error).message).toBe('Sample Error');
+    }
+  });
+
+  it('update should indicate if there is a data conflict', async () => {
+    spyOn(globalThis, 'fetch').and.resolveTo({
+      status: 409,
+      text: () => Promise.resolve('Sample Error'),
+    } as unknown as Response);
+
+    try {
+      await service.update('dummy/endpoint/dummy-id', {});
+      fail('Should throw error!');
+    } catch (error) {
+      expect((error as Error).message).toBe(
+        'Element with given attributs does already exist.',
+      );
+    }
+  });
+
+  it('delete should take the given data endpoint and item and delete it', async () => {
+    const fetchSpy = spyOn(globalThis, 'fetch').and.resolveTo({
+      status: 204,
+    } as unknown as Response);
+
+    await service.delete('dummy/endpoint', 'dummy-id');
+    expect(fetchSpy).toHaveBeenCalledWith(
+      `${environment.apiUrl}/dummy/endpoint/dummy-id`,
+      {
+        method: 'DELETE',
+        headers: {
+          Authorization: 'Bearer dummy-token',
+        },
+      },
+    );
+  });
+
+  it('delete should return errors happening while fetching data', async () => {
+    spyOn(globalThis, 'fetch').and.resolveTo({
+      status: 403,
+      text: () => Promise.resolve('Sample Error'),
+    } as unknown as Response);
+
+    try {
+      await service.delete('dummy/endpoint', 'dummy-id');
       fail('Should throw error!');
     } catch (error) {
       expect((error as Error).message).toBe('Sample Error');

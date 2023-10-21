@@ -8,10 +8,12 @@ import {
 import { AuthenticationGuardService } from './services';
 import { Role } from './models';
 import {
+  AboutComponent,
   CourseEditorComponent,
   CourseTableComponent,
   HomeComponent,
   PermissionTableComponent,
+  PrivacyPolicyComponent,
   ProfileComponent,
   TicketEditorComponent,
   TicketTableComponent,
@@ -19,6 +21,22 @@ import {
 } from './pages';
 
 const routes: Routes = [
+  {
+    path: 'privacy-policy',
+    component: PrivacyPolicyComponent,
+    canActivate: [
+      (route: ActivatedRouteSnapshot) =>
+        inject(AuthenticationGuardService).canActivate(route),
+    ],
+  },
+  {
+    path: 'about',
+    component: AboutComponent,
+    canActivate: [
+      (route: ActivatedRouteSnapshot) =>
+        inject(AuthenticationGuardService).canActivate(route),
+    ],
+  },
   {
     path: 'profile',
     component: ProfileComponent,
@@ -102,6 +120,14 @@ const routes: Routes = [
   {
     path: 'user',
     component: UserTableComponent,
+    canActivate: [
+      (route: ActivatedRouteSnapshot) =>
+        inject(AuthenticationGuardService).canActivate(route, Role.Admin),
+    ],
+  },
+  {
+    path: 'user/:id',
+    component: ProfileComponent,
     canActivate: [
       (route: ActivatedRouteSnapshot) =>
         inject(AuthenticationGuardService).canActivate(route, Role.Admin),

@@ -173,7 +173,7 @@ export class SideNavOuterToolbarComponent
     const path = (event.itemData as { path: string }).path;
     const pointerEvent = event.event;
 
-    if (path && this.menuOpened) {
+    if (path) {
       if (event.node?.selected) {
         pointerEvent?.preventDefault();
       } else {

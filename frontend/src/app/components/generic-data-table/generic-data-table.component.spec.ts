@@ -14,7 +14,6 @@ import {
   DataService,
   LoggingService,
 } from '../../services';
-import { AuthenticationServiceMock } from '../../../test/authentication-service.mock';
 import { LoggingServiceMock } from 'src/test/logging.service.mock';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { User } from '@angular/fire/auth';
@@ -22,6 +21,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Router } from '@angular/router';
 import { CellClickEvent } from 'devextreme/ui/data_grid';
+import { ClickEvent } from 'devextreme/ui/button';
+import { AuthenticationServiceMock } from '../../../test';
 
 describe('GenericDataTableComponent', () => {
   let component: GenericDataTableComponent;
@@ -107,4 +108,60 @@ describe('GenericDataTableComponent', () => {
       expect(navigateSpy).toHaveBeenCalledWith(['/dummy-edit-route/dummy-id']);
     },
   ));
+
+  it('onAddClick should navigte to the editor to create a new item', inject(
+    [Router],
+    (router: Router) => {
+      const navigateSpy = spyOn(router, 'navigate');
+      component.editRoute = '/dummy-edit-route';
+      component.onAddClick({} as ClickEvent);
+      expect(navigateSpy).toHaveBeenCalledWith(['/dummy-edit-route/0']);
+    },
+  ));
+
+  it('onDeleteClick should delete the clicked item and notify if success', fakeAsync(() => {
+    spyOn(dataService, 'getAll').and.resolveTo([{ id: '0', field: 'test' }]);
+    const dataSpy = spyOn(dataService, 'delete').and.resolveTo();
+    const notifySpy = spyOn(notificationService, 'open');
+    const clickEvent = {
+      row: {
+        data: {
+          id: 'dummy-id',
+        },
+      },
+    };
+    fixture.detectChanges();
+    component.deleteRoute = '/dummy-delete-route';
+    component.onDeleteClick(clickEvent as CellClickEvent);
+    flush();
+    expect(dataSpy).toHaveBeenCalledWith('/dummy-delete-route', 'dummy-id');
+    expect(notifySpy).toHaveBeenCalledWith(
+      'Element successfully deleted!',
+      undefined,
+      jasmine.anything(),
+    );
+  }));
+
+  it('onDeleteClick should notify if the deletion was not successful', fakeAsync(() => {
+    spyOn(dataService, 'getAll').and.resolveTo([{ id: '0', field: 'test' }]);
+    const dataSpy = spyOn(dataService, 'delete').and.rejectWith('Error');
+    const notifySpy = spyOn(notificationService, 'open');
+    const clickEvent = {
+      row: {
+        data: {
+          id: 'dummy-id',
+        },
+      },
+    };
+    fixture.detectChanges();
+    component.deleteRoute = '/dummy-delete-route';
+    component.onDeleteClick(clickEvent as CellClickEvent);
+    flush();
+    expect(dataSpy).toHaveBeenCalledWith('/dummy-delete-route', 'dummy-id');
+    expect(notifySpy).toHaveBeenCalledWith(
+      'Failed to delete element: Error',
+      undefined,
+      jasmine.anything(),
+    );
+  }));
 });

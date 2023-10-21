@@ -8,11 +8,12 @@ import { Column, userFromJson } from '../../models';
 export class UserTableComponent {
   dataEndpoint = 'api/user';
   dataParser = userFromJson;
+  editRoute = 'user';
   columns: Array<Column> = [
     {
       fieldName: 'email',
       caption: 'E-Mail',
-      priority: 5,
+      priority: 3,
       dataType: 'string',
       headerFilterEnabled: false,
     },
@@ -25,25 +26,14 @@ export class UserTableComponent {
     },
 
     {
-      fieldName: 'admin',
-      caption: 'Admin',
-      priority: 4,
-      dataType: 'boolean',
-      headerFilterEnabled: false,
-    },
-    {
-      fieldName: 'editor',
-      caption: 'Editor',
-      priority: 3,
-      dataType: 'boolean',
-      headerFilterEnabled: false,
-    },
-    {
-      fieldName: 'requester',
-      caption: 'Requester',
+      fieldName: 'role',
+      caption: 'Role',
       priority: 2,
-      dataType: 'boolean',
+      dataType: 'string',
       headerFilterEnabled: false,
+      customizeText: function (cellInfo: { value: string }) {
+        return cellInfo.value.charAt(0).toUpperCase() + cellInfo.value.slice(1);
+      },
     },
     {
       fieldName: 'disabled',

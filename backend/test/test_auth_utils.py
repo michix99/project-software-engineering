@@ -4,17 +4,9 @@
 import os
 from unittest import mock
 import flask
+from backend.test.mocks import MockUserReference
 from auth_utils import is_authenticated, get_user_name_by_id
 from enums import Role
-
-
-class MockUserReference:  # pylint: disable=R0903
-    """Mock implementation of a user reference."""
-
-    display_name: str
-
-    def __init__(self, display_name) -> None:
-        self.display_name = display_name
 
 
 class TestAuthUtils:

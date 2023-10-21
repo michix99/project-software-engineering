@@ -9,6 +9,7 @@
   [focusedRowIndex]="0"
   [columnAutoWidth]="true"
   [columnHidingEnabled]="true"
+  [allowColumnReordering]="true"
   keyExpr="id"
 >
   <dxo-paging [pageSize]="15"></dxo-paging>
@@ -16,6 +17,20 @@
   <dxo-filter-row [visible]="true"></dxo-filter-row>
   <dxo-load-panel [enabled]="true"></dxo-load-panel>
   <dxo-header-filter [visible]="true"></dxo-header-filter>
+  <dxo-group-panel [visible]="true"></dxo-group-panel>
+  <dxo-search-panel [visible]="true"></dxo-search-panel>
+  <dxo-column-chooser [enabled]="true"></dxo-column-chooser>
+  <dxo-toolbar>
+    <dxi-item location="before" name="groupPanel"></dxi-item>
+    <dxi-item location="after" *ngIf="editRoute">
+      <div *dxTemplate>
+        <dx-button icon="add" hint="Add" (onClick)="onAddClick($event)">
+        </dx-button>
+      </div>
+    </dxi-item>
+    <dxi-item location="after" name="columnChooserButton"></dxi-item>
+    <dxi-item location="after" name="searchPanel"></dxi-item>
+  </dxo-toolbar>
 
   <dxi-column
     *ngFor="let column of columns"
@@ -25,9 +40,21 @@
     [hidingPriority]="column.priority"
     [allowHeaderFiltering]="column.headerFilterEnabled"
     [format]="column.format ?? ''"
+    [customizeText]="column.customizeText ?? undefined"
   >
   </dxi-column>
-  <dxi-column type="buttons" *ngIf="editRoute">
-    <dxi-button hint="Edit" icon="edit" [onClick]="onEditClick"></dxi-button>
+  <dxi-column type="buttons" *ngIf="editRoute || deleteRoute">
+    <dxi-button
+      *ngIf="editRoute"
+      hint="Edit"
+      icon="edit"
+      [onClick]="onEditClick"
+    ></dxi-button>
+    <dxi-button
+      *ngIf="deleteRoute"
+      hint="Delete"
+      icon="trash"
+      [onClick]="onDeleteClick"
+    ></dxi-button>
   </dxi-column>
 </dx-data-grid>

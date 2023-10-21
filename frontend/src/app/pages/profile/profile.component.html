@@ -1,23 +1,70 @@
-<h2 class="content-block">Profile</h2>
-
-<div class="content-block dx-card responsive-paddings">
-  <div class="form-avatar">
-    <img
-      alt="no picture"
-      src="https://js.devexpress.com/Demos/WidgetsGallery/JSDemos/{{
-        employee.Picture
-      }}"
-    />
-  </div>
-  <span>{{ employee.Notes }}</span>
-</div>
-
-<div class="content-block dx-card responsive-paddings">
-  <dx-form
-    id="form"
-    [formData]="employee"
-    labelLocation="top"
-    [colCountByScreen]="colCountByScreen"
+<h2 class="header content">{{ title }}</h2>
+<div *ngIf="!isOwnProfile" class="content back-button-row">
+  <dx-button
+    stylingMode="contained"
+    text="Go Back"
+    type="normal"
+    (onClick)="navigateBack()"
   >
-  </dx-form>
+  </dx-button>
+</div>
+<div *ngIf="dataLoading" class="spinner-wrapper">
+  <mat-spinner class="spinner"></mat-spinner>
+</div>
+<div class="form-wrapper content">
+  <form (submit)="onSubmit($event)">
+    <dx-form
+      [(formData)]="user"
+      labelMode="floating"
+      colCount="1"
+      [disabled]="dataLoading"
+      labelLocation="left"
+    >
+      <dxi-item dataField="displayName">
+        <dxo-label text="Display Name"></dxo-label>
+      </dxi-item>
+      <dxi-item dataField="email">
+        <dxi-validation-rule
+          type="required"
+          message="E-Mail is required"
+        ></dxi-validation-rule>
+      </dxi-item>
+      <dxi-item
+        dataField="role"
+        editorType="dxSelectBox"
+        [editorOptions]="{
+          items: roles,
+          disabled: isOwnProfile,
+          displayExpr: 'displayName',
+          valueExpr: 'id',
+          onValueChanged: onRoleChanged
+        }"
+      ></dxi-item>
+      <dxi-item itemType="button">
+        <dxo-button-options
+          width="20%"
+          type="default"
+          [useSubmitBehavior]="true"
+          [template]="'submitTemplate'"
+          [disabled]="loading"
+        >
+        </dxo-button-options>
+      </dxi-item>
+
+      <ng-container *dxTemplate="let item of 'submitTemplate'">
+        <div>
+          <span class="dx-button-text">
+            <ng-container *ngIf="loading; else notLoading">
+              <dx-load-indicator
+                width="24px"
+                height="24px"
+                [visible]="true"
+              ></dx-load-indicator>
+            </ng-container>
+            <ng-template #notLoading>Save</ng-template>
+          </span>
+        </div>
+      </ng-container>
+    </dx-form>
+  </form>
 </div>

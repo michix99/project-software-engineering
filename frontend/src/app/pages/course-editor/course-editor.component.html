@@ -1,3 +1,80 @@
-<h2 class="content-block">{{ title }}</h2>
+<h2 class="header content">{{ title }}</h2>
+<div class="content back-button-row">
+  <dx-button
+    stylingMode="contained"
+    text="Go Back"
+    type="normal"
+    (onClick)="navigateBack()"
+  >
+  </dx-button>
+</div>
+<div *ngIf="dataLoading" class="spinner-wrapper">
+  <mat-spinner class="spinner"></mat-spinner>
+</div>
+<div class="form-wrapper content">
+  <form (submit)="onSubmit($event)">
+    <dx-form
+      [(formData)]="course"
+      labelMode="floating"
+      colCount="1"
+      [disabled]="dataLoading"
+    >
+      <dxi-item dataField="courseAbbreviation">
+        <dxo-label text="Abbreviation"></dxo-label>
+        <dxi-validation-rule
+          type="required"
+          message="Abbreviation is required"
+        ></dxi-validation-rule>
+      </dxi-item>
+      <dxi-item dataField="name">
+        <dxi-validation-rule
+          type="required"
+          message="Course name is required"
+        ></dxi-validation-rule>
+      </dxi-item>
+      <dxi-item itemType="group" [colCount]="2" caption="Metadata">
+        <dxi-item dataField="createdBy" disabled="true"></dxi-item>
+        <dxi-item
+          dataField="createdAt"
+          disabled="true"
+          [editorOptions]="{
+            displayFormat: 'dd/MM/yyyy HH:mm:ss'
+          }"
+        ></dxi-item>
+        <dxi-item dataField="modifiedBy" disabled="true"></dxi-item>
+        <dxi-item
+          dataField="modifiedAt"
+          disabled="true"
+          [editorOptions]="{
+            displayFormat: 'dd/MM/yyyy HH:mm:ss'
+          }"
+        ></dxi-item>
+      </dxi-item>
+      <dxi-item itemType="button">
+        <dxo-button-options
+          width="20%"
+          type="default"
+          [useSubmitBehavior]="true"
+          [template]="'submitTemplate'"
+          [disabled]="loading"
+        >
+        </dxo-button-options>
+      </dxi-item>
 
-<div>Editor Works</div>
+      <ng-container *dxTemplate="let item of 'submitTemplate'">
+        <div>
+          <span class="dx-button-text">
+            <ng-container *ngIf="loading; else notLoading">
+              <dx-load-indicator
+                width="24px"
+                height="24px"
+                [visible]="true"
+              ></dx-load-indicator>
+            </ng-container>
+            <ng-template #notLoading>Save</ng-template>
+          </span>
+        </div>
+      </ng-container>
+    </dx-form>
+  </form>
+</div>
