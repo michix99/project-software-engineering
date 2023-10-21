@@ -29,7 +29,7 @@ class DatabaseOperator:
         self,
         collection: str,
         data: object,
-        document_id=str(uuid4()),
+        document_id=None,
         duplication_filters: list[FieldFilter] = None,
     ) -> tuple[int, str]:
         """Creates a new database entry (document) on a given collection.
@@ -42,6 +42,7 @@ class DatabaseOperator:
             (The response code., The response message.)
         """
         try:
+            document_id = document_id or str(uuid4())
             coll_ref = self.db_client.collection(collection)
             db_collection = coll_ref.get(timeout=10)
         except TimeoutError as error:
@@ -59,15 +60,11 @@ class DatabaseOperator:
             )
 
         if duplication_filters:
-            successful, duplicates = self.find(collection, duplication_filters)
-            if not successful:
-                return 500, "Could not check for duplicates!"
-            duplicate_ids = [doc.id for doc in duplicates]
-            if duplicate_ids:
-                logger.info(
-                    f"Found duplicate in '{collection}' with ID: {duplicate_ids[0]}"
-                )
-                return 409, duplicate_ids[0]
+            successful, duplicate_or_error = self.get_duplicate(
+                collection, duplication_filters
+            )
+            if duplicate_or_error:
+                return 409 if successful else 500, duplicate_or_error
 
         new_data = asdict(data) if is_dataclass(data) else data
         new_data["created_at"] = f"{datetime.utcnow().isoformat()}Z"
@@ -94,6 +91,7 @@ class DatabaseOperator:
         document_id: str,
         duplication_filters: list[FieldFilter] = None,
         allowed_updater: str = None,
+        history_type: type = None,
     ) -> tuple[int, str]:
         """Updates a given database entry (document) of a given collection.
         Args:
@@ -108,23 +106,41 @@ class DatabaseOperator:
         elem_ref = self.db_client.collection(collection).document(document_id)
 
         if duplication_filters:
-            successful, duplicates = self.find(collection, duplication_filters)
-            if not successful:
-                return 500, "Could not check for duplicates!"
-            duplicate_ids = [doc.id for doc in duplicates]
-            if duplicate_ids and not duplicate_ids[0] == document_id:
-                logger.info(
-                    f"Found duplicate in '{collection}' with ID: {duplicate_ids[0]}"
+            successful, duplicate_or_error = self.get_duplicate(
+                collection, duplication_filters
+            )
+            if duplicate_or_error:
+                return (
+                    409 if successful and duplicate_or_error != document_id else 500,
+                    duplicate_or_error,
                 )
-                return 409, duplicate_ids[0]
 
         update_data = asdict(update_data) if is_dataclass(update_data) else update_data
 
         try:
-            if allowed_updater:
+            if allowed_updater or collection == "ticket":
                 element = elem_ref.get(timeout=10).to_dict()
-                if element.get("created_by") != allowed_updater:
+                if allowed_updater and element.get("created_by") != allowed_updater:
                     return 403, "Not allowed to update entry!"
+                changes = {
+                    key: update_data[key]
+                    for key in update_data
+                    if update_data[key] != element[key]
+                }
+                if collection == "ticket" and len(changes.keys()) > 0:
+                    logger.debug(f"Changes made in ticket: {changes}")
+                    history_response_code, history_response = self.create(
+                        "ticket_history",
+                        history_type(
+                            ticket_id=document_id,
+                            changed_values=changes,
+                            previous_values={key: element[key] for key in changes},
+                        ),
+                    )
+                    if history_response_code != 201:
+                        logger.error("Cannot create ticket history entry!")
+                        return history_response_code, history_response
+                    logger.info(f"Created ticket history entry: {history_response}")
             elem_ref.update(update_data, timeout=10)
             elem_ref.update(
                 {"modified_at": f"{datetime.utcnow().isoformat()}Z"}, timeout=10
@@ -134,11 +150,10 @@ class DatabaseOperator:
             logger.error(f"Error while updating the entry: {error}")
             return 404, "Element not found!"
         except (TimeoutError, RetryError) as error:
-            error_message = (
+            logger.error(
                 f"Timed out while trying to update entry in {collection}: {str(error)}"
             )
-            logger.error(error_message)
-            return 500, error_message
+            return 500, "Timed out while trying to update entry!"
 
         logger.info(
             f"Updated entry in collection '{collection}', with ID '{document_id}'"
@@ -337,3 +352,24 @@ class DatabaseOperator:
             f"Deleted element wit ID '{document_id}' in collection '{collection}'"
         )
         return 204, None
+
+    def get_duplicate(
+        self, collection: str, duplication_filters: list[FieldFilter]
+    ) -> tuple[bool, str | None]:
+        """Loads duplicates for a given colleciton.
+        Args:
+            collection -- The name of the entity.
+            duplication_filters --  The filters which should be used to check for duplicates.
+        Returns:
+            (Indicator if succesfully checked., The duplication id, none if not found or an error.)
+        """
+        successful, duplicates = self.find(collection, duplication_filters)
+        if not successful:
+            return False, "Could not check for duplicates!"
+        duplicate_ids = [doc.id for doc in duplicates]
+        if duplicate_ids:
+            logger.info(
+                f"Found duplicate in '{collection}' with ID: {duplicate_ids[0]}"
+            )
+            return True, duplicate_ids[0]
+        return True, None

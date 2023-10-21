@@ -8,7 +8,7 @@ from google.cloud.firestore_v1.base_query import FieldFilter
 from google.cloud import exceptions
 from backend.test.mocks import MockDocReference, MockUserReference
 from db_operator import DatabaseOperator
-from data_model import Course, Ticket
+from data_model import Course, Ticket, TicketHistory
 from enums import Role
 from auth_utils import UserInfo
 
@@ -198,12 +198,15 @@ class TestDbOperator:  # pylint: disable=R0904
                 True,
                 identifier="dummy_id",
                 name="dummy_name",
-                additional_attributes={"created_by": "dummy-modifier"},
+                additional_attributes={
+                    "description": "old",
+                    "created_by": "dummy-modifier",
+                },
             )
 
             return_code, return_message = db_operator.update(
                 "test",
-                {"new": "updated_entity"},
+                {"description": "updated_entity"},
                 "dummy_id",
                 allowed_updater="dummy-modifier",
             )
@@ -223,10 +226,7 @@ class TestDbOperator:  # pylint: disable=R0904
             )
 
             assert return_code == 500
-            assert (
-                return_message
-                == "Timed out while trying to update entry in test: Timeout Error"
-            )
+            assert return_message == "Timed out while trying to update entry!"
 
     def test_update_failing_element_not_found(self, db_operator) -> None:
         """Tests a failing database entity update. Element does not exist."""
@@ -581,7 +581,7 @@ class TestDbOperator:  # pylint: disable=R0904
                 },
             ]
 
-    def test_find_all_successful_with_refs(self, db_operator) -> None:
+    def test_find_all_tickets_successful_with_refs(self, db_operator) -> None:
         """
         Tests querying a database collection successfully with references to other collections.
         """
@@ -721,3 +721,238 @@ class TestDbOperator:  # pylint: disable=R0904
                 return_message
                 == "Timed out while trying to delete entry in test: Timeout Error"
             )
+
+    def test_find_all_ticket_histories_successful_with_refs(self, db_operator) -> None:
+        """
+        Tests querying the ticket history collection successfully
+        with references to other collections.
+        """
+        with mock.patch.object(
+            db_operator.db_client, "collection"
+        ) as collection_mock, mock.patch(
+            "firebase_admin.auth.get_user"
+        ) as user_mock, mock.patch(
+            "firebase_admin.firestore.client"
+        ), mock.patch(
+            "db_operator.DatabaseOperator.read"
+        ) as read_mock:
+            collection_mock.return_value = collection_return_mock = mock.Mock()
+            collection_return_mock.where.return_value = filtered_mock = mock.Mock()
+            filtered_mock.stream.return_value = [
+                MockDocReference(
+                    True,
+                    identifier="dummy_ticket_history_id",
+                    name="Dummy Ticket History",
+                    additional_attributes={
+                        "previous_values": {
+                            "course_id": "dummy_course_id",
+                            "assignee_id": "dummy_assignee_id",
+                        },
+                        "changed_values": {
+                            "course_id": "dummy_course_id_2",
+                            "assignee_id": "dummy_assignee_id",
+                        },
+                    },
+                ),
+                MockDocReference(
+                    True,
+                    identifier="another_dummy_ticket_history_id",
+                    name="Another Dummy Ticket History",
+                    additional_attributes={
+                        "previous_values": {
+                            "course_id": "another_dummy_course_id",
+                            "assignee_id": "dummy_assignee_id",
+                        },
+                        "changed_values": {
+                            "course_id": "another_dummy_course_id_2",
+                            "assignee_id": "dummy_assignee_id",
+                        },
+                    },
+                ),
+            ]
+            read_mock.side_effect = [
+                (
+                    200,
+                    {
+                        "id": "dummy_course_id",
+                        "name": "dummy_course",
+                        "course_abbreviation": "DN",
+                    },
+                ),
+                (
+                    200,
+                    {
+                        "id": "dummy_course_id_2",
+                        "name": "dummy_course_2",
+                        "course_abbreviation": "DN 2",
+                    },
+                ),
+                (
+                    200,
+                    {
+                        "id": "another_dummy_course_id",
+                        "name": "dummy_course",
+                        "course_abbreviation": "DN",
+                    },
+                ),
+                (
+                    200,
+                    {
+                        "id": "another_dummy_course_id_2",
+                        "name": "dummy_course_2",
+                        "course_abbreviation": "DN 2",
+                    },
+                ),
+            ]
+
+            user_mock.side_effect = [
+                MockUserReference("Dummy Name"),
+                MockUserReference("Another Dummy Name"),
+                MockUserReference("Assignee Name"),
+                MockUserReference("Assignee Name"),
+                MockUserReference("Dummy Name"),
+                MockUserReference("Another Dummy Name"),
+                MockUserReference("Assignee Name"),
+                MockUserReference("Assignee Name"),
+            ]
+
+            response_code, return_message = db_operator.find_all(
+                "test", TicketHistory, [FieldFilter("new", "==", "updated_entity")]
+            )
+
+            assert response_code == 200
+            assert return_message == [
+                {
+                    "id": "dummy_ticket_history_id",
+                    "name": "Dummy Ticket History",
+                    "created_by_name": "Dummy Name",
+                    "modified_by_name": "Another Dummy Name",
+                    "previous_values": {
+                        "course_id": "dummy_course_id",
+                        "course_name": "dummy_course",
+                        "course_abbreviation": "DN",
+                        "assignee_id": "dummy_assignee_id",
+                        "assignee_name": "Assignee Name",
+                    },
+                    "changed_values": {
+                        "course_id": "dummy_course_id_2",
+                        "course_name": "dummy_course_2",
+                        "course_abbreviation": "DN 2",
+                        "assignee_id": "dummy_assignee_id",
+                        "assignee_name": "Assignee Name",
+                    },
+                },
+                {
+                    "id": "another_dummy_ticket_history_id",
+                    "name": "Another Dummy Ticket History",
+                    "created_by_name": "Dummy Name",
+                    "modified_by_name": "Another Dummy Name",
+                    "previous_values": {
+                        "course_id": "another_dummy_course_id",
+                        "course_name": "dummy_course",
+                        "course_abbreviation": "DN",
+                        "assignee_id": "dummy_assignee_id",
+                        "assignee_name": "Assignee Name",
+                    },
+                    "changed_values": {
+                        "course_id": "another_dummy_course_id_2",
+                        "course_name": "dummy_course_2",
+                        "course_abbreviation": "DN 2",
+                        "assignee_id": "dummy_assignee_id",
+                        "assignee_name": "Assignee Name",
+                    },
+                },
+            ]
+
+    def test_update_ticket_create_history_successful(self, db_operator) -> None:
+        """Tests a successful database entity update of a ticket. Should create a history entry."""
+        with mock.patch.object(
+            db_operator.db_client, "collection"
+        ) as collection_mock, mock.patch(
+            "db_operator.DatabaseOperator.create"
+        ) as create_mock:
+            collection_mock.return_value = collection_return_mock = mock.Mock()
+            collection_return_mock.document.return_value = element_mock = mock.Mock()
+
+            element_mock.get.return_value = MockDocReference(
+                True,
+                identifier="dummy_ticket_id",
+                name="dummy_ticket",
+                additional_attributes={
+                    "course_id": "dummy_course_id",
+                    "assignee_id": "dummy_assignee_id",
+                },
+            )
+            create_mock.return_value = 201, {"id": "new_item_id"}
+            return_code, return_message = db_operator.update(
+                "ticket",
+                {"course_id": "new_course_id"},
+                "dummy_ticket_id",
+                history_type=TicketHistory,
+            )
+
+            assert return_code == 200
+            assert return_message == "dummy_ticket_id"
+
+    def test_update_ticket_create_history_failing(self, db_operator) -> None:
+        """Tests a failing database entity update of a ticket. Cannot create history entry."""
+        with mock.patch.object(
+            db_operator.db_client, "collection"
+        ) as collection_mock, mock.patch(
+            "db_operator.DatabaseOperator.create"
+        ) as create_mock:
+            collection_mock.return_value = collection_return_mock = mock.Mock()
+            collection_return_mock.document.return_value = element_mock = mock.Mock()
+
+            element_mock.get.return_value = MockDocReference(
+                True,
+                identifier="dummy_ticket_id",
+                name="dummy_ticket",
+                additional_attributes={
+                    "course_id": "dummy_course_id",
+                    "assignee_id": "dummy_assignee_id",
+                },
+            )
+            create_mock.return_value = 500, "Very Bad Error"
+            return_code, return_message = db_operator.update(
+                "ticket",
+                {"course_id": "new_course_id"},
+                "dummy_ticket_id",
+                history_type=TicketHistory,
+            )
+
+            assert return_code == 500
+            assert return_message == "Very Bad Error"
+
+    def test_get_duplicate_successful_no_duplicate(self, db_operator) -> None:
+        """Tests a successful duplication check, with no duplicates found."""
+        with mock.patch("db_operator.DatabaseOperator.find") as find_mock:
+            find_mock.return_value = True, []
+            successful_checked, duplicate = db_operator.get_duplicate(
+                "ticket", [FieldFilter("search", "==", "indicator")]
+            )
+
+            assert successful_checked is True
+            assert duplicate is None
+
+    def test_get_duplicate_successful_duplicate(self, db_operator) -> None:
+        """Tests a successful duplication check, with duplicate found."""
+        with mock.patch("db_operator.DatabaseOperator.find") as find_mock:
+            find_mock.return_value = True, [MockDocReference(True, "duplication-id")]
+            successful_checked, duplicate = db_operator.get_duplicate(
+                "ticket", [FieldFilter("search", "==", "indicator")]
+            )
+
+            assert successful_checked is True
+            assert duplicate == "duplication-id"
+
+    def test_get_duplicate_failing(self, db_operator) -> None:
+        """Tests a failing duplication check."""
+        with mock.patch("db_operator.DatabaseOperator.find") as find_mock:
+            find_mock.return_value = False, None
+            successful_checked, duplicate = db_operator.get_duplicate(
+                "ticket", [FieldFilter("search", "==", "indicator")]
+            )
+
+            assert successful_checked is False
+            assert duplicate == "Could not check for duplicates!"

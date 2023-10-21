@@ -98,7 +98,7 @@ export class GenericDataTableComponent implements AfterViewInit, OnDestroy {
       .catch((error) => {
         this.dataSource = [];
         this.notificationService.open(
-          `Failed to load courses: ${error}`,
+          `Failed to load data: ${error}`,
           undefined,
           {
             duration: 2000,

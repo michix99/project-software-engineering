@@ -1,14 +1,23 @@
-import { Component, NgModule, OnDestroy, OnInit } from '@angular/core';
 import {
+  Component,
+  NgModule,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
+import {
+  Column,
   Course,
   Priority,
   Role,
   Status,
   Ticket,
+  TicketHistory,
   Type,
   User,
   courseFromJson,
   ticketFromJson,
+  ticketHistoryFromJson,
   ticketToModel,
   userFromJson,
 } from '../../models';
@@ -22,7 +31,10 @@ import { Subscription } from 'rxjs';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import {
+  DxAccordionModule,
   DxButtonModule,
+  DxDataGridComponent,
+  DxDataGridModule,
   DxFormModule,
   DxLoadIndicatorModule,
   DxTextAreaModule,
@@ -36,6 +48,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
   styleUrls: ['./ticket-editor.component.scss'],
 })
 export class TicketEditorComponent implements OnInit, OnDestroy {
+  @ViewChild('dataGrid', { static: false }) dataGrid!: DxDataGridComponent;
   /** The identifier of the element of load. */
   id?: string = undefined;
   /** Indicates if a new element is created or an existing one is updated. */
@@ -55,6 +68,8 @@ export class TicketEditorComponent implements OnInit, OnDestroy {
   loading = false;
   /** Indicates if the data is currently loaded. */
   dataLoading = false;
+  /** Indicates if the ticket history data is currently loaded. */
+  historyDataLoading = false;
 
   updateSubscription: Subscription = new Subscription();
   roleUpdateSubscription: Subscription = new Subscription();
@@ -66,6 +81,51 @@ export class TicketEditorComponent implements OnInit, OnDestroy {
   statuses = Object.values(Status);
   priorities = Object.values(Priority);
   types = Object.values(Type);
+
+  historyColumns: Array<Column> = [
+    {
+      fieldName: 'changedValues',
+      caption: 'Changed',
+      priority: 3,
+      dataType: 'object',
+      headerFilterEnabled: false,
+      customizeText: function (cellInfo: { value: unknown }) {
+        return JSON.stringify(cellInfo.value as object, null, 2)
+          .replace('{\n', '')
+          .replace('\n}', '')
+          .replaceAll('"', '');
+      },
+    },
+    {
+      fieldName: 'previousValues',
+      caption: 'Previous',
+      priority: 2,
+      dataType: 'object',
+      headerFilterEnabled: false,
+      customizeText: function (cellInfo: { value: unknown }) {
+        return JSON.stringify(cellInfo.value as object, null, 2)
+          .replace('{\n', '')
+          .replace('\n}', '')
+          .replaceAll('"', '');
+      },
+    },
+    {
+      fieldName: 'createdAt',
+      caption: 'Changed At',
+      priority: 1,
+      dataType: 'date',
+      headerFilterEnabled: false,
+      format: 'dd/MM/yyyy HH:mm:ss',
+    },
+    {
+      fieldName: 'createdBy',
+      caption: 'Changed By',
+      priority: 0,
+      dataType: 'string',
+      headerFilterEnabled: true,
+    },
+  ];
+  historyDatasource: Array<TicketHistory> = [];
 
   constructor(
     private authService: AuthenticationService,
@@ -85,6 +145,9 @@ export class TicketEditorComponent implements OnInit, OnDestroy {
 
       if (!this.isCreating) {
         this.loadTicket();
+        if (this.historyDatasource.length == 0) {
+          this.loadTicketHistory();
+        }
       }
 
       if (this.courses.length === 0) {
@@ -114,8 +177,10 @@ export class TicketEditorComponent implements OnInit, OnDestroy {
         this.id = newId;
         if (this.isCreating) {
           this.resetTicket();
+          this.historyDatasource = [];
         } else {
           this.loadTicket();
+          this.loadTicketHistory();
         }
       }
     });
@@ -236,6 +301,33 @@ export class TicketEditorComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Loads the ticket history from the backend.
+   */
+  loadTicketHistory(): void {
+    if (!this.id) return;
+    this.historyDataLoading = true;
+    this.dataService
+      .getAll(`data/ticket_history?ticket_id=${this.id}`)
+      .then((value) => {
+        this.historyDatasource = value.map((e) => ticketHistoryFromJson(e));
+      })
+      .catch((error) => {
+        this.notificationService.open(
+          `Failed to load history: ${error}`,
+          undefined,
+          {
+            duration: 2000,
+            panelClass: ['red-snackbar'],
+          },
+        );
+        this.logger.error(error);
+      })
+      .finally(() => {
+        this.historyDataLoading = false;
+      });
+  }
+
+  /**
    * Submits the ticket save event.
    * @param e The form submit event.
    */
@@ -285,6 +377,7 @@ export class TicketEditorComponent implements OnInit, OnDestroy {
       this.logger.error(error);
     } finally {
       this.loading = false;
+      this.loadTicketHistory();
     }
   }
 
@@ -307,6 +400,8 @@ export class TicketEditorComponent implements OnInit, OnDestroy {
     DxTextAreaModule,
     MatSnackBarModule,
     MatProgressSpinnerModule,
+    DxAccordionModule,
+    DxDataGridModule,
   ],
   declarations: [TicketEditorComponent],
   exports: [TicketEditorComponent],

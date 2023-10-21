@@ -8,7 +8,7 @@ from google.cloud.firestore_v1.base_query import FieldFilter
 from auth_utils import UserInfo
 from request_helper import get_body
 from enums import Role
-from data_model import Course, Ticket, ENTITY_MAPPINGS
+from data_model import Course, Ticket, ENTITY_MAPPINGS, TicketHistory
 from db_operator import DatabaseOperator
 from logger_utils import Logger
 
@@ -64,9 +64,19 @@ def data_handler(  # pylint: disable=too-many-return-statements, too-many-branch
                         [FieldFilter("created_by", "==", user_info.user_id)],
                     )
                 else:
-                    response_code, response_message = DatabaseOperator(
-                        user_info
-                    ).read_all(entity_type, ENTITY_MAPPINGS[entity_type])
+                    if ENTITY_MAPPINGS[entity_type] == TicketHistory:
+                        ticket_id = request.args.get("ticket_id")
+                        response_code, response_message = DatabaseOperator(
+                            user_info
+                        ).find_all(
+                            entity_type,
+                            ENTITY_MAPPINGS[entity_type],
+                            [FieldFilter("ticket_id", "==", ticket_id)],
+                        )
+                    else:
+                        response_code, response_message = DatabaseOperator(
+                            user_info
+                        ).read_all(entity_type, ENTITY_MAPPINGS[entity_type])
                 if response_code == 200:
                     return (json.dumps(response_message), response_code, headers)
                 return (response_message, response_code, headers)
@@ -156,6 +166,7 @@ def data_handler(  # pylint: disable=too-many-return-statements, too-many-branch
                         entity_type, Ticket, Role.EDITOR, user_info.roles
                     )
                     else None,
+                    TicketHistory if ENTITY_MAPPINGS[entity_type] == Ticket else None,
                 )
                 if response_code in (200, 409):
                     return (

@@ -576,3 +576,34 @@ class TestDataHandler:  # pylint: disable=R0904
             data_handler.has_required_role("course", Course, "invalid", [Role.ADMIN])
             is False
         )
+
+    def test_get_ticket_history(self, app) -> None:
+        """
+        Tests a successful GET request to get all ticket history elements linked to one ticket.
+        """
+        with app.test_request_context(
+            "/data/ticket_history", method="GET", query_string={"ticket_id": "123"}
+        ), patch(
+            "db_operator.DatabaseOperator.find_all",
+            return_value=(
+                200,
+                [
+                    {"id": "dummy_id"},
+                    {"id": "another_dummy_id"},
+                ],
+            ),
+        ):
+            res = data_handler.data_handler(
+                flask.request,
+                ["data", "ticket_history"],
+                {
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Credentials": "true",
+                },
+                UserInfo("123", [Role.REQUESTER]),
+            )
+            assert res[0] == '[{"id": "dummy_id"}, {"id": "another_dummy_id"}]'
+            assert res[1] == 200
+            assert res[2].get("Access-Control-Allow-Origin") == "*"
+            assert res[2].get("Access-Control-Allow-Credentials") == "true"
+            assert res[2].get("Access-Control-Allow-Methods") == "GET"

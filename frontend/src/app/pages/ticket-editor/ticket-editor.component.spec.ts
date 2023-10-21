@@ -2,6 +2,7 @@ import {
   ComponentFixture,
   TestBed,
   fakeAsync,
+  flush,
   inject,
   tick,
 } from '@angular/core/testing';
@@ -104,17 +105,37 @@ describe('TicketEditorComponent', () => {
       modified_by_name: 'author',
       type: 'ERROR',
     });
-    const getAllCoursesSpy = spyOn(dataService, 'getAll').and.resolveTo([
-      {
-        id: '12345',
-        course_abbreviation: 'ISEF01',
-        name: 'Projekt Software Engineering',
-        created_at: new Date(2020, 7, 14).toString(),
-        modified_at: new Date(2022, 9, 3).toString(),
-        created_by_name: 'dummy',
-        modified_by_name: 'author',
-      },
-    ]);
+
+    const getAllCoursesSpy = spyOn(dataService, 'getAll')
+      .withArgs('data/course')
+      .and.resolveTo([
+        {
+          id: '12345',
+          course_abbreviation: 'ISEF01',
+          name: 'Projekt Software Engineering',
+          created_at: new Date(2020, 7, 14).toString(),
+          modified_at: new Date(2022, 9, 3).toString(),
+          created_by_name: 'dummy',
+          modified_by_name: 'author',
+        },
+      ])
+      .withArgs('data/ticket_history?ticket_id=123')
+      .and.resolveTo([
+        {
+          id: '12345',
+          previous_values: {
+            description: 'old',
+          },
+          changed_values: {
+            description: 'new',
+          },
+          created_at: new Date(2020, 7, 14).toString(),
+          modified_at: new Date(2022, 9, 3).toString(),
+          created_by_name: 'dummy',
+          modified_by_name: 'author',
+        },
+      ]);
+
     authService.authState.next({ email: 'test@user.de' } as User);
     fixture.detectChanges();
     tick();
@@ -157,7 +178,7 @@ describe('TicketEditorComponent', () => {
     const notifySpy = spyOn(notificationService, 'open');
     authService.authState.next({ email: 'test@user.de' } as User);
     fixture.detectChanges();
-    tick();
+    flush();
     expect(notifySpy).toHaveBeenCalled();
     expect(getAllCoursesSpy).toHaveBeenCalled();
     expect(component.courses.length).toBe(0);
@@ -167,13 +188,15 @@ describe('TicketEditorComponent', () => {
     authService.authState.next({ email: 'test@user.de' } as User);
     fixture.detectChanges();
     const loadSpy = spyOn(component, 'loadTicket');
+    const loadHistorySpy = spyOn(component, 'loadTicketHistory');
     activatedRoute.paramMapSubject.next({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       get(_: string): string | null {
         return '123';
       },
     } as ParamMap);
-    tick();
+    flush();
+    expect(loadHistorySpy).toHaveBeenCalled();
     expect(loadSpy).toHaveBeenCalled();
     expect(component.id).toBe('123');
   }));
@@ -192,7 +215,7 @@ describe('TicketEditorComponent', () => {
     ]);
     authService.roleState.next(Role.Admin);
     fixture.detectChanges();
-    tick();
+    flush();
     expect(getAllUsersSpy).toHaveBeenCalled();
     expect(component.editors).toEqual([
       {
@@ -213,7 +236,7 @@ describe('TicketEditorComponent', () => {
     const notifySpy = spyOn(notificationService, 'open');
     authService.roleState.next(Role.Editor);
     fixture.detectChanges();
-    tick();
+    flush();
     expect(getAllUsersSpy).toHaveBeenCalled();
     expect(notifySpy).toHaveBeenCalled();
     expect(component.editors.length).toBe(0);
@@ -224,7 +247,7 @@ describe('TicketEditorComponent', () => {
     const getAllUsersSpy = spyOn(dataService, 'getAll');
     authService.roleState.next(Role.Requester);
     fixture.detectChanges();
-    tick();
+    flush();
     expect(getAllUsersSpy).not.toHaveBeenCalled();
     expect(component.editors.length).toBe(0);
     expect(component.isAdminOrEditor).toBeFalse();
@@ -392,12 +415,14 @@ describe('TicketEditorComponent', () => {
       const createTicketSpy = spyOn(dataService, 'create').and.resolveTo({
         id: '123',
       });
+      const loadHistorySpy = spyOn(component, 'loadTicketHistory');
 
       component.id = undefined;
       await component.onSubmit(new SubmitEvent('submit'));
 
       expect(createTicketSpy).toHaveBeenCalled();
       expect(notifySpy).toHaveBeenCalled();
+      expect(loadHistorySpy).toHaveBeenCalled();
       expect(navigateSpy).toHaveBeenCalledWith(['/ticket/123']);
     },
   ));
@@ -410,12 +435,14 @@ describe('TicketEditorComponent', () => {
       const updateTicketSpy = spyOn(dataService, 'update').and.resolveTo({
         id: '123',
       });
+      const loadHistorySpy = spyOn(component, 'loadTicketHistory');
 
       component.id = '123';
       await component.onSubmit(new SubmitEvent('submit'));
 
       expect(updateTicketSpy).toHaveBeenCalled();
       expect(notifySpy).toHaveBeenCalled();
+      expect(loadHistorySpy).toHaveBeenCalled();
       expect(navigateSpy).toHaveBeenCalledWith(['/ticket/123']);
     },
   ));
@@ -428,6 +455,7 @@ describe('TicketEditorComponent', () => {
       const createTicketSpy = spyOn(dataService, 'create').and.rejectWith(
         new Error('Error'),
       );
+      const loadHistorySpy = spyOn(component, 'loadTicketHistory');
 
       component.id = undefined;
       await component.onSubmit(new SubmitEvent('submit'));
@@ -435,6 +463,7 @@ describe('TicketEditorComponent', () => {
       expect(createTicketSpy).toHaveBeenCalled();
       expect(notifySpy).toHaveBeenCalled();
       expect(navigateSpy).not.toHaveBeenCalled();
+      expect(loadHistorySpy).toHaveBeenCalled();
       expect(logger.error).toHaveBeenCalled();
     },
   ));
@@ -447,12 +476,14 @@ describe('TicketEditorComponent', () => {
       const updateTicketSpy = spyOn(dataService, 'update').and.rejectWith(
         new Error('Error'),
       );
+      const loadHistorySpy = spyOn(component, 'loadTicketHistory');
 
       component.id = '123';
       await component.onSubmit(new SubmitEvent('submit'));
 
       expect(updateTicketSpy).toHaveBeenCalled();
       expect(notifySpy).toHaveBeenCalled();
+      expect(loadHistorySpy).toHaveBeenCalled();
       expect(navigateSpy).not.toHaveBeenCalled();
       expect(logger.error).toHaveBeenCalled();
     },
@@ -476,4 +507,115 @@ describe('TicketEditorComponent', () => {
       expect(navigateSpy).toHaveBeenCalledWith(['/ticket']);
     },
   ));
+
+  it('loadTicketHistory should not load anything, if no id was set', () => {
+    const getTicketHistorySpy = spyOn(dataService, 'getAll');
+    component.id = undefined;
+    component.loadTicketHistory();
+    expect(getTicketHistorySpy).not.toHaveBeenCalled();
+  });
+
+  it('loadTicketHistory should load a ticket history for given id', fakeAsync(() => {
+    const getTicketHistorySpy = spyOn(dataService, 'getAll').and.resolveTo([
+      {
+        id: '12345',
+        ticket_id: '56789',
+        previous_values: {
+          description: 'Old',
+          title: 'My Title',
+          course_name: 'Old Course',
+        },
+        changed_values: {
+          description: 'New',
+          title: 'My Title 2',
+          course_name: 'New Name',
+        },
+        created_at: new Date(2020, 7, 14).toString(),
+        modified_at: new Date(2022, 9, 3).toString(),
+        created_by_name: 'dummy',
+        modified_by_name: 'author',
+      },
+    ]);
+
+    component.id = '123';
+    component.loadTicketHistory();
+    tick();
+
+    expect(getTicketHistorySpy).toHaveBeenCalled();
+    expect(component.historyDatasource).toEqual([
+      {
+        id: '12345',
+        ticketId: '56789',
+        previousValues: {
+          Description: 'Old',
+          Title: 'My Title',
+          'Course Name': 'Old Course',
+        },
+        changedValues: {
+          Description: 'New',
+          Title: 'My Title 2',
+          'Course Name': 'New Name',
+        },
+        createdAt: new Date(2020, 7, 14),
+        modifiedAt: new Date(2022, 9, 3),
+        createdBy: 'dummy',
+        modifiedBy: 'author',
+      },
+    ]);
+  }));
+
+  it('loadTicketHistory should notify, if the ticket history could not be loaded', fakeAsync(() => {
+    const notifySpy = spyOn(notificationService, 'open');
+    const getTicketHistorySpy = spyOn(dataService, 'getAll').and.rejectWith(
+      new Error('Error'),
+    );
+
+    component.id = '123';
+    component.loadTicketHistory();
+    tick();
+
+    expect(getTicketHistorySpy).toHaveBeenCalled();
+    expect(notifySpy).toHaveBeenCalled();
+    expect(component.historyDataLoading).toBeFalse();
+  }));
+
+  it('previousValues column should parse the object to an string representation', () => {
+    const cellInfo = {
+      value: {
+        Description: 'Old',
+        Title: 'My Title',
+        'Course Name': 'Old Course',
+      },
+    };
+
+    const previousColumn = component.historyColumns.find(
+      (item) => item.fieldName === 'previousValues',
+    );
+    expect(previousColumn).toBeDefined();
+    const parsedText =
+      previousColumn?.customizeText && previousColumn.customizeText(cellInfo);
+    expect(parsedText).toBe(
+      '  Description: Old,\n  Title: My Title,\n  Course Name: Old Course',
+    );
+  });
+
+  it('changedValues column should parse the object to an string representation', () => {
+    const cellInfo = {
+      value: {
+        Description: 'New',
+        Title: 'My Title 2',
+        'Course Name': 'New Name',
+      },
+    };
+
+    const changedColumn = component.historyColumns.find(
+      (item) => item.fieldName === 'changedValues',
+    );
+    expect(changedColumn).toBeDefined();
+    const parsedText =
+      changedColumn?.customizeText && changedColumn.customizeText(cellInfo);
+    expect(parsedText).toBe(
+      '  Description: New,\n  Title: My Title 2,\n  Course Name: New Name',
+    );
+  });
 });
