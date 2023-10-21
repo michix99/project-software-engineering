@@ -152,6 +152,42 @@
   [selectedIndex]="-1"
   [disabled]="isCreating"
 >
+  <dxi-item title="Comments">
+    <dx-text-box
+      [(value)]="newComment"
+      class="new-comment"
+      label="Write a new comment..."
+    >
+      <dxi-button
+        name="comment"
+        location="after"
+        [options]="{
+          icon: 'comment',
+          stylingMode: 'text',
+          hint: 'Add new comment',
+          onClick: onAddCommentClick
+        }"
+      ></dxi-button>
+    </dx-text-box>
+    <div *ngIf="commentsLoading" class="accordion-spinner-wrapper">
+      <mat-spinner [diameter]="70"></mat-spinner>
+    </div>
+    <div *ngIf="!commentsLoading">
+      <dx-text-area
+        *ngFor="let comment of commentDatasource"
+        [disabled]="true"
+        [autoResizeEnabled]="true"
+        [text]="comment.content"
+        [rtlEnabled]="!comment.isOwnComment"
+        [label]="comment.createdBy + ' ' + comment.createdAt.toLocaleString()"
+        labelMode="static"
+        stylingMode="outlined"
+        class="comments"
+        [class.own-comments]="comment.isOwnComment"
+      ></dx-text-area>
+    </div>
+  </dxi-item>
+
   <dxi-item title="History" class="data-grid-wrapper">
     <div *ngIf="historyDataLoading" class="history-spinner-wrapper">
       <mat-spinner [diameter]="70"></mat-spinner>
