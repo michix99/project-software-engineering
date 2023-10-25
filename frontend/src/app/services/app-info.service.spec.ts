@@ -13,7 +13,7 @@ describe('AppInfoService', () => {
   });
 
   it('title should return the app title', () => {
-    expect(service.title).toBe('Projekt Software Engineering');
+    expect(service.title).toBe('Correction Management System');
   });
 
   it('currentYear should return the current year', () => {

@@ -12,5 +12,6 @@ with open("version.py", "r", encoding="UTF-8") as version_file:
 setup(
     name="project-software-engineering",
     version=main_ns["__version__"],
-    description="Project Software Engineering REST Backend",
+    description="Project Software Engineering - "
+    + "Prototype Correction Management System REST Backend",
 )

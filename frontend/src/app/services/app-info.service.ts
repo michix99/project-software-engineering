@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 export class AppInfoService {
   /** Returns the Application Title. */
   public get title() {
-    return 'Projekt Software Engineering';
+    return 'Correction Management System';
   }
 
   /** Returns the current year. */

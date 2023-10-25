@@ -53,6 +53,7 @@ export enum Status {
   Feedback = 'FEEDBACK',
   InReview = 'IN REVIEW',
   Done = 'DONE',
+  Rejected = 'REJECTED',
 }
 
 export enum Priority {

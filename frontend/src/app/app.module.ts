@@ -29,7 +29,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import {
   CourseEditorModule,
   CourseTableComponent,
-  HomeComponent,
+  HomeModule,
   PermissionTableComponent,
   TicketEditorModule,
   TicketTableComponent,
@@ -48,7 +48,6 @@ import { AboutComponent } from './pages/about/about.component';
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent,
     TicketTableComponent,
     PermissionTableComponent,
     UserTableComponent,
@@ -77,6 +76,7 @@ import { AboutComponent } from './pages/about/about.component';
     DxTextAreaModule,
     TicketEditorModule,
     CourseEditorModule,
+    HomeModule,
   ],
   providers: [
     AuthenticationService,

@@ -189,6 +189,7 @@ describe('TicketEditorComponent', () => {
     fixture.detectChanges();
     const loadSpy = spyOn(component, 'loadTicket');
     const loadHistorySpy = spyOn(component, 'loadTicketHistory');
+    const loadCommentsSpy = spyOn(component, 'loadComments');
     activatedRoute.paramMapSubject.next({
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       get(_: string): string | null {
@@ -198,6 +199,7 @@ describe('TicketEditorComponent', () => {
     flush();
     expect(loadHistorySpy).toHaveBeenCalled();
     expect(loadSpy).toHaveBeenCalled();
+    expect(loadCommentsSpy).toHaveBeenCalled();
     expect(component.id).toBe('123');
   }));
 
@@ -617,5 +619,136 @@ describe('TicketEditorComponent', () => {
     expect(parsedText).toBe(
       '  Description: New,\n  Title: My Title 2,\n  Course Name: New Name',
     );
+  });
+
+  it('loadComments should not load anything, if no id or user id was set', () => {
+    const getCommentsSpy = spyOn(dataService, 'getAll');
+    component.id = undefined;
+    component.loadComments();
+    expect(getCommentsSpy).not.toHaveBeenCalled();
+
+    component.id = '123';
+    component.userId = undefined;
+    component.loadComments();
+    expect(getCommentsSpy).not.toHaveBeenCalled();
+  });
+
+  it('loadComments should load the comments for given id and user id', fakeAsync(() => {
+    const getCommentsSpy = spyOn(dataService, 'getAll').and.resolveTo([
+      {
+        id: '12345',
+        content: 'My cool comment',
+        ticket_id: '5678',
+        created_at: new Date(2020, 7, 14).toString(), // older one
+        modified_at: new Date(2022, 9, 3).toString(),
+        created_by_name: 'dummy',
+        modified_by_name: 'author',
+        created_by: '567',
+      },
+      {
+        id: '67890',
+        content: 'Other cool comment',
+        ticket_id: '5678',
+        created_at: new Date(2021, 10, 12).toString(),
+        modified_at: new Date(2023, 4, 2).toString(),
+        created_by_name: 'another',
+        modified_by_name: 'author',
+        created_by: '456',
+      },
+    ]);
+
+    component.id = '123';
+    component.userId = '567';
+    component.loadComments();
+    tick();
+
+    expect(getCommentsSpy).toHaveBeenCalled();
+    expect(component.commentDatasource).toEqual([
+      {
+        // younger one should be sorted first
+        id: '67890',
+        createdAt: new Date(2021, 10, 12),
+        createdBy: 'another',
+        modifiedAt: new Date(2023, 4, 2),
+        modifiedBy: 'author',
+        content: 'Other cool comment',
+        ticketId: '5678',
+        isOwnComment: false,
+      },
+      {
+        id: '12345',
+        createdAt: new Date(2020, 7, 14),
+        createdBy: 'dummy',
+        modifiedAt: new Date(2022, 9, 3),
+        modifiedBy: 'author',
+        content: 'My cool comment',
+        ticketId: '5678',
+        isOwnComment: true,
+      },
+    ]);
+  }));
+
+  it('loadComments should notify, if the comments could not be loaded', fakeAsync(() => {
+    const notifySpy = spyOn(notificationService, 'open');
+    const getCommentsSpy = spyOn(dataService, 'getAll').and.rejectWith(
+      new Error('Error'),
+    );
+
+    component.id = '123';
+    component.userId = '456';
+    component.loadComments();
+    tick();
+
+    expect(getCommentsSpy).toHaveBeenCalled();
+    expect(notifySpy).toHaveBeenCalled();
+    expect(component.commentsLoading).toBeFalse();
+    expect(component.commentDatasource.length).toBe(0);
+  }));
+
+  it('onAddCommentClick should do nothing, if the id or comment is not set', async () => {
+    const createSpy = spyOn(dataService, 'create');
+
+    component.id = '123';
+    component.newComment = '';
+    await component.onAddCommentClick();
+    expect(createSpy).not.toHaveBeenCalled();
+
+    component.id = undefined;
+    component.newComment = 'Lovely comment';
+    await component.onAddCommentClick();
+    expect(createSpy).not.toHaveBeenCalled();
+  });
+
+  it('onAddCommentClick should create a new comment and reload the comments afterwards', async () => {
+    const createSpy = spyOn(dataService, 'create');
+    const loadSpy = spyOn(component, 'loadComments');
+
+    component.newComment = 'Lovely comment';
+    component.id = '123';
+    await component.onAddCommentClick();
+
+    expect(createSpy).toHaveBeenCalledWith('data/comment', {
+      content: 'Lovely comment',
+      ticket_id: '123',
+    });
+    expect(component.newComment).toBeFalsy();
+    expect(loadSpy).toHaveBeenCalled();
+  });
+
+  it('onAddCommentClick should notify, if the comments could not be created', async () => {
+    const notifySpy = spyOn(notificationService, 'open');
+    const createSpy = spyOn(dataService, 'create').and.rejectWith(
+      new Error('Error'),
+    );
+    const loadSpy = spyOn(component, 'loadComments');
+
+    component.newComment = 'Lovely comment';
+    component.id = '123';
+    await component.onAddCommentClick();
+
+    expect(notifySpy).toHaveBeenCalled();
+    expect(createSpy).toHaveBeenCalled();
+    expect(component.newComment).toBeTruthy();
+    expect(loadSpy).toHaveBeenCalled();
   });
 });
