@@ -605,8 +605,8 @@ class TestDataHandler:  # pylint: disable=R0904
             assert res[0] == '[{"id": "dummy_id"}, {"id": "another_dummy_id"}]'
             assert res[1] == 200
             assert res[2].get("Access-Control-Allow-Origin") == "*"
-            assert res[2].get("Access-Control-Allow-Credentials") == "true"
             assert res[2].get("Access-Control-Allow-Methods") == "GET"
+            assert res[2].get("Access-Control-Allow-Credentials") == "true"
 
     def test_get_single_ticket_history_fail(self, app) -> None:
         """
