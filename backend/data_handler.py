@@ -115,6 +115,11 @@ def data_handler(  # pylint: disable=too-many-return-statements, too-many-branch
         # Extract entity ID from URL
         entity_id = path_segments[2]
 
+        if ENTITY_MAPPINGS[entity_type] in (TicketHistory, Comment):
+            error_message = "Entity cannot be modified!"
+            logger.error(error_message)
+            return (error_message, 405, headers)
+
         match request.method:
             case "GET":
                 headers["Access-Control-Allow-Methods"] = "GET"

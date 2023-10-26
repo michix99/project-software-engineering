@@ -607,3 +607,25 @@ class TestDataHandler:  # pylint: disable=R0904
             assert res[2].get("Access-Control-Allow-Origin") == "*"
             assert res[2].get("Access-Control-Allow-Credentials") == "true"
             assert res[2].get("Access-Control-Allow-Methods") == "GET"
+
+    def test_get_single_ticket_history_fail(self, app) -> None:
+        """
+        Tests a failing GET request to get a single ticket history element.
+        """
+        with app.test_request_context(
+            "/data/ticket_history/dummy_id",
+            method="GET",
+        ):
+            res = data_handler.data_handler(
+                flask.request,
+                ["data", "ticket_history", "dummy_id"],
+                {
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Credentials": "true",
+                },
+                UserInfo("123", [Role.REQUESTER]),
+            )
+            assert res[0] == "Entity cannot be modified!"
+            assert res[1] == 405
+            assert res[2].get("Access-Control-Allow-Origin") == "*"
+            assert res[2].get("Access-Control-Allow-Credentials") == "true"
