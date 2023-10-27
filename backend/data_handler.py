@@ -40,7 +40,7 @@ def data_handler(  # pylint: disable=too-many-return-statements, too-many-branch
         and not has_required_role(entity_type, Course, Role.ADMIN, user_info.roles)
     ) or (
         request.method == "POST"
-        and ENTITY_MAPPINGS[entity_type] != Ticket
+        and ENTITY_MAPPINGS[entity_type] not in (Ticket, Comment)
         and Role.ADMIN not in user_info.roles
     ):
         error_message = "User does not have required rights to perform action!"
