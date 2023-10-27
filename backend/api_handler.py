@@ -47,25 +47,24 @@ def api_handler(  # pylint: disable=too-many-return-statements, too-many-branche
                 return (error_message, 400, headers)
 
             claims = {}
-            logger.error(body["role"])
             match body["role"]:
                 case Role.ADMIN.value:
                     claims = {
-                        Role.ADMIN: True,
-                        Role.EDITOR: False,
-                        Role.REQUESTER: False,
+                        Role.ADMIN.value: True,
+                        Role.EDITOR.value: False,
+                        Role.REQUESTER.value: False,
                     }
                 case Role.EDITOR.value:
                     claims = {
-                        Role.ADMIN: False,
-                        Role.EDITOR: True,
-                        Role.REQUESTER: False,
+                        Role.ADMIN.value: False,
+                        Role.EDITOR.value: True,
+                        Role.REQUESTER.value: False,
                     }
                 case Role.REQUESTER.value:
                     claims = {
-                        Role.ADMIN: False,
-                        Role.EDITOR: False,
-                        Role.REQUESTER: True,
+                        Role.ADMIN.value: False,
+                        Role.EDITOR.value: False,
+                        Role.REQUESTER.value: True,
                     }
 
             try:

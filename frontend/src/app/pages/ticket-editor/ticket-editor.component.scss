@@ -24,7 +24,7 @@ form {
   justify-content: center;
 }
 
-.history-spinner-wrapper {
+.accordion-spinner-wrapper {
   display: flex;
   justify-content: center;
   margin: 2rem;
@@ -41,4 +41,31 @@ form {
 
 .data-grid-wrapper {
   padding: 0;
+}
+
+.own-comments {
+  float: right;
+}
+
+.new-comment {
+  margin-bottom: 15px;
+}
+
+.comments {
+  margin: 15px 0;
+  display: flex;
+  width: 65%;
+
+  // Large and XLarge
+  @media (min-width: 1280px) {
+    width: 65%;
+  }
+  // Medium
+  @media (min-width: 960px) and (max-width: 1279.98px) {
+    width: 75%;
+  }
+  // Small
+  @media (max-width: 959.98px) {
+    width: 80%;
+  }
 }

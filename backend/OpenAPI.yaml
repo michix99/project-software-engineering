@@ -1,196 +1,474 @@
 ---
 openapi: 3.0.1  
 info:
-  title: projekt-software-engineering
+  title: Prototype Correction Management System
   description: "An OpenAPI for 'projekt-software-engineering'." 
-  version: 3.0.5
+  version: 1.0.0
 servers:
 - url: https://europe-west3-projekt-software-engineering.cloudfunctions.net/project-software-engineering-rest
 paths:
-  /course:
+  /data/course:
     get:
-      parameters: []
       tags:
-          - course
+          - Course
       responses:
         "200":
-          description: Get a list of all courses
+          description: Request was successful.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/course_response_body'
+        "401":
+          description: Request was unauthorized.
+        "403":
+          description: Token validation failed or user does not have required permissions.
+        "500":
+          description: An internal server error happened.
     post:
-      parameters: []
       tags:
-          - course
+          - Course
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/course_body'
+              $ref: '#/components/schemas/course_request_body'
             examples:
               example:
-                value: "{\r\n    \"course_abbreviation\": \"IMT101\",\r\n    \"name\": \"Grundlagen Mathematik I\"\r\n}"
+                value: "{\r\n\"course_abbreviation\": \"IMT101\",\r\n\"name\": \"Grundlagen Mathematik I\"\r\n}"
       responses:
-        "200":
-          description: Creates a new course
-  /course/0a4d21f7-e432-4fd4-9a13-076709f543dd:
+        "201":
+          description: Course was successfully created.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+        "401":
+          description: Request was unauthorized.
+        "403":
+          description: Token validation failed or user does not have required permissions.
+        "500":
+          description: An internal server error happened.
+  /data/course/{id}:
     get:
-      parameters: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: ID of the course to modify
       tags:
-          - course
+          - Course
       responses:
         "200":
-          description: Get a specific course
+          description: Request was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/course_response_body'
+        "401":
+          description: Request was unauthorized.
+        "403":
+          description: Token validation failed or user does not have required permissions.
+        "404":
+          description: Course was not found.
+        "500":
+          description: An internal server error happened.
     put:
-      parameters: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: ID of the course to modify
       tags:
-          - course
+          - Course
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/course_0a4d21f7e4324fd49a13076709f543dd_body'
+              $ref: '#/components/schemas/course_request_body'
             examples:
               example:
-                value: "{\r\n    \"course_abbreviation\": \"IMT101\",\r\n    \"name\": \"Grundlagen Mathematik I --> Update\"\r\n}"
+                value: "{\r\n\"course_abbreviation\": \"IMT101\",\r\n\"name\": \"Grundlagen Mathematik I --> Update\"\r\n}"
       responses:
         "200":
-          description: Update a course. Works with not all or just one value as well.
+          description: Course was successfully updated.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+        "401":
+          description: Request was unauthorized.
+        "403":
+          description: Token validation failed or user does not have required permissions.
+        "404":
+          description: Course was not found.
+        "500":
+          description: An internal server error happened.
     delete:
-      parameters: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: ID of the course to modify
       tags:
-          - course
+          - Course
       responses:
-        "200":
-          description: Deletes a course
-  /ticket:
+        "204":
+          description: Successfully deleted course.
+        "401":
+          description: Request was unauthorized.
+        "403":
+          description: Token validation failed or user does not have required permissions.
+        "404":
+          description: Course was not found.
+        "500":
+          description: An internal server error happened.
+  /data/ticket:
     get:
-      parameters: []
       tags:
-          - ticket
+        - Ticket
       responses:
         "200":
-          description: Get a list of all tickets
+          description: Request was successful.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ticket_response_body'
+        "401":
+          description: Request was unauthorized.
+        "403":
+          description: Token validation failed or user does not have required permissions.
+        "500":
+          description: An internal server error happened.
     post:
-      parameters: []
       tags:
-          - ticket
+          - Ticket
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ticket_body'
+              $ref: '#/components/schemas/ticket_request_body'
             examples:
               example:
-                value: "{\r\n    \"description\": \"Description of a ticket/problem\",\r\n    \"course_id\": \"0a4d21f7-e432-4fd4-9a13-076709f543dd\",\r\n    \"title\": \"TITLE OF A TICKET\",\r\n    \"created_by\": \b7f8d0a9-c912-41b9-a6fc-77af169ee918\", \r\n  \"status\": \"open\"\r\n }"
+                value: "{\r\"id\": \"dummy-id\",\r\"description\": \"My Description\",\r\"courseId\": \"course-id\",\r\"title\": \"My title\",\r\"status\": \"OPEN\",\r\"priority\": \"UNDEFINED\",\r\"assigneeId\": \"assignee-id\",\r\"type\": \"ERROR\"\r}"
       responses:
-        "200":
-          description: Creates a new ticket
-  /ticket/b001a040-8900-488a-851c-b3d6b0bcc6ab:
+        "201":
+          description: Ticket was successfully created.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+        "401":
+          description: Request was unauthorized.
+        "403":
+          description: Token validation failed or user does not have required permissions.
+        "500":
+          description: An internal server error happened.
+  /data/ticket/{id}:
     get:
-      parameters: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: ID of the ticket to modify
       tags:
-          - ticket
+          - Ticket
       responses:
         "200":
-          description: Get a specific ticket
+          description: Request was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ticket_response_body'
+        "401":
+          description: Request was unauthorized.
+        "403":
+          description: Token validation failed or user does not have required permissions.
+        "404":
+          description: Ticket was not found.
+        "500":
+          description: An internal server error happened.
     put:
-      parameters: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: ID of the ticket to modify
       tags:
-          - ticket
+          - Ticket
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ticket_b001a0408900488a851cb3d6b0bcc6ab_body'
+              $ref: '#/components/schemas/ticket_request_body'
             examples:
               example:
-                value: "{\r\n    \"description\": \"Description of a updated ticket/problem\",\r\n    \"course_id\": \"0a4d21f7-e432-4fd4-9a13-076709f543dd\",\r\n    \"title\": \"TITLE OF A TICKET\",\r\n    \"created_by\": \b7f8d0a9-c912-41b9-a6fc-77af169ee918\", \r\n  \"status\": \"open\"\r\n }"
+                value: "{\r\"id\": \"dummy-id\",\r\"description\": \"My Description --> new\",\r\"courseId\": \"course-id\",\r\"title\": \"My title\",\r\"status\": \"OPEN\",\r\"priority\": \"UNDEFINED\",\r\"assigneeId\": \"assignee-id\",\r\"type\": \"ERROR\"\r}"
       responses:
         "200":
-          description: Update a ticket. Works with not all or just one value as well.
-    delete:
-      parameters: []
-      tags:
-          - ticket
-      responses:
-        "200":
-          description: Deletes a ticket
-  /comment:
+          description: Ticket was successfully updated.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+        "401":
+          description: Request was unauthorized.
+        "403":
+          description: Token validation failed or user does not have required permissions.
+        "404":
+          description: Ticket was not found.
+        "500":
+          description: An internal server error happened.
+  /data/comment?ticket_id={ticket_id}:
     get:
-      parameters: []
+      parameters:
+        - in: query
+          name: ticket_id
+          schema:
+            type: string
+            format: uuid
+          description: The ticket to load the comments for.
       tags:
-          - comment
+        - Comment
       responses:
         "200":
-          description: Get a list of all comments
+          description: Request was successful.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/comment_response_body'
+        "401":
+          description: Request was unauthorized.
+        "403":
+          description: Token validation failed or user does not have required permissions.
+        "500":
+          description: An internal server error happened.
+  /data/comment:
     post:
-      parameters: []
       tags:
-          - comment
+          - Comment
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/comment_body'
+              $ref: '#/components/schemas/comment_request_body'
             examples:
               example:
-                value: "{\r\n    \"created_by\": \"f1d73cbf-81f5-4f2e-9f9f-f7178ee2dc64\",\r\n    \"comment\": \"A comment\",\r\n    \"ticket_id\": \"b001a040-8900-488a-851c-b3d6b0bcc6ab\"\r\n}"
+                value: "{\r\n\"content\": \"Very cool comment\",\r\n\"ticket_id\": \"9da04d8f-7f7a-42e7-bf66-b00f2115a7db\"\r\n}"
       responses:
-        "200":
-          description: Creates a new comment
-  /comment/dc5a28d5-11f3-48cf-97c5-168a3a7627e5:
+        "201":
+          description: Comment was successfully created.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+        "401":
+          description: Request was unauthorized.
+        "403":
+          description: Token validation failed or user does not have required permissions.
+        "500":
+          description: An internal server error happened.
+  /data/ticket_history?ticket_id={ticket_id}:
     get:
-      parameters: []
+      parameters:
+        - in: query
+          name: ticket_id
+          schema:
+            type: string
+            format: uuid
+          description: The ticket to load the history for.
       tags:
-          - comment
+        - Ticket History
       responses:
         "200":
-          description: Get a specific comment
-    put:
-      parameters: []
-      tags:
-          - comment
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/comment_dc5a28d511f348cf97c5168a3a7627e5_body'
-            examples:
-              example:
-                value: "{\r\n    \"created_by\": \"f1d73cbf-81f5-4f2e-9f9f-f7178ee2dc64\",\r\n    \"comment\": \"A Updated comment\",\r\n    \"ticket_id\": \"b001a040-8900-488a-851c-b3d6b0bcc6ab\"\r\n}"
-      responses:
-        "200":
-          description: Update a comment. Works with not all or just one value as well.
-    delete:
-      parameters: []
-      tags:
-          - comment
-      responses:
-        "200":
-          description: Deletes a comment
-  /invalid:
+          description: Request was successful.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ticket_history_response_body'
+        "401":
+          description: Request was unauthorized.
+        "403":
+          description: Token validation failed or user does not have required permissions.
+        "500":
+          description: An internal server error happened.
+  /api/user:
     get:
-      parameters: []
       tags:
-          - invalid
+        - User
       responses:
+        "200":
+          description: Request was successful.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/user_response_body'
         "400":
-          description: generates a 400 error massage
-  /user/invalid:
+          description: Invalid parameters.
+        "401":
+          description: Request was unauthorized.
+        "403":
+          description: Token validation failed or user does not have required permissions.
+        "500":
+          description: An internal server error happened.
+  /api/user/{id}:
     get:
-      parameters: []
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: ID of the user to load
       tags:
-          - invalid
+        - User
       responses:
+        "200":
+          description: Request was successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/user_response_body'
         "400":
-          description: generates a 400 error massage
+          description: Invalid parameters.
+        "401":
+          description: Request was unauthorized.
+        "403":
+          description: Token validation failed or user does not have required permissions.
+        "500":
+          description: An internal server error happened.
+  /api/setRole:
+    put:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/role_request_body'
+            examples:
+              example:
+                value: "{\r\n\"role\": \"editor\",\r\n\"target_user_id\": \"9da04d8f-7f7a-42e7-bf66-b00f2115a7db\"\r\n}"
+      tags:
+        - User
+      responses:
+        "200":
+          description: Role successfully updated.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+        "400":
+          description: Invalid parameters.
+        "401":
+          description: Request was unauthorized.
+        "403":
+          description: Token validation failed or user does not have required permissions.
+        "500":
+          description: An internal server error happened.
+  /api/updateUser:
+    put:
+      tags:
+        - User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/user_request_body'
+            examples:
+              example:
+                value: "{\r\n\"display_name\": \"Dummy User\",\r\n\"email\": \"test@email.de\",\r\n\"target_user_id\": \"9da04d8f-7f7a-42e7-bf66-b00f2115a7db\"\r\n}"
+      responses:
+        "200":
+          description: User was successfully updated.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+        "400":
+          description: Invalid parameters.
+        "401":
+          description: Request was unauthorized.
+        "403":
+          description: Token validation failed or user does not have required permissions.
+        "500":
+          description: An internal server error happened.
+
 components:
   schemas:
-    ticket_body:
+    metadata:
+      type: object
+      properties:
+        created_at:
+          type: string
+          format: date-time
+        created_by:
+          type: string
+        modified_at:
+          type: string
+          format: date-time
+        modified_by:
+          type: string
+    ticket_request_body:
       required:
-      - course_id
-      - created_by
       - description
-      - status
+      - course_id
       - title
+      - status
+      - priority
+      - assignee_id
+      - type
       type: object
       properties:
         description:
@@ -200,61 +478,48 @@ components:
           format: uuid
         title:
           type: string
-        created_by:
+        assignee_id:
           type: string
           format: uuid
         status:
           type: string
-      additionalProperties: false
-    ticket_b001a0408900488a851cb3d6b0bcc6ab_body:
-      required:
-      - course_id
-      - created_by
-      - description
-      - status
-      - title
-      type: object
-      properties:
-        description:
+        priority:
           type: string
-        course_id:
-          type: string
-          format: uuid
-        title:
-          type: string
-        created_by:
-          type: string
-          format: uuid
-        status:
+        type:
           type: string
       additionalProperties: false
-    role_c252ed5c731643178f297900b5925654_body:
-      required:
-      - name
-      type: object
-      properties:
-        name:
-          type: string
+    ticket_response_body:
+      allOf:
+        - type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            description:
+              type: string
+            course_id:
+              type: string
+              format: uuid
+            course_abbreviation:
+              type: string
+            course_name:
+              type: string
+            title:
+              type: string
+            assignee_id:
+              type: string
+              format: uuid
+            assignee_name:
+              type: string
+            status:
+              type: string
+            priority:
+              type: string
+            type:
+              type: string
+        - $ref: '#/components/schemas/metadata'
       additionalProperties: false
-    user_body:
-      required:
-      - email
-      - name_first
-      - name_last
-      - role
-      type: object
-      properties:
-        email:
-          type: string
-        name_first:
-          type: string
-        name_last:
-          type: string
-        role:
-          type: string
-          format: uuid
-      additionalProperties: false
-    course_body:
+    course_request_body:
       required:
       - course_abbreviation
       - name
@@ -265,74 +530,104 @@ components:
         name:
           type: string
       additionalProperties: false
-    user_b7f8d0a9c91241b9a6fc77af169ee918_body:
+    course_response_body:
+      allOf:
+        - type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            course_abbreviation:
+              type: string
+            name:
+              type: string
+        - $ref: '#/components/schemas/metadata'
+    comment_request_body:
       required:
-      - email
-      - name_first
-      - name_last
+      - content
+      - ticket_id
+      type: object
+      properties:
+        content:
+          type: string
+        ticket_id:
+          type: string
+          format: uuid
+      additionalProperties: false
+    comment_response_body:
+      allOf:
+        - type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            content:
+              type: string
+            ticket_id:
+              type: string
+              format: uuid
+        - $ref: '#/components/schemas/metadata'
+    ticket_history_response_body:
+      allOf:
+        - type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            previous_values:
+              type: object
+            changed_values:
+              type: object
+            ticket_id:
+              type: string
+              format: uuid
+        - $ref: '#/components/schemas/metadata'
+    user_response_body:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        email:
+          type: string
+          format: email
+        display_name:
+          type: string
+        disabled:
+          type: boolean
+        admin:
+          type: boolean
+        editor:
+          type: boolean
+        requester:
+          type: boolean
+    role_request_body:
+      required:
+      - target_user_id
       - role
       type: object
       properties:
+        target_user_id:
+          type: string
+          format: uuid
+        role:
+          type: string
+      additionalProperties: false
+    user_request_body:
+      required:
+      - target_user_id
+      - display_name
+      - email
+      type: object
+      properties:
+        target_user_id:
+          type: string
+          format: uuid
+        display_name:
+          type: string
         email:
           type: string
-        name_first:
-          type: string
-        name_last:
-          type: string
-        role:
-          type: string
-          format: uuid
-      additionalProperties: false
-    role_body:
-      required:
-      - name
-      type: object
-      properties:
-        role:
-          type: string
-      additionalProperties: false
-    comment_body:
-      required:
-      - comment
-      - created_by
-      - ticket_id
-      type: object
-      properties:
-        created_by:
-          type: string
-          format: uuid
-        comment:
-          type: string
-        ticket_id:
-          type: string
-          format: uuid
-      additionalProperties: false
-    course_0a4d21f7e4324fd49a13076709f543dd_body:
-      required:
-      - course_abbreviation
-      - name
-      type: object
-      properties:
-        course_abbreviation:
-          type: string
-        name:
-          type: string
-      additionalProperties: false
-    comment_dc5a28d511f348cf97c5168a3a7627e5_body:
-      required:
-      - comment
-      - created_by
-      - ticket_id
-      type: object
-      properties:
-        created_by:
-          type: string
-          format: uuid
-        comment:
-          type: string
-        ticket_id:
-          type: string
-          format: uuid
+          format: email
       additionalProperties: false
   securitySchemes:
     bearerAuth:     # <-- arbitrary name for the security scheme

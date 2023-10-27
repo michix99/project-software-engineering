@@ -1,8 +1,74 @@
 <h2 class="content-block">Home</h2>
 <div class="content-block">
   <div class="dx-card responsive-paddings">
-    <span>
-      Welcome to our ticket management system for improving teaching materials! </span
-    ><br />
+    <h6 class="header">
+      Welcome to our Prototype of a Correction Management System!
+    </h6>
+    <br />
+    <p>
+      This web application provides you a correction management system for
+      helping to improve teaching materials.
+    </p>
+    <p>
+      On the left you will find the menu which will enable you to navigate
+      through the system.
+      <br />The following pages are currently available:
+    </p>
+    <dx-accordion
+      class="accordion"
+      [collapsible]="true"
+      [animationDuration]="300"
+      [selectedIndex]="-1"
+    >
+      <dxi-item title="Pages">
+        <ul>
+          <li><strong>Home</strong> - The start page of the application.</li>
+          <li>
+            <strong>Create Ticket</strong> - The editor to create a new
+            correction request.
+          </li>
+          <li>
+            <strong>Ticket Overview</strong> - The list of all correction
+            requests for admins and editors. The list of own correction requests
+            for requesters.
+          </li>
+          <li>
+            <strong>Settings</strong> - The administrator settings views.
+            <ul>
+              <li>
+                <strong>Permissions</strong> - The overview for all actions and
+                which roles are permitted to perform them.
+              </li>
+              <li>
+                <strong>Course Management</strong> - The list of all courses
+                which can be linked to correction requests. Courses can be
+                added, deleted and modified within this view.
+              </li>
+              <li>
+                <strong>User Management</strong> - The list of all users which
+                do currently have an account for the system with their role.
+                Users can modified within this view.
+              </li>
+            </ul>
+          </li>
+          <li>
+            <strong>Privacy Policy</strong> - The legal document discribing the
+            use of personal data on this site.
+          </li>
+          <li>
+            <strong>About Us</strong> - The view containing information about
+            the website creator and owners.
+          </li>
+        </ul>
+      </dxi-item></dx-accordion
+    >
+    <p>
+      You can also modify your profile, log out or change your password by using
+      the menu on the right upper corner and clicking on your username.
+    </p>
+    <p>We hope you have fun trying out our site!</p>
+    <p>
+      Kind regards,<br /><strong>Michael, Filip, Lorenzo and Michaela</strong>
+    </p>
   </div>
 </div>

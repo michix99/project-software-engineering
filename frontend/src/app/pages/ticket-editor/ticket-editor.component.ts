@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import {
   Column,
+  Comment,
   Course,
   Priority,
   Role,
@@ -15,6 +16,8 @@ import {
   TicketHistory,
   Type,
   User,
+  commentFromJson,
+  commentToModel,
   courseFromJson,
   ticketFromJson,
   ticketHistoryFromJson,
@@ -51,6 +54,8 @@ export class TicketEditorComponent implements OnInit, OnDestroy {
   @ViewChild('dataGrid', { static: false }) dataGrid!: DxDataGridComponent;
   /** The identifier of the element of load. */
   id?: string = undefined;
+  /** The identifier of the user. */
+  userId?: string = undefined;
   /** Indicates if a new element is created or an existing one is updated. */
   get isCreating(): boolean {
     return !!this.id === false || this.id === '0';
@@ -66,10 +71,12 @@ export class TicketEditorComponent implements OnInit, OnDestroy {
   isAdminOrEditor = false;
   /** Indicates if the page is currently submitting data. */
   loading = false;
-  /** Indicates if the data is currently loaded. */
+  /** Indicates if the data is currently loading. */
   dataLoading = false;
-  /** Indicates if the ticket history data is currently loaded. */
+  /** Indicates if the ticket history data is currently loading. */
   historyDataLoading = false;
+  /** Indicates if the comments are currently loading. */
+  commentsLoading = false;
 
   updateSubscription: Subscription = new Subscription();
   roleUpdateSubscription: Subscription = new Subscription();
@@ -127,6 +134,9 @@ export class TicketEditorComponent implements OnInit, OnDestroy {
   ];
   historyDatasource: Array<TicketHistory> = [];
 
+  newComment: string = '';
+  commentDatasource: Array<Comment> = [];
+
   constructor(
     private authService: AuthenticationService,
     private logger: LoggingService,
@@ -142,11 +152,15 @@ export class TicketEditorComponent implements OnInit, OnDestroy {
     this.id = this.route.snapshot.paramMap.get('id') ?? undefined;
     this.updateSubscription = this.authService.authState.subscribe((user) => {
       if (!user) return;
+      this.userId = user.uid;
 
       if (!this.isCreating) {
         this.loadTicket();
         if (this.historyDatasource.length == 0) {
           this.loadTicketHistory();
+        }
+        if (this.commentDatasource.length == 0) {
+          this.loadComments();
         }
       }
 
@@ -178,9 +192,11 @@ export class TicketEditorComponent implements OnInit, OnDestroy {
         if (this.isCreating) {
           this.resetTicket();
           this.historyDatasource = [];
+          this.commentDatasource = [];
         } else {
           this.loadTicket();
           this.loadTicketHistory();
+          this.loadComments();
         }
       }
     });
@@ -328,6 +344,37 @@ export class TicketEditorComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Loads the comments from the backend.
+   */
+  loadComments(): void {
+    if (!this.id || !this.userId) return;
+    this.commentsLoading = true;
+    this.dataService
+      .getAll(`data/comment?ticket_id=${this.id}`)
+      .then((value) => {
+        this.commentDatasource = value
+          .map((e) => commentFromJson(e, this.userId!))
+          .sort((a, b) => {
+            return b.createdAt.getTime() - a.createdAt.getTime();
+          });
+      })
+      .catch((error) => {
+        this.notificationService.open(
+          `Failed to load comments: ${error}`,
+          undefined,
+          {
+            duration: 2000,
+            panelClass: ['red-snackbar'],
+          },
+        );
+        this.logger.error(error);
+      })
+      .finally(() => {
+        this.commentsLoading = false;
+      });
+  }
+
+  /**
    * Submits the ticket save event.
    * @param e The form submit event.
    */
@@ -387,6 +434,34 @@ export class TicketEditorComponent implements OnInit, OnDestroy {
   navigateBack(): void {
     this.router.navigate(['/ticket']);
   }
+
+  /**
+   * Creates a new comment.
+   */
+  onAddCommentClick = async () => {
+    if (!this.newComment || !this.id) return;
+
+    const dataModel = commentToModel({
+      content: this.newComment,
+      ticketId: this.id!,
+    } as Comment);
+    try {
+      await this.dataService.create('data/comment', dataModel);
+      this.newComment = '';
+    } catch (error) {
+      this.notificationService.open(
+        `Failed to create comment: ${error}`,
+        undefined,
+        {
+          duration: 2000,
+          panelClass: ['red-snackbar'],
+        },
+      );
+      this.logger.error(error);
+    } finally {
+      this.loadComments();
+    }
+  };
 }
 
 @NgModule({

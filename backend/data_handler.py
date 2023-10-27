@@ -8,7 +8,7 @@ from google.cloud.firestore_v1.base_query import FieldFilter
 from auth_utils import UserInfo
 from request_helper import get_body
 from enums import Role
-from data_model import Course, Ticket, ENTITY_MAPPINGS, TicketHistory
+from data_model import Comment, Course, Ticket, ENTITY_MAPPINGS, TicketHistory
 from db_operator import DatabaseOperator
 from logger_utils import Logger
 
@@ -64,7 +64,7 @@ def data_handler(  # pylint: disable=too-many-return-statements, too-many-branch
                         [FieldFilter("created_by", "==", user_info.user_id)],
                     )
                 else:
-                    if ENTITY_MAPPINGS[entity_type] == TicketHistory:
+                    if ENTITY_MAPPINGS[entity_type] in (TicketHistory, Comment):
                         ticket_id = request.args.get("ticket_id")
                         response_code, response_message = DatabaseOperator(
                             user_info
@@ -114,6 +114,11 @@ def data_handler(  # pylint: disable=too-many-return-statements, too-many-branch
     elif len(path_segments) == 3:
         # Extract entity ID from URL
         entity_id = path_segments[2]
+
+        if ENTITY_MAPPINGS[entity_type] in (TicketHistory, Comment):
+            error_message = "Entity cannot be modified!"
+            logger.error(error_message)
+            return (error_message, 405, headers)
 
         match request.method:
             case "GET":

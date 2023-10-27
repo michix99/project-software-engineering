@@ -101,7 +101,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   --mdc-snackbar-supporting-text-color: white;
 }
 .green-snackbar button {
-  color: white;
+  color: white !important;;
   border: none;
 }
 
