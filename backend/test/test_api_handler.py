@@ -466,8 +466,8 @@ class TestApiHandler:  # pylint: disable=R0904
             assert res[2].get("Access-Control-Allow-Credentials") == "true"
             assert res[2].get("Access-Control-Allow-Methods") == "GET"
 
-    def test_get_user_success(self, app) -> None:
-        """Tests a successful request to get one user."""
+    def test_get_user_success_as_admin(self, app) -> None:
+        """Tests a successful request to get one user as admin."""
         with app.test_request_context(
             "/api/user/uid",
             method="GET",
@@ -493,6 +493,28 @@ class TestApiHandler:  # pylint: disable=R0904
             }
 
             assert res[1] == 200
+            assert res[2].get("Access-Control-Allow-Origin") == "*"
+            assert res[2].get("Access-Control-Allow-Credentials") == "true"
+            assert res[2].get("Access-Control-Allow-Methods") == "GET"
+
+    def test_get_user_fail_as_requester(self, app) -> None:
+        """Tests a failing request to get a user as requester."""
+        with app.test_request_context(
+            "/api/user/uid",
+            method="GET",
+        ), mock.patch("firebase_admin.auth.get_user") as user_mock:
+            user_mock.return_value = MockUserReference("Dummy Name")
+            res = api_handler.api_handler(
+                flask.request,
+                ["api", "user", "uid"],
+                {
+                    "Access-Control-Allow-Origin": "*",
+                    "Access-Control-Allow-Credentials": "true",
+                },
+                UserInfo("789", [Role.REQUESTER]),
+            )
+            assert res[0] == "User does not have required rights to perform request!"
+            assert res[1] == 403
             assert res[2].get("Access-Control-Allow-Origin") == "*"
             assert res[2].get("Access-Control-Allow-Credentials") == "true"
             assert res[2].get("Access-Control-Allow-Methods") == "GET"
