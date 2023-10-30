@@ -18112,6 +18112,10 @@
   outline: 0;
 }
 
+.dx-datagrid-rowsview .dx-adaptive-detail-row .dx-field-item-content.dx-adaptive-item-text {
+  white-space: pre-wrap;
+}
+
 .dx-datagrid-group-closed,
 .dx-datagrid-group-opened {
   cursor: pointer;

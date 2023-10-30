@@ -537,6 +537,20 @@ describe('TicketEditorComponent', () => {
         created_by_name: 'dummy',
         modified_by_name: 'author',
       },
+      {
+        id: '98765',
+        ticket_id: '56789',
+        previous_values: {
+          course_name: 'New Name',
+        },
+        changed_values: {
+          course_name: 'Newer Name',
+        },
+        created_at: new Date(2023, 9, 11).toString(),
+        modified_at: new Date(2023, 10, 3).toString(),
+        created_by_name: 'dummy',
+        modified_by_name: 'author',
+      },
     ]);
 
     component.id = '123';
@@ -545,6 +559,20 @@ describe('TicketEditorComponent', () => {
 
     expect(getTicketHistorySpy).toHaveBeenCalled();
     expect(component.historyDatasource).toEqual([
+      {
+        id: '98765',
+        ticketId: '56789',
+        previousValues: {
+          'Course Name': 'New Name',
+        },
+        changedValues: {
+          'Course Name': 'Newer Name',
+        },
+        createdAt: new Date(2023, 9, 11),
+        modifiedAt: new Date(2023, 10, 3),
+        createdBy: 'dummy',
+        modifiedBy: 'author',
+      },
       {
         id: '12345',
         ticketId: '56789',

@@ -13,7 +13,7 @@ export class TicketTableComponent {
     {
       fieldName: 'type',
       caption: 'Type',
-      priority: 5,
+      priority: 6,
       dataType: 'string',
       headerFilterEnabled: true,
     },
@@ -27,7 +27,7 @@ export class TicketTableComponent {
     {
       fieldName: 'description',
       caption: 'Description',
-      priority: 6,
+      priority: 0,
       dataType: 'string',
       headerFilterEnabled: false,
     },
@@ -41,7 +41,7 @@ export class TicketTableComponent {
     {
       fieldName: 'courseName',
       caption: 'Course Name',
-      priority: 4,
+      priority: 1,
       dataType: 'string',
       headerFilterEnabled: true,
     },
@@ -69,7 +69,7 @@ export class TicketTableComponent {
     {
       fieldName: 'createdAt',
       caption: 'Created At',
-      priority: 2,
+      priority: 3,
       dataType: 'date',
       headerFilterEnabled: false,
       format: 'dd/MM/yyyy HH:mm:ss',
@@ -77,14 +77,14 @@ export class TicketTableComponent {
     {
       fieldName: 'createdBy',
       caption: 'Created By',
-      priority: 3,
+      priority: 2,
       dataType: 'string',
       headerFilterEnabled: true,
     },
     {
       fieldName: 'modifiedAt',
       caption: 'Modified At',
-      priority: 1,
+      priority: 5,
       dataType: 'date',
       headerFilterEnabled: false,
       format: 'dd/MM/yyyy HH:mm:ss',
@@ -92,7 +92,7 @@ export class TicketTableComponent {
     {
       fieldName: 'modifiedBy',
       caption: 'Modified By',
-      priority: 0,
+      priority: 4,
       dataType: 'string',
       headerFilterEnabled: true,
     },
