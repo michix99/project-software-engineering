@@ -325,7 +325,11 @@ export class TicketEditorComponent implements OnInit, OnDestroy {
     this.dataService
       .getAll(`data/ticket_history?ticket_id=${this.id}`)
       .then((value) => {
-        this.historyDatasource = value.map((e) => ticketHistoryFromJson(e));
+        this.historyDatasource = value
+          .map((e) => ticketHistoryFromJson(e))
+          .sort((a, b) => {
+            return b.createdAt.getTime() - a.createdAt.getTime();
+          });
       })
       .catch((error) => {
         this.notificationService.open(
