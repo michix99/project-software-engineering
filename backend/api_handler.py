@@ -113,7 +113,7 @@ def api_handler(  # pylint: disable=too-many-return-statements, too-many-branche
             return (json.dumps({"id": body["target_user_id"]}), 200, headers)
         case "GET" if path_segments[1] == "user":
             headers["Access-Control-Allow-Methods"] = "GET"
-            if Role.ADMIN not in user_info.roles and Role.EDITOR not in user_info.roles:
+            if len(path_segments) != 3 and Role.ADMIN not in user_info.roles:
                 error_message = "User does not have required rights to perform request!"
                 logger.error(error_message)
                 return (error_message, 403, headers)
@@ -124,6 +124,15 @@ def api_handler(  # pylint: disable=too-many-return-statements, too-many-branche
                     exported_user_records = exported_user_records.users
                 # For loading only one user
                 else:
+                    if (
+                        Role.ADMIN not in user_info.roles
+                        and user_info.user_id != path_segments[2]
+                    ):
+                        error_message = (
+                            "User does not have required rights to perform request!"
+                        )
+                        logger.error(error_message)
+                        return (error_message, 403, headers)
                     exported_user_records = [auth.get_user(path_segments[2])]
 
                 users = []
