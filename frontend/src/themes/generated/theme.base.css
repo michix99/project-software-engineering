@@ -338,7 +338,7 @@
 }
 
 .dx-icon-add {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-add::before {
@@ -346,7 +346,7 @@
 }
 
 .dx-icon-airplane {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-airplane::before {
@@ -354,7 +354,7 @@
 }
 
 .dx-icon-bookmark {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-bookmark::before {
@@ -362,7 +362,7 @@
 }
 
 .dx-icon-box {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-box::before {
@@ -370,7 +370,7 @@
 }
 
 .dx-icon-car {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-car::before {
@@ -378,7 +378,7 @@
 }
 
 .dx-icon-card {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-card::before {
@@ -386,7 +386,7 @@
 }
 
 .dx-icon-cart {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-cart::before {
@@ -394,7 +394,7 @@
 }
 
 .dx-icon-chart {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-chart::before {
@@ -402,7 +402,7 @@
 }
 
 .dx-icon-check {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-check::before {
@@ -410,7 +410,7 @@
 }
 
 .dx-icon-clear {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-clear::before {
@@ -418,7 +418,7 @@
 }
 
 .dx-icon-clock {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-clock::before {
@@ -426,7 +426,7 @@
 }
 
 .dx-icon-close {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-close::before {
@@ -434,7 +434,7 @@
 }
 
 .dx-icon-coffee {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-coffee::before {
@@ -442,7 +442,7 @@
 }
 
 .dx-icon-comment {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-comment::before {
@@ -450,7 +450,7 @@
 }
 
 .dx-icon-doc {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-doc::before {
@@ -458,7 +458,7 @@
 }
 
 .dx-icon-file {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-file::before {
@@ -466,7 +466,7 @@
 }
 
 .dx-icon-download {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-download::before {
@@ -474,7 +474,7 @@
 }
 
 .dx-icon-dragvertical {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-dragvertical::before {
@@ -482,7 +482,7 @@
 }
 
 .dx-icon-edit {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-edit::before {
@@ -490,7 +490,7 @@
 }
 
 .dx-icon-email {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-email::before {
@@ -498,7 +498,7 @@
 }
 
 .dx-icon-event {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-event::before {
@@ -506,7 +506,7 @@
 }
 
 .dx-icon-eventall {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-eventall::before {
@@ -514,7 +514,7 @@
 }
 
 .dx-icon-favorites {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-favorites::before {
@@ -522,7 +522,7 @@
 }
 
 .dx-icon-find {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-find::before {
@@ -530,7 +530,7 @@
 }
 
 .dx-icon-filter {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-filter::before {
@@ -538,7 +538,7 @@
 }
 
 .dx-icon-folder {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-folder::before {
@@ -546,7 +546,7 @@
 }
 
 .dx-icon-activefolder {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-activefolder::before {
@@ -554,7 +554,7 @@
 }
 
 .dx-icon-food {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-food::before {
@@ -562,7 +562,7 @@
 }
 
 .dx-icon-gift {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-gift::before {
@@ -570,7 +570,7 @@
 }
 
 .dx-icon-globe {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-globe::before {
@@ -578,7 +578,7 @@
 }
 
 .dx-icon-group {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-group::before {
@@ -586,7 +586,7 @@
 }
 
 .dx-icon-help {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-help::before {
@@ -594,7 +594,7 @@
 }
 
 .dx-icon-home {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-home::before {
@@ -602,7 +602,7 @@
 }
 
 .dx-icon-image {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-image::before {
@@ -610,7 +610,7 @@
 }
 
 .dx-icon-info {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-info::before {
@@ -618,7 +618,7 @@
 }
 
 .dx-icon-key {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-key::before {
@@ -626,7 +626,7 @@
 }
 
 .dx-icon-like {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-like::before {
@@ -634,7 +634,7 @@
 }
 
 .dx-icon-map {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-map::before {
@@ -642,7 +642,7 @@
 }
 
 .dx-icon-menu {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-menu::before {
@@ -650,7 +650,7 @@
 }
 
 .dx-icon-message {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-message::before {
@@ -658,7 +658,7 @@
 }
 
 .dx-icon-money {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-money::before {
@@ -666,7 +666,7 @@
 }
 
 .dx-icon-music {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-music::before {
@@ -674,7 +674,7 @@
 }
 
 .dx-icon-overflow {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-overflow::before {
@@ -682,7 +682,7 @@
 }
 
 .dx-icon-percent {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-percent::before {
@@ -690,7 +690,7 @@
 }
 
 .dx-icon-photo {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-photo::before {
@@ -698,7 +698,7 @@
 }
 
 .dx-icon-plus {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-plus::before {
@@ -706,7 +706,7 @@
 }
 
 .dx-icon-minus {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-minus::before {
@@ -714,7 +714,7 @@
 }
 
 .dx-icon-preferences {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-preferences::before {
@@ -722,7 +722,7 @@
 }
 
 .dx-icon-product {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-product::before {
@@ -730,7 +730,7 @@
 }
 
 .dx-icon-pulldown {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-pulldown::before {
@@ -738,7 +738,7 @@
 }
 
 .dx-icon-refresh {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-refresh::before {
@@ -746,7 +746,7 @@
 }
 
 .dx-icon-remove {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-remove::before {
@@ -754,7 +754,7 @@
 }
 
 .dx-icon-revert {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-revert::before {
@@ -762,7 +762,7 @@
 }
 
 .dx-icon-runner {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-runner::before {
@@ -770,7 +770,7 @@
 }
 
 .dx-icon-save {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-save::before {
@@ -778,7 +778,7 @@
 }
 
 .dx-icon-search {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-search::before {
@@ -786,7 +786,7 @@
 }
 
 .dx-icon-tags {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-tags::before {
@@ -794,7 +794,7 @@
 }
 
 .dx-icon-tel {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-tel::before {
@@ -802,7 +802,7 @@
 }
 
 .dx-icon-tips {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-tips::before {
@@ -810,7 +810,7 @@
 }
 
 .dx-icon-todo {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-todo::before {
@@ -818,7 +818,7 @@
 }
 
 .dx-icon-toolbox {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-toolbox::before {
@@ -826,7 +826,7 @@
 }
 
 .dx-icon-trash {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-trash::before {
@@ -834,7 +834,7 @@
 }
 
 .dx-icon-user {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-user::before {
@@ -842,7 +842,7 @@
 }
 
 .dx-icon-upload {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-upload::before {
@@ -850,7 +850,7 @@
 }
 
 .dx-icon-floppy {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-floppy::before {
@@ -858,7 +858,7 @@
 }
 
 .dx-icon-arrowleft {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-arrowleft::before {
@@ -866,7 +866,7 @@
 }
 
 .dx-icon-arrowdown {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-arrowdown::before {
@@ -874,7 +874,7 @@
 }
 
 .dx-icon-arrowright {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-arrowright::before {
@@ -882,7 +882,7 @@
 }
 
 .dx-icon-arrowup {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-arrowup::before {
@@ -890,7 +890,7 @@
 }
 
 .dx-icon-spinleft {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-spinleft::before {
@@ -898,7 +898,7 @@
 }
 
 .dx-icon-spinprev {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-spinprev::before {
@@ -906,7 +906,7 @@
 }
 
 .dx-icon-spinright {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-spinright::before {
@@ -914,7 +914,7 @@
 }
 
 .dx-icon-spinnext {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-spinnext::before {
@@ -922,7 +922,7 @@
 }
 
 .dx-icon-spindown {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-spindown::before {
@@ -930,7 +930,7 @@
 }
 
 .dx-icon-spinup {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-spinup::before {
@@ -938,7 +938,7 @@
 }
 
 .dx-icon-chevronleft {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-chevronleft::before {
@@ -946,7 +946,7 @@
 }
 
 .dx-icon-chevronprev {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-chevronprev::before {
@@ -954,7 +954,7 @@
 }
 
 .dx-icon-back {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-back::before {
@@ -962,7 +962,7 @@
 }
 
 .dx-icon-chevronright {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-chevronright::before {
@@ -970,7 +970,7 @@
 }
 
 .dx-icon-chevronnext {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-chevronnext::before {
@@ -978,7 +978,7 @@
 }
 
 .dx-icon-chevrondown {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-chevrondown::before {
@@ -986,7 +986,7 @@
 }
 
 .dx-icon-chevronup {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-chevronup::before {
@@ -994,7 +994,7 @@
 }
 
 .dx-icon-chevrondoubleleft {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-chevrondoubleleft::before {
@@ -1002,7 +1002,7 @@
 }
 
 .dx-icon-chevrondoubleright {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-chevrondoubleright::before {
@@ -1010,7 +1010,7 @@
 }
 
 .dx-icon-equal {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-equal::before {
@@ -1018,7 +1018,7 @@
 }
 
 .dx-icon-notequal {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-notequal::before {
@@ -1026,7 +1026,7 @@
 }
 
 .dx-icon-less {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-less::before {
@@ -1034,7 +1034,7 @@
 }
 
 .dx-icon-greater {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-greater::before {
@@ -1042,7 +1042,7 @@
 }
 
 .dx-icon-lessorequal {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-lessorequal::before {
@@ -1050,7 +1050,7 @@
 }
 
 .dx-icon-greaterorequal {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-greaterorequal::before {
@@ -1058,7 +1058,7 @@
 }
 
 .dx-icon-isblank {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-isblank::before {
@@ -1066,7 +1066,7 @@
 }
 
 .dx-icon-isnotblank {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-isnotblank::before {
@@ -1074,7 +1074,7 @@
 }
 
 .dx-icon-sortup {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-sortup::before {
@@ -1082,7 +1082,7 @@
 }
 
 .dx-icon-sortdown {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-sortdown::before {
@@ -1090,7 +1090,7 @@
 }
 
 .dx-icon-sortuptext {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-sortuptext::before {
@@ -1098,7 +1098,7 @@
 }
 
 .dx-icon-sortdowntext {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-sortdowntext::before {
@@ -1106,7 +1106,7 @@
 }
 
 .dx-icon-sorted {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-sorted::before {
@@ -1114,7 +1114,7 @@
 }
 
 .dx-icon-expand {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-expand::before {
@@ -1122,7 +1122,7 @@
 }
 
 .dx-icon-collapse {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-collapse::before {
@@ -1130,7 +1130,7 @@
 }
 
 .dx-icon-columnfield {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-columnfield::before {
@@ -1138,7 +1138,7 @@
 }
 
 .dx-icon-rowfield {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-rowfield::before {
@@ -1146,7 +1146,7 @@
 }
 
 .dx-icon-datafield {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-datafield::before {
@@ -1154,7 +1154,7 @@
 }
 
 .dx-icon-fields {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-fields::before {
@@ -1162,7 +1162,7 @@
 }
 
 .dx-icon-fieldchooser {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-fieldchooser::before {
@@ -1170,7 +1170,7 @@
 }
 
 .dx-icon-columnchooser {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-columnchooser::before {
@@ -1178,7 +1178,7 @@
 }
 
 .dx-icon-pin {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-pin::before {
@@ -1186,7 +1186,7 @@
 }
 
 .dx-icon-unpin {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-unpin::before {
@@ -1194,7 +1194,7 @@
 }
 
 .dx-icon-pinleft {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-pinleft::before {
@@ -1202,7 +1202,7 @@
 }
 
 .dx-icon-pinright {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-pinright::before {
@@ -1210,7 +1210,7 @@
 }
 
 .dx-icon-contains {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-contains::before {
@@ -1218,7 +1218,7 @@
 }
 
 .dx-icon-startswith {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-startswith::before {
@@ -1226,7 +1226,7 @@
 }
 
 .dx-icon-endswith {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-endswith::before {
@@ -1234,7 +1234,7 @@
 }
 
 .dx-icon-doesnotcontain {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-doesnotcontain::before {
@@ -1242,7 +1242,7 @@
 }
 
 .dx-icon-range {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-range::before {
@@ -1250,7 +1250,7 @@
 }
 
 .dx-icon-export {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-export::before {
@@ -1258,7 +1258,7 @@
 }
 
 .dx-icon-exportxlsx {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-exportxlsx::before {
@@ -1266,7 +1266,7 @@
 }
 
 .dx-icon-exportpdf {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-exportpdf::before {
@@ -1274,7 +1274,7 @@
 }
 
 .dx-icon-exportselected {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-exportselected::before {
@@ -1282,7 +1282,7 @@
 }
 
 .dx-icon-warning {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-warning::before {
@@ -1290,7 +1290,7 @@
 }
 
 .dx-icon-more {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-more::before {
@@ -1298,7 +1298,7 @@
 }
 
 .dx-icon-square {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-square::before {
@@ -1306,7 +1306,7 @@
 }
 
 .dx-icon-clearsquare {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-clearsquare::before {
@@ -1314,7 +1314,7 @@
 }
 
 .dx-icon-repeat {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-repeat::before {
@@ -1322,7 +1322,7 @@
 }
 
 .dx-icon-selectall {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-selectall::before {
@@ -1330,7 +1330,7 @@
 }
 
 .dx-icon-unselectall {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-unselectall::before {
@@ -1338,7 +1338,7 @@
 }
 
 .dx-icon-print {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-print::before {
@@ -1346,7 +1346,7 @@
 }
 
 .dx-icon-bold {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-bold::before {
@@ -1354,7 +1354,7 @@
 }
 
 .dx-icon-italic {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-italic::before {
@@ -1362,7 +1362,7 @@
 }
 
 .dx-icon-underline {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-underline::before {
@@ -1370,7 +1370,7 @@
 }
 
 .dx-icon-strike {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-strike::before {
@@ -1378,7 +1378,7 @@
 }
 
 .dx-icon-indent {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-indent::before {
@@ -1386,7 +1386,7 @@
 }
 
 .dx-icon-increaselinespacing {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-increaselinespacing::before {
@@ -1394,7 +1394,7 @@
 }
 
 .dx-icon-font {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-font::before {
@@ -1402,7 +1402,7 @@
 }
 
 .dx-icon-fontsize {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-fontsize::before {
@@ -1410,7 +1410,7 @@
 }
 
 .dx-icon-shrinkfont {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-shrinkfont::before {
@@ -1418,7 +1418,7 @@
 }
 
 .dx-icon-growfont {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-growfont::before {
@@ -1426,7 +1426,7 @@
 }
 
 .dx-icon-color {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-color::before {
@@ -1434,7 +1434,7 @@
 }
 
 .dx-icon-background {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-background::before {
@@ -1442,7 +1442,7 @@
 }
 
 .dx-icon-fill {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-fill::before {
@@ -1450,7 +1450,7 @@
 }
 
 .dx-icon-palette {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-palette::before {
@@ -1458,7 +1458,7 @@
 }
 
 .dx-icon-superscript {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-superscript::before {
@@ -1466,7 +1466,7 @@
 }
 
 .dx-icon-subscript {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-subscript::before {
@@ -1474,7 +1474,7 @@
 }
 
 .dx-icon-header {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-header::before {
@@ -1482,7 +1482,7 @@
 }
 
 .dx-icon-blockquote {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-blockquote::before {
@@ -1490,7 +1490,7 @@
 }
 
 .dx-icon-formula {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-formula::before {
@@ -1498,7 +1498,7 @@
 }
 
 .dx-icon-codeblock {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-codeblock::before {
@@ -1506,7 +1506,7 @@
 }
 
 .dx-icon-orderedlist {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-orderedlist::before {
@@ -1514,7 +1514,7 @@
 }
 
 .dx-icon-bulletlist {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-bulletlist::before {
@@ -1522,7 +1522,7 @@
 }
 
 .dx-icon-increaseindent {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-increaseindent::before {
@@ -1530,7 +1530,7 @@
 }
 
 .dx-icon-decreaseindent {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-decreaseindent::before {
@@ -1538,7 +1538,7 @@
 }
 
 .dx-icon-decreaselinespacing {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-decreaselinespacing::before {
@@ -1546,7 +1546,7 @@
 }
 
 .dx-icon-alignleft {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-alignleft::before {
@@ -1554,7 +1554,7 @@
 }
 
 .dx-icon-alignright {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-alignright::before {
@@ -1562,7 +1562,7 @@
 }
 
 .dx-icon-aligncenter {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-aligncenter::before {
@@ -1570,7 +1570,7 @@
 }
 
 .dx-icon-alignjustify {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-alignjustify::before {
@@ -1578,7 +1578,7 @@
 }
 
 .dx-icon-link {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-link::before {
@@ -1586,7 +1586,7 @@
 }
 
 .dx-icon-video {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-video::before {
@@ -1594,7 +1594,7 @@
 }
 
 .dx-icon-mention {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-mention::before {
@@ -1602,7 +1602,7 @@
 }
 
 .dx-icon-variable {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-variable::before {
@@ -1610,7 +1610,7 @@
 }
 
 .dx-icon-clearformat {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-clearformat::before {
@@ -1618,7 +1618,7 @@
 }
 
 .dx-icon-fullscreen {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-fullscreen::before {
@@ -1626,7 +1626,7 @@
 }
 
 .dx-icon-hierarchy {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-hierarchy::before {
@@ -1634,7 +1634,7 @@
 }
 
 .dx-icon-docfile {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-docfile::before {
@@ -1642,7 +1642,7 @@
 }
 
 .dx-icon-docxfile {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-docxfile::before {
@@ -1650,7 +1650,7 @@
 }
 
 .dx-icon-pdffile {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-pdffile::before {
@@ -1658,7 +1658,7 @@
 }
 
 .dx-icon-pptfile {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-pptfile::before {
@@ -1666,7 +1666,7 @@
 }
 
 .dx-icon-pptxfile {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-pptxfile::before {
@@ -1674,7 +1674,7 @@
 }
 
 .dx-icon-rtffile {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-rtffile::before {
@@ -1682,7 +1682,7 @@
 }
 
 .dx-icon-txtfile {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-txtfile::before {
@@ -1690,7 +1690,7 @@
 }
 
 .dx-icon-xlsfile {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-xlsfile::before {
@@ -1698,7 +1698,7 @@
 }
 
 .dx-icon-xlsxfile {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-xlsxfile::before {
@@ -1706,7 +1706,7 @@
 }
 
 .dx-icon-copy {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-copy::before {
@@ -1714,7 +1714,7 @@
 }
 
 .dx-icon-cut {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-cut::before {
@@ -1722,7 +1722,7 @@
 }
 
 .dx-icon-paste {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-paste::before {
@@ -1730,7 +1730,7 @@
 }
 
 .dx-icon-share {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-share::before {
@@ -1738,7 +1738,7 @@
 }
 
 .dx-icon-inactivefolder {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-inactivefolder::before {
@@ -1746,7 +1746,7 @@
 }
 
 .dx-icon-newfolder {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-newfolder::before {
@@ -1754,7 +1754,7 @@
 }
 
 .dx-icon-movetofolder {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-movetofolder::before {
@@ -1762,7 +1762,7 @@
 }
 
 .dx-icon-parentfolder {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-parentfolder::before {
@@ -1770,7 +1770,7 @@
 }
 
 .dx-icon-rename {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-rename::before {
@@ -1778,7 +1778,7 @@
 }
 
 .dx-icon-detailslayout {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-detailslayout::before {
@@ -1786,7 +1786,7 @@
 }
 
 .dx-icon-contentlayout {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-contentlayout::before {
@@ -1794,7 +1794,7 @@
 }
 
 .dx-icon-smalliconslayout {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-smalliconslayout::before {
@@ -1802,7 +1802,7 @@
 }
 
 .dx-icon-mediumiconslayout {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-mediumiconslayout::before {
@@ -1810,7 +1810,7 @@
 }
 
 .dx-icon-undo {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-undo::before {
@@ -1818,7 +1818,7 @@
 }
 
 .dx-icon-redo {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-redo::before {
@@ -1826,7 +1826,7 @@
 }
 
 .dx-icon-hidepanel {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-hidepanel::before {
@@ -1834,7 +1834,7 @@
 }
 
 .dx-icon-showpanel {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-showpanel::before {
@@ -1842,7 +1842,7 @@
 }
 
 .dx-icon-checklist {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-checklist::before {
@@ -1850,7 +1850,7 @@
 }
 
 .dx-icon-verticalaligntop {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-verticalaligntop::before {
@@ -1858,7 +1858,7 @@
 }
 
 .dx-icon-verticalaligncenter {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-verticalaligncenter::before {
@@ -1866,7 +1866,7 @@
 }
 
 .dx-icon-verticalalignbottom {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-verticalalignbottom::before {
@@ -1874,7 +1874,7 @@
 }
 
 .dx-icon-rowproperties {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-rowproperties::before {
@@ -1882,7 +1882,7 @@
 }
 
 .dx-icon-columnproperties {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-columnproperties::before {
@@ -1890,7 +1890,7 @@
 }
 
 .dx-icon-cellproperties {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-cellproperties::before {
@@ -1898,7 +1898,7 @@
 }
 
 .dx-icon-tableproperties {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-tableproperties::before {
@@ -1906,7 +1906,7 @@
 }
 
 .dx-icon-splitcells {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-splitcells::before {
@@ -1914,7 +1914,7 @@
 }
 
 .dx-icon-mergecells {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-mergecells::before {
@@ -1922,7 +1922,7 @@
 }
 
 .dx-icon-deleterow {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-deleterow::before {
@@ -1930,7 +1930,7 @@
 }
 
 .dx-icon-deletecolumn {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-deletecolumn::before {
@@ -1938,7 +1938,7 @@
 }
 
 .dx-icon-insertrowabove {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-insertrowabove::before {
@@ -1946,7 +1946,7 @@
 }
 
 .dx-icon-insertrowbelow {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-insertrowbelow::before {
@@ -1954,7 +1954,7 @@
 }
 
 .dx-icon-insertcolumnleft {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-insertcolumnleft::before {
@@ -1962,7 +1962,7 @@
 }
 
 .dx-icon-insertcolumnright {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-insertcolumnright::before {
@@ -1970,7 +1970,7 @@
 }
 
 .dx-icon-inserttable {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-inserttable::before {
@@ -1978,7 +1978,7 @@
 }
 
 .dx-icon-deletetable {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-deletetable::before {
@@ -1986,7 +1986,7 @@
 }
 
 .dx-icon-edittableheader {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-edittableheader::before {
@@ -1994,7 +1994,7 @@
 }
 
 .dx-icon-addtableheader {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-addtableheader::before {
@@ -2002,7 +2002,7 @@
 }
 
 .dx-icon-pasteplaintext {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-pasteplaintext::before {
@@ -2010,7 +2010,7 @@
 }
 
 .dx-icon-importselected {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-importselected::before {
@@ -2018,7 +2018,7 @@
 }
 
 .dx-icon-import {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-import::before {
@@ -2026,7 +2026,7 @@
 }
 
 .dx-icon-textdocument {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-textdocument::before {
@@ -2034,7 +2034,7 @@
 }
 
 .dx-icon-jpgfile {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-jpgfile::before {
@@ -2042,7 +2042,7 @@
 }
 
 .dx-icon-bmpfile {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-bmpfile::before {
@@ -2050,7 +2050,7 @@
 }
 
 .dx-icon-svgfile {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-svgfile::before {
@@ -2058,7 +2058,7 @@
 }
 
 .dx-icon-attach {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-attach::before {
@@ -2066,7 +2066,7 @@
 }
 
 .dx-icon-return {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-return::before {
@@ -2074,7 +2074,7 @@
 }
 
 .dx-icon-indeterminatestate {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-indeterminatestate::before {
@@ -2082,7 +2082,7 @@
 }
 
 .dx-icon-lock {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-lock::before {
@@ -2090,7 +2090,7 @@
 }
 
 .dx-icon-unlock {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-unlock::before {
@@ -2098,7 +2098,7 @@
 }
 
 .dx-icon-imgarlock {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-imgarlock::before {
@@ -2106,7 +2106,7 @@
 }
 
 .dx-icon-imgarunlock {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-imgarunlock::before {
@@ -2114,7 +2114,7 @@
 }
 
 .dx-icon-bell {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-bell::before {
@@ -2122,7 +2122,7 @@
 }
 
 .dx-icon-sun {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-sun::before {
@@ -2130,7 +2130,7 @@
 }
 
 .dx-icon-send {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-send::before {
@@ -2138,7 +2138,7 @@
 }
 
 .dx-icon-pinmap {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-pinmap::before {
@@ -2146,7 +2146,7 @@
 }
 
 .dx-icon-photooutline {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-photooutline::before {
@@ -2154,7 +2154,7 @@
 }
 
 .dx-icon-panelright {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-panelright::before {
@@ -2162,7 +2162,7 @@
 }
 
 .dx-icon-panelleft {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-panelleft::before {
@@ -2170,7 +2170,7 @@
 }
 
 .dx-icon-optionsgear {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-optionsgear::before {
@@ -2178,7 +2178,7 @@
 }
 
 .dx-icon-moon {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-moon::before {
@@ -2186,7 +2186,7 @@
 }
 
 .dx-icon-login {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-login::before {
@@ -2194,7 +2194,7 @@
 }
 
 .dx-icon-eyeopen {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-eyeopen::before {
@@ -2202,7 +2202,7 @@
 }
 
 .dx-icon-eyeclose {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-eyeclose::before {
@@ -2210,7 +2210,7 @@
 }
 
 .dx-icon-expandform {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-expandform::before {
@@ -2218,7 +2218,7 @@
 }
 
 .dx-icon-description {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-description::before {
@@ -2226,7 +2226,7 @@
 }
 
 .dx-icon-belloutline {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-belloutline::before {
@@ -2234,7 +2234,7 @@
 }
 
 .dx-icon-to {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-to::before {
@@ -8827,7 +8827,7 @@
 }
 
 .dx-searchbox .dx-icon-search {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
   color: rgba(148, 148, 148, .87);
 }
 
@@ -10135,7 +10135,7 @@
 }
 
 .dx-numberbox-spin-up-icon {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
   color: rgba(0, 0, 0, .54);
 }
 
@@ -10144,7 +10144,7 @@
 }
 
 .dx-numberbox-spin-down-icon {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
   color: rgba(0, 0, 0, .54);
 }
 
@@ -15524,7 +15524,7 @@
 }
 
 .dx-gallery .dx-gallery-nav-button-prev {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-gallery .dx-gallery-nav-button-prev::after {
@@ -15539,7 +15539,7 @@
 }
 
 .dx-gallery .dx-gallery-nav-button-next {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-gallery .dx-gallery-nav-button-next::after {
@@ -17022,7 +17022,7 @@
 }
 
 .dx-pager .dx-pages .dx-prev-button {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-pager .dx-pages .dx-prev-button::before {
@@ -17030,7 +17030,7 @@
 }
 
 .dx-pager .dx-pages .dx-next-button {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-pager .dx-pages .dx-next-button::before {
@@ -18179,7 +18179,7 @@
 }
 
 .dx-datagrid .dx-sort-up {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-datagrid .dx-sort-up::before {
@@ -18187,7 +18187,7 @@
 }
 
 .dx-datagrid .dx-sort-down {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-datagrid .dx-sort-down::before {
@@ -18237,7 +18237,7 @@
 .dx-datagrid .dx-header-filter {
   position: relative;
   color: rgba(0, 0, 0, .54);
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-datagrid .dx-header-filter::before {
@@ -18326,7 +18326,7 @@
 }
 
 .dx-datagrid .dx-command-drag .dx-datagrid-drag-icon {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-datagrid .dx-command-drag .dx-datagrid-drag-icon::before {
@@ -18598,7 +18598,7 @@
 
 .dx-datagrid .dx-icon-filter-operation-equals,
 .dx-datagrid-container .dx-icon-filter-operation-equals {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-datagrid .dx-icon-filter-operation-equals::before,
@@ -18608,7 +18608,7 @@
 
 .dx-datagrid .dx-icon-filter-operation-default,
 .dx-datagrid-container .dx-icon-filter-operation-default {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-datagrid .dx-icon-filter-operation-default::before,
@@ -18618,7 +18618,7 @@
 
 .dx-datagrid .dx-icon-filter-operation-not-equals,
 .dx-datagrid-container .dx-icon-filter-operation-not-equals {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-datagrid .dx-icon-filter-operation-not-equals::before,
@@ -18628,7 +18628,7 @@
 
 .dx-datagrid .dx-icon-filter-operation-less,
 .dx-datagrid-container .dx-icon-filter-operation-less {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-datagrid .dx-icon-filter-operation-less::before,
@@ -18638,7 +18638,7 @@
 
 .dx-datagrid .dx-icon-filter-operation-less-equal,
 .dx-datagrid-container .dx-icon-filter-operation-less-equal {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-datagrid .dx-icon-filter-operation-less-equal::before,
@@ -18648,7 +18648,7 @@
 
 .dx-datagrid .dx-icon-filter-operation-greater,
 .dx-datagrid-container .dx-icon-filter-operation-greater {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-datagrid .dx-icon-filter-operation-greater::before,
@@ -18658,7 +18658,7 @@
 
 .dx-datagrid .dx-icon-filter-operation-greater-equal,
 .dx-datagrid-container .dx-icon-filter-operation-greater-equal {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-datagrid .dx-icon-filter-operation-greater-equal::before,
@@ -18668,7 +18668,7 @@
 
 .dx-datagrid .dx-icon-filter-operation-contains,
 .dx-datagrid-container .dx-icon-filter-operation-contains {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-datagrid .dx-icon-filter-operation-contains::before,
@@ -18678,7 +18678,7 @@
 
 .dx-datagrid .dx-icon-filter-operation-not-contains,
 .dx-datagrid-container .dx-icon-filter-operation-not-contains {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-datagrid .dx-icon-filter-operation-not-contains::before,
@@ -18688,7 +18688,7 @@
 
 .dx-datagrid .dx-icon-filter-operation-starts-with,
 .dx-datagrid-container .dx-icon-filter-operation-starts-with {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-datagrid .dx-icon-filter-operation-starts-with::before,
@@ -18698,7 +18698,7 @@
 
 .dx-datagrid .dx-icon-filter-operation-ends-with,
 .dx-datagrid-container .dx-icon-filter-operation-ends-with {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-datagrid .dx-icon-filter-operation-ends-with::before,
@@ -18708,7 +18708,7 @@
 
 .dx-datagrid .dx-icon-filter-operation-between,
 .dx-datagrid-container .dx-icon-filter-operation-between {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-datagrid .dx-icon-filter-operation-between::before,
@@ -20993,7 +20993,7 @@ input.dx-hidden {
 }
 
 .dx-treelist .dx-command-drag .dx-treelist-drag-icon {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-treelist .dx-command-drag .dx-treelist-drag-icon::before {
@@ -21001,7 +21001,7 @@ input.dx-hidden {
 }
 
 .dx-treelist-container .dx-sort-up {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-treelist-container .dx-sort-up::before {
@@ -21009,7 +21009,7 @@ input.dx-hidden {
 }
 
 .dx-treelist-container .dx-sort-down {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-treelist-container .dx-sort-down::before {
@@ -21047,7 +21047,7 @@ input.dx-hidden {
 .dx-treelist-container .dx-header-filter {
   position: relative;
   color: rgba(0, 0, 0, .54);
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-treelist-container .dx-header-filter::before {
@@ -21408,7 +21408,7 @@ input.dx-hidden {
 
 .dx-treelist .dx-icon-filter-operation-equals,
 .dx-treelist-container .dx-icon-filter-operation-equals {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-treelist .dx-icon-filter-operation-equals::before,
@@ -21418,7 +21418,7 @@ input.dx-hidden {
 
 .dx-treelist .dx-icon-filter-operation-default,
 .dx-treelist-container .dx-icon-filter-operation-default {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-treelist .dx-icon-filter-operation-default::before,
@@ -21428,7 +21428,7 @@ input.dx-hidden {
 
 .dx-treelist .dx-icon-filter-operation-not-equals,
 .dx-treelist-container .dx-icon-filter-operation-not-equals {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-treelist .dx-icon-filter-operation-not-equals::before,
@@ -21438,7 +21438,7 @@ input.dx-hidden {
 
 .dx-treelist .dx-icon-filter-operation-less,
 .dx-treelist-container .dx-icon-filter-operation-less {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-treelist .dx-icon-filter-operation-less::before,
@@ -21448,7 +21448,7 @@ input.dx-hidden {
 
 .dx-treelist .dx-icon-filter-operation-less-equal,
 .dx-treelist-container .dx-icon-filter-operation-less-equal {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-treelist .dx-icon-filter-operation-less-equal::before,
@@ -21458,7 +21458,7 @@ input.dx-hidden {
 
 .dx-treelist .dx-icon-filter-operation-greater,
 .dx-treelist-container .dx-icon-filter-operation-greater {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-treelist .dx-icon-filter-operation-greater::before,
@@ -21468,7 +21468,7 @@ input.dx-hidden {
 
 .dx-treelist .dx-icon-filter-operation-greater-equal,
 .dx-treelist-container .dx-icon-filter-operation-greater-equal {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-treelist .dx-icon-filter-operation-greater-equal::before,
@@ -21478,7 +21478,7 @@ input.dx-hidden {
 
 .dx-treelist .dx-icon-filter-operation-contains,
 .dx-treelist-container .dx-icon-filter-operation-contains {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-treelist .dx-icon-filter-operation-contains::before,
@@ -21488,7 +21488,7 @@ input.dx-hidden {
 
 .dx-treelist .dx-icon-filter-operation-not-contains,
 .dx-treelist-container .dx-icon-filter-operation-not-contains {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-treelist .dx-icon-filter-operation-not-contains::before,
@@ -21498,7 +21498,7 @@ input.dx-hidden {
 
 .dx-treelist .dx-icon-filter-operation-starts-with,
 .dx-treelist-container .dx-icon-filter-operation-starts-with {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-treelist .dx-icon-filter-operation-starts-with::before,
@@ -21508,7 +21508,7 @@ input.dx-hidden {
 
 .dx-treelist .dx-icon-filter-operation-ends-with,
 .dx-treelist-container .dx-icon-filter-operation-ends-with {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-treelist .dx-icon-filter-operation-ends-with::before,
@@ -21518,7 +21518,7 @@ input.dx-hidden {
 
 .dx-treelist .dx-icon-filter-operation-between,
 .dx-treelist-container .dx-icon-filter-operation-between {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-treelist .dx-icon-filter-operation-between::before,
@@ -22173,7 +22173,7 @@ input.dx-hidden {
 }
 
 .dx-icon-column-chooser {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-icon-column-chooser::before {
@@ -22722,7 +22722,7 @@ input.dx-hidden {
   position: relative;
   top: -2px;
   display: inline-block;
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
   width: 24px;
 }
 
@@ -23139,7 +23139,7 @@ input.dx-hidden {
 }
 
 .dx-pivotgrid-fields-container .dx-sort-up {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-pivotgrid-fields-container .dx-sort-up::before {
@@ -23147,7 +23147,7 @@ input.dx-hidden {
 }
 
 .dx-pivotgrid-fields-container .dx-sort-down {
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-pivotgrid-fields-container .dx-sort-down::before {
@@ -23156,7 +23156,7 @@ input.dx-hidden {
 
 .dx-pivotgrid-fields-container .dx-header-filter {
   color: rgba(0, 0, 0, .54);
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
   width: 14px;
 }
 
@@ -23974,7 +23974,7 @@ input.dx-hidden {
 
 .dx-pivotgridfieldchooser .dx-area .dx-area-icon-filter {
   background: 0 0;
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
   width: 14px;
   height: 14px;
 }
@@ -24789,7 +24789,7 @@ input.dx-hidden {
   position: absolute;
   top: 3px;
   right: 5px;
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-scheduler-appointment .dx-scheduler-appointment-reduced-icon::before {
@@ -24799,7 +24799,7 @@ input.dx-hidden {
 .dx-rtl .dx-scheduler-appointment .dx-scheduler-appointment-reduced-icon {
   right: auto;
   left: 3px;
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-rtl .dx-scheduler-appointment .dx-scheduler-appointment-reduced-icon::before {
@@ -26493,7 +26493,7 @@ input.dx-hidden {
 .dx-scheduler-work-space-week .dx-scheduler-date-time-indicator,
 .dx-scheduler-work-space-work-week .dx-scheduler-date-time-indicator {
   margin-left: 65px;
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-scheduler-work-space-day .dx-scheduler-date-time-indicator::before,
@@ -26567,7 +26567,7 @@ input.dx-hidden {
 .dx-scheduler-work-space-week.dx-rtl .dx-scheduler-date-time-indicator,
 .dx-scheduler-work-space-work-week.dx-rtl .dx-scheduler-date-time-indicator {
   margin-left: 0;
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-scheduler-work-space-day.dx-rtl .dx-scheduler-date-time-indicator::before,
@@ -26590,7 +26590,7 @@ input.dx-hidden {
 .dx-scheduler-timeline .dx-scheduler-date-time-indicator {
   width: 1px;
   top: 0;
-  font: 14px/1 DXIcons;
+  font: 14px/1 DXIcons, sans-serif;
 }
 
 .dx-scheduler-timeline .dx-scheduler-date-time-indicator::before {
