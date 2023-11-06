@@ -17,36 +17,8 @@ html, body {
     margin-top: 20px;
     margin-bottom: 20px;
   }
-}
 
-.container {
-  height: 100%;
-  flex-direction: column;
-  display: flex;
-}
-
-.layout-body {
-  flex: 1;
-  min-height: 0;
-}
-
-.side-nav-outer-toolbar .dx-drawer {
-  height: calc(100% - 56px)
-}
-
-.content-block {
-  margin-left: 40px;
-  margin-right: 40px;
-  margin-top: 20px;
-
-  .screen-x-small & {
-    margin-left: 20px;
-    margin-right: 20px;
-  }
-}
-
-.content {
-  margin: 0 4%;
+    margin: 0 4%;
   
   .screen-x-small & {
     margin: 0 2%;
@@ -92,6 +64,32 @@ html, body {
   }
 }
 
+.container {
+  height: 100%;
+  flex-direction: column;
+  display: flex;
+}
+
+.layout-body {
+  flex: 1;
+  min-height: 0;
+}
+
+.side-nav-outer-toolbar .dx-drawer {
+  height: calc(100% - 56px)
+}
+
+.content-block {
+  margin-left: 40px;
+  margin-right: 40px;
+  margin-top: 20px;
+
+  .screen-x-small & {
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+}
+
 $side-panel-min-width: 60px;
 
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
@@ -101,7 +99,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   --mdc-snackbar-supporting-text-color: white;
 }
 .green-snackbar button {
-  color: white !important;;
+  color: white !important;
   border: none;
 }
 

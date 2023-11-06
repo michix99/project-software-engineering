@@ -10,6 +10,7 @@ from request_helper import get_body
 from logger_utils import Logger
 
 logger = Logger(component="api_handler")
+MISSING_PERMISSIONS = "User does not have required rights to perform request!"
 
 
 def api_handler(  # pylint: disable=too-many-return-statements, too-many-branches, too-many-statements
@@ -29,9 +30,8 @@ def api_handler(  # pylint: disable=too-many-return-statements, too-many-branche
     match request.method:
         case "PUT" if path_segments[1] == "setRole":
             if Role.ADMIN not in user_info.roles:
-                error_message = "User does not have required rights to perform request!"
-                logger.error(error_message)
-                return (error_message, 403, headers)
+                logger.error(MISSING_PERMISSIONS)
+                return (MISSING_PERMISSIONS, 403, headers)
             headers["Access-Control-Allow-Methods"] = "PUT"
             body = get_body(request)
 
@@ -95,9 +95,8 @@ def api_handler(  # pylint: disable=too-many-return-statements, too-many-branche
                 Role.ADMIN not in user_info.roles
                 and body["target_user_id"] != user_info.user_id
             ):
-                error_message = "User does not have required rights to perform request!"
-                logger.error(error_message)
-                return (error_message, 403, headers)
+                logger.error(MISSING_PERMISSIONS)
+                return (MISSING_PERMISSIONS, 403, headers)
             try:
                 auth.update_user(
                     body["target_user_id"],
@@ -128,11 +127,8 @@ def api_handler(  # pylint: disable=too-many-return-statements, too-many-branche
                         Role.ADMIN not in user_info.roles
                         and user_info.user_id != path_segments[2]
                     ):
-                        error_message = (
-                            "User does not have required rights to perform request!"
-                        )
-                        logger.error(error_message)
-                        return (error_message, 403, headers)
+                        logger.error(MISSING_PERMISSIONS)
+                        return (MISSING_PERMISSIONS, 403, headers)
                     exported_user_records = [auth.get_user(path_segments[2])]
 
                 users = []

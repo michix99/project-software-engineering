@@ -42,10 +42,6 @@
       // ##
       
       // ## Arrow customization
-      .dx-treeview-node {
-        padding: 0 0 !important;
-      }
-
       .dx-treeview-toggle-item-visibility {
         right: 10px;
         left: auto;
@@ -59,6 +55,7 @@
 
       // ## Item levels customization
       .dx-treeview-node {
+        padding: 0 0 !important;
         &[aria-level='1'] {
           font-weight: bold;
           border-bottom: 1px solid $base-border-color;
@@ -69,11 +66,7 @@
           padding: 0 $side-panel-min-width;
         }
       }
-      // ##
-    }
 
-    // ## Selected & Focuced items customization
-    ::ng-deep .dx-treeview {
       .dx-treeview-node-container {
         .dx-treeview-node {
           &.dx-state-selected:not(.dx-state-focused)> .dx-treeview-item {

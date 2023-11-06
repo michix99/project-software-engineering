@@ -447,7 +447,7 @@ export class TicketEditorComponent implements OnInit, OnDestroy {
 
     const dataModel = commentToModel({
       content: this.newComment,
-      ticketId: this.id!,
+      ticketId: this.id,
     } as Comment);
     try {
       await this.dataService.create('data/comment', dataModel);

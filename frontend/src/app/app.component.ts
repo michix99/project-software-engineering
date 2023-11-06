@@ -29,8 +29,7 @@ export class AppComponent implements OnInit, OnDestroy {
       case 'login-form':
         return 'Sign In';
       case 'reset-password':
-        if (queryParams && queryParams.includes('&oobCode='))
-          return 'Change Password';
+        if (queryParams?.includes('&oobCode=')) return 'Change Password';
         return 'Reset Password';
       case 'create-account':
         return 'Sign Up';
@@ -43,12 +42,10 @@ export class AppComponent implements OnInit, OnDestroy {
 
   get unauthenticatedDescription() {
     const path = this.router.url.split('/')[1];
-    switch (path) {
-      case 'reset-password':
-        return 'Please enter the email address that you used to register, and we will send you a link to reset your password via Email.';
-      default:
-        return '';
+    if (path === 'reset-password') {
+      return 'Please enter the email address that you used to register, and we will send you a link to reset your password via Email.';
     }
+    return '';
   }
 
   authUpdateSubscription: Subscription = new Subscription();

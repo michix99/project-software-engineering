@@ -31,7 +31,7 @@ export class AuthenticationGuardService {
   ): Promise<boolean> {
     const isLoggedIn = this.authService.loggedIn;
     const isAuthForm = ['login-form', 'reset-password'].includes(
-      route.routeConfig?.path || this.defaultPath,
+      route.routeConfig?.path ?? this.defaultPath,
     );
 
     if (requiredRole) {
@@ -41,7 +41,7 @@ export class AuthenticationGuardService {
           .join('/');
       } else {
         this.authService.lastAuthenticatedPath =
-          route.routeConfig?.path || this.defaultPath;
+          route.routeConfig?.path ?? this.defaultPath;
       }
       return new Promise((resolve) => {
         this.authService.roleState
@@ -88,7 +88,7 @@ export class AuthenticationGuardService {
           .join('/');
       } else {
         this.authService.lastAuthenticatedPath =
-          route.routeConfig?.path || this.defaultPath;
+          route.routeConfig?.path ?? this.defaultPath;
       }
     }
 
