@@ -44,7 +44,7 @@ export class ChangePasswordFormComponent {
     let result: { isOk: boolean; message?: string } = { isOk: false };
     if (this.oobCode) {
       result = await this.authService.confirmPasswordReset(
-        this.oobCode!,
+        this.oobCode,
         password,
       );
     } else {
@@ -54,7 +54,7 @@ export class ChangePasswordFormComponent {
         this.loading = false;
         this.logger.error(result.message);
         this.notificationService.open(
-          result.message || 'Reauthentication was not successful',
+          result.message ?? 'Reauthentication was not successful',
           undefined,
           {
             duration: 2000,
@@ -78,7 +78,7 @@ export class ChangePasswordFormComponent {
     } else {
       this.logger.error(result.message);
       this.notificationService.open(
-        result.message || 'Cannot change password.',
+        result.message ?? 'Cannot change password.',
         'Try again!',
         {
           duration: 2000,

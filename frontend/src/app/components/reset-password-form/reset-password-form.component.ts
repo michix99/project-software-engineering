@@ -62,7 +62,7 @@ export class ResetPasswordFormComponent implements OnInit {
     } else {
       this.logger.error(result.message);
       this.notificationService.open(
-        result.message || 'Cannot send password reset!',
+        result.message ?? 'Cannot send password reset!',
         undefined,
         {
           duration: 2000,

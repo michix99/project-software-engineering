@@ -2275,7 +2275,7 @@
 }
 
 .dx-color-scheme {
-  font-family: "#";
+  font-family: "#", sans-serif;
 }
 
 .dx-widget {
@@ -5110,7 +5110,7 @@
   color: #fff;
   background-color: #2a76e8;
   border: none;
-  font: 16px/1em DXIcons;
+  font: 16px/1em DXIcons, sans-serif;
   text-align: center;
 }
 
@@ -5137,7 +5137,7 @@
   background-color: #2a76e8;
   color: #fff;
   border: none;
-  font: 20px/1em DXIcons;
+  font: 20px/1em DXIcons, sans-serif;
   text-align: center;
 }
 
@@ -9012,7 +9012,7 @@
   background-position: center;
   background-repeat: no-repeat;
   color: rgba(0, 0, 0, .54);
-  font: 24px/24px DXIcons;
+  font: 24px/24px DXIcons, sans-serif;
   width: 24px;
   height: 100%;
   text-align: center;
@@ -9135,7 +9135,7 @@
 .dx-dropdowneditor.dx-dropdowneditor-active .dx-dropdowneditor-icon {
   color: rgba(0, 0, 0, .54);
   opacity: 1;
-  font: 24px/24px DXIcons;
+  font: 24px/24px DXIcons, sans-serif;
   width: 24px;
   height: 100%;
   text-align: center;
@@ -9500,7 +9500,7 @@
   transform: rotate(0);
   border: none;
   opacity: 1;
-  font: 24px/24px DXIcons;
+  font: 24px/24px DXIcons, sans-serif;
   width: 24px;
   height: 24px;
   background-position: 0 0;
@@ -9876,7 +9876,7 @@
 }
 
 .dx-list-item-after-bag .dx-list-reorder-handle {
-  font: 24px/24px DXIcons;
+  font: 24px/24px DXIcons, sans-serif;
   color: rgba(0, 0, 0, .27);
   width: 38.4px;
   height: 38.4px;
@@ -11301,7 +11301,7 @@
 }
 
 .dx-datebox-time .dx-dropdowneditor-icon {
-  font: 24px/24px DXIcons;
+  font: 24px/24px DXIcons, sans-serif;
   width: 24px;
   height: 100%;
   text-align: center;
@@ -11319,7 +11319,7 @@
 }
 
 .dx-datebox-time.dx-dropdowneditor-active .dx-dropdowneditor-icon {
-  font: 24px/24px DXIcons;
+  font: 24px/24px DXIcons, sans-serif;
   width: 24px;
   height: 100%;
   text-align: center;
@@ -11337,7 +11337,7 @@
 }
 
 .dx-datebox-date .dx-dropdowneditor-icon {
-  font: 24px/24px DXIcons;
+  font: 24px/24px DXIcons, sans-serif;
   width: 24px;
   height: 100%;
   text-align: center;
@@ -11355,7 +11355,7 @@
 }
 
 .dx-datebox-date.dx-dropdowneditor-active .dx-dropdowneditor-icon {
-  font: 24px/24px DXIcons;
+  font: 24px/24px DXIcons, sans-serif;
   width: 24px;
   height: 100%;
   text-align: center;
@@ -11373,7 +11373,7 @@
 }
 
 .dx-datebox-datetime .dx-dropdowneditor-icon {
-  font: 24px/24px DXIcons;
+  font: 24px/24px DXIcons, sans-serif;
   width: 24px;
   height: 100%;
   text-align: center;
@@ -11391,7 +11391,7 @@
 }
 
 .dx-datebox-datetime.dx-dropdowneditor-active .dx-dropdowneditor-icon {
-  font: 24px/24px DXIcons;
+  font: 24px/24px DXIcons, sans-serif;
   width: 24px;
   height: 100%;
   text-align: center;
@@ -11662,7 +11662,7 @@
 }
 
 .dx-daterangebox .dx-dropdowneditor-icon {
-  font: 24px/24px DXIcons;
+  font: 24px/24px DXIcons, sans-serif;
   width: 24px;
   height: 100%;
   text-align: center;
@@ -11680,7 +11680,7 @@
 }
 
 .dx-daterangebox.dx-dropdowneditor-active .dx-dropdowneditor-icon {
-  font: 24px/24px DXIcons;
+  font: 24px/24px DXIcons, sans-serif;
   width: 24px;
   height: 100%;
   text-align: center;
@@ -12501,7 +12501,7 @@
 }
 
 .dx-treeview-toggle-item-visibility {
-  font: 24px/24px DXIcons;
+  font: 24px/24px DXIcons, sans-serif;
   text-align: center;
   color: rgba(0, 0, 0, .54);
   width: 24px;
@@ -12522,7 +12522,7 @@
 }
 
 .dx-treeview-toggle-item-visibility.dx-treeview-toggle-item-visibility-opened {
-  font: 24px/24px DXIcons;
+  font: 24px/24px DXIcons, sans-serif;
   text-align: center;
 }
 
@@ -15815,7 +15815,7 @@
   right: 0;
   left: auto;
   height: 100%;
-  font: 24px/24px DXIcons;
+  font: 24px/24px DXIcons, sans-serif;
   width: 24px;
   color: rgba(0, 0, 0, .54);
   text-align: center;
@@ -19286,7 +19286,7 @@
 }
 
 .dx-datagrid-addrow-button .dx-icon-edit-button-addrow {
-  font: 24px/24px DXIcons;
+  font: 24px/24px DXIcons, sans-serif;
   width: 24px;
   height: 24px;
   background-position: 0 0;
@@ -19300,7 +19300,7 @@
 }
 
 .dx-datagrid-cancel-button .dx-icon-edit-button-cancel {
-  font: 24px/24px DXIcons;
+  font: 24px/24px DXIcons, sans-serif;
   width: 24px;
   height: 24px;
   background-position: 0 0;
@@ -19314,7 +19314,7 @@
 }
 
 .dx-datagrid-save-button .dx-icon-edit-button-save {
-  font: 24px/24px DXIcons;
+  font: 24px/24px DXIcons, sans-serif;
   width: 24px;
   height: 24px;
   background-position: 0 0;
@@ -19839,7 +19839,7 @@
 }
 
 .dx-datagrid-group-opened {
-  font: 24px/24px DXIcons;
+  font: 24px/24px DXIcons, sans-serif;
   width: 24px;
   height: 24px;
   background-position: 0 0;
@@ -19854,7 +19854,7 @@
 }
 
 .dx-datagrid-group-closed {
-  font: 24px/24px DXIcons;
+  font: 24px/24px DXIcons, sans-serif;
   width: 24px;
   height: 24px;
   background-position: 0 0;
@@ -22181,7 +22181,7 @@ input.dx-hidden {
 }
 
 .dx-treelist-addrow-button .dx-icon-edit-button-addrow {
-  font: 24px/24px DXIcons;
+  font: 24px/24px DXIcons, sans-serif;
   width: 24px;
   height: 24px;
   background-position: 0 0;
@@ -22195,7 +22195,7 @@ input.dx-hidden {
 }
 
 .dx-treelist-cancel-button .dx-icon-edit-button-cancel {
-  font: 24px/24px DXIcons;
+  font: 24px/24px DXIcons, sans-serif;
   width: 24px;
   height: 24px;
   background-position: 0 0;
@@ -22209,7 +22209,7 @@ input.dx-hidden {
 }
 
 .dx-treelist-save-button .dx-icon-edit-button-save {
-  font: 24px/24px DXIcons;
+  font: 24px/24px DXIcons, sans-serif;
   width: 24px;
   height: 24px;
   background-position: 0 0;
@@ -22223,7 +22223,7 @@ input.dx-hidden {
 }
 
 .dx-apply-button .dx-icon-apply-filter {
-  font: 24px/24px DXIcons;
+  font: 24px/24px DXIcons, sans-serif;
   width: 24px;
   height: 24px;
   background-position: 0 0;
@@ -22736,7 +22736,7 @@ input.dx-hidden {
 }
 
 .dx-treelist-rowsview .dx-treelist-expanded span {
-  font: 24px/24px DXIcons;
+  font: 24px/24px DXIcons, sans-serif;
   text-align: center;
   cursor: pointer;
 }
@@ -22753,7 +22753,7 @@ input.dx-hidden {
 }
 
 .dx-treelist-rowsview .dx-treelist-collapsed span {
-  font: 24px/24px DXIcons;
+  font: 24px/24px DXIcons, sans-serif;
   text-align: center;
   cursor: pointer;
 }
@@ -24058,7 +24058,7 @@ input.dx-hidden {
 
 .dx-context-menu .dx-menu-item .dx-menu-item-content .dx-menu-item-popout-container .dx-menu-item-popout {
   color: rgba(0, 0, 0, .54);
-  font: 24px/24px DXIcons;
+  font: 24px/24px DXIcons, sans-serif;
   text-align: center;
 }
 

@@ -35,7 +35,7 @@ export class AuthenticationServiceMock extends AuthenticationService {
     if (this.requestSuccess) {
       return Promise.resolve();
     }
-    return Promise.reject('Error while log out');
+    return Promise.reject(new Error('Error while log out'));
   }
 
   override async getToken(): Promise<string> {
@@ -44,7 +44,7 @@ export class AuthenticationServiceMock extends AuthenticationService {
 
   override reauthenticateUser(
     _: string, // eslint-disable-line @typescript-eslint/no-unused-vars
-  ): Promise<{ isOk: boolean; message?: string | undefined }> {
+  ): Promise<{ isOk: boolean; message?: string }> {
     if (this.requestSuccess) {
       return Promise.resolve({
         isOk: true,
@@ -58,9 +58,7 @@ export class AuthenticationServiceMock extends AuthenticationService {
 
   override changePassword(
     _: string, // eslint-disable-line @typescript-eslint/no-unused-vars
-  ): Promise<
-    { isOk: boolean; message?: undefined } | { isOk: boolean; message: string }
-  > {
+  ): Promise<{ isOk: boolean; message?: string }> {
     if (this.requestSuccess) {
       return Promise.resolve({
         isOk: true,
