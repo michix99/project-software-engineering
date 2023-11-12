@@ -112,10 +112,11 @@ def api_handler(  # pylint: disable=too-many-return-statements, too-many-branche
             return (json.dumps({"id": body["target_user_id"]}), 200, headers)
         case "GET" if path_segments[1] == "user":
             headers["Access-Control-Allow-Methods"] = "GET"
-            if len(path_segments) != 3 and Role.ADMIN not in user_info.roles:
-                error_message = "User does not have required rights to perform request!"
-                logger.error(error_message)
-                return (error_message, 403, headers)
+            if len(path_segments) != 3 and not any(
+                role in user_info.roles for role in [Role.EDITOR, Role.ADMIN]
+            ):
+                logger.error(MISSING_PERMISSIONS)
+                return (MISSING_PERMISSIONS, 403, headers)
 
             try:
                 if len(path_segments) != 3:
